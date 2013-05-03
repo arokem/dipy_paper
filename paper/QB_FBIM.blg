@@ -1,0 +1,45 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: QB_FBIM.aux
+The style file: apalike2.bst
+Database file #1: diffusion.bib
+You've used 49 entries,
+            2229 wiz_defined-function locations,
+            816 strings with 13961 characters,
+and the built_in function-call counts, 22530 in all, are:
+= -- 2195
+> -- 1081
+< -- 25
++ -- 385
+- -- 376
+* -- 1991
+:= -- 3845
+add.period$ -- 147
+call.type$ -- 49
+change.case$ -- 426
+chr.to.int$ -- 48
+cite$ -- 49
+duplicate$ -- 820
+empty$ -- 1487
+format.name$ -- 433
+if$ -- 4425
+int.to.chr$ -- 2
+int.to.str$ -- 0
+missing$ -- 52
+newline$ -- 248
+num.names$ -- 147
+pop$ -- 408
+preamble$ -- 1
+purify$ -- 431
+quote$ -- 0
+skip$ -- 616
+stack$ -- 0
+substring$ -- 1569
+swap$ -- 150
+text.length$ -- 15
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 286
+warning$ -- 0
+while$ -- 182
+width$ -- 0
+write$ -- 641
