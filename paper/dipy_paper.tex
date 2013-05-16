@@ -138,15 +138,26 @@ Conclusions
 
 Someone will write this.
 
-This is to show how graphics (EPS) files are included. We use EPS for speed.
+\section{LaTex Formatting Stuff}
+
+This is to show how graphics (EPS) files are included. We use EPS for
+speed. The first one is spread across both columns, and the second one
+is just in a single column:
 
 \begin{figure*}
 \centerline{\includegraphics[width=160mm]{Figures/Fig_4_cst_simplification_relabeled_triple.eps}}
-\caption{This is the figure caption - and a label to refer to it in the text \label{Fig:one}}
+\caption{This is the figure caption - and a label to refer to it in the text \label{Fig:big_picture}}
 \end{figure*}
 
 When we want to refer to this figure we use the label (see
-Fig.~\ref{Fig:one}).
+Fig.~\ref{Fig:big_picture}).
+
+\begin{figure}
+\includegraphics[scale=0.15]{Figures/Fig_11_MDF_arcuate}
+\centering{}
+\caption{Color coding shows MDF distances from QB centroid to every
+  other track in the bundle.\label{Fig:little_picture}}
+\end{figure}
 
 Here are some displayed equations (see Eq.~\ref{eq:direct_flip_distance}):
 \begin{eqnarray}
