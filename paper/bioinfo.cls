@@ -454,7 +454,7 @@
   \vspace*{\aboveskipchk}%
   \vspace{\dropfromtop}%
   \hbox to \textwidth{%
-  {\helvetica\itshape\bfseries\fontsize{19}{12}\selectfont {\color{gray}Methods Articles}
+  {\helvetica\itshape\bfseries\fontsize{19}{12}\selectfont {\color{gray}Methods Article}
     \hfil
     \if@appnotes APPLICATIONS NOTE\hfil\fi
     }%
