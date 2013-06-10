@@ -1,9 +1,11 @@
-.PHONY: 1 2 bib dvi pdf all
+.PHONY: 1 2 bib dvi latex pdf all
 
 1:
 	cd paper && latex dipy_paper.tex 
 
 dvi: 1
+
+latex: 1
 
 bib:
 	cd paper && bibtex dipy_paper
@@ -13,7 +15,7 @@ pdf: 1 2 1
 
 2: 1 bib
 
-all: pdf mv
+all: pdf
 
 clean: 
 	rm build/* 
