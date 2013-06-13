@@ -3,6 +3,63 @@
 
 \usepackage[british,english]{babel}
 \usepackage{mathpazo}
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+\usepackage{setspace}
+
+\definecolor{Code}{rgb}{0,0,0}
+\definecolor{Decorators}{rgb}{0.5,0.2,0.2}
+\definecolor{Numbers}{rgb}{0.5,0,0}
+\definecolor{MatchingBrackets}{rgb}{0.25,0.5,0.5}
+\definecolor{Keywords}{rgb}{0,0.6,0}
+\definecolor{self}{rgb}{0,0,0}
+\definecolor{Strings}{rgb}{0,0.63,0}
+\definecolor{Comments}{rgb}{0,0.63,1}
+\definecolor{Backquotes}{rgb}{0,0,0}
+\definecolor{Classname}{rgb}{0,0,0}
+\definecolor{FunctionName}{rgb}{0,0,0}
+\definecolor{Operators}{rgb}{0,0,0}
+\definecolor{Background}{rgb}{1,1,1}
+
+\lstnewenvironment{python}[1][]{
+\lstset{
+%numbers=left,
+numberstyle=\footnotesize,
+numbersep=1em,
+xleftmargin=1em,
+framextopmargin=2em,
+framexbottommargin=2em,
+showspaces=false,
+showtabs=false,
+showstringspaces=false,
+%frame=l,
+tabsize=4,
+% Basic
+basicstyle=\ttfamily\small\setstretch{1},
+backgroundcolor=\color{Background},
+language=Python,
+% Comments
+commentstyle=\color{Comments}\slshape,
+% Strings
+stringstyle=\color{Strings},
+morecomment=[s][\color{Strings}]{"""}{"""},
+morecomment=[s][\color{Strings}]{'''}{'''},
+% keywords
+morekeywords={import,from,class,def,for,while,if,is,in,elif,else,not,and,or,print,break,continue,return,True,False,None,access,as,del,except,exec,finally,global,import,lambda,pass,print,raise,try,assert},
+keywordstyle={\color{Keywords}\bfseries},
+% additional keywords
+morekeywords={[2]@parametric},
+keywordstyle={[2]\color{Decorators}\slshape},
+emph={self},
+emphstyle={\color{self}\slshape},
+%
+}}{}
+
+
 \usepackage[T1]{fontenc}
 % \usepackage[latin9]{inputenc}
 \usepackage{float}
@@ -20,6 +77,7 @@
 
 \usepackage{multirow}
 \usepackage{rotating}
+\usepackage{hyperref}
 
 \makeatletter
 \newfloat{algorithm}{H}{loa}[section]
@@ -39,7 +97,7 @@
 
 \author[Garyfallidis, Brett, Amirbekian, Rokem,  van der Walt, Descoteaux, 
 Nimmo-Smith]{Eleftherios~Garyfallidis\,$^{1,2,*}$, Matthew~Brett\,$^{3}$,
-  Bago~Amirbekian\,$^{4}$, Ariel~Rokem\,$^{5}$, Stefan~van der Walt\,$^{7}$, Maxime~Descoteaux\,$^{2}$, Ian~Nimmo-Smith\,$^{6}$ \footnote{to whom correspondence should be addressed. e-mail: garyfallidis@gmail.com}}
+  Bago~Amirbekian\,$^{4}$, Ariel~Rokem\,$^{5}$, Stefan~van der Walt\,$^{7}$, Maxime~Descoteaux\,$^{2}$, Ian~Nimmo-Smith\,$^{6}$ and Dipy~Contributors $^{8}$\footnote{to whom correspondence should be addressed. e-mail: garyfallidis@gmail.com}}
 
 \address{\,$^{1}$University of Cambridge, Cambridge, UK\\
   \,$^{2}$University of Sherbrooke, Sherbrooke, CA\\ 
@@ -47,9 +105,9 @@ Nimmo-Smith]{Eleftherios~Garyfallidis\,$^{1,2,*}$, Matthew~Brett\,$^{3}$,
   \,$^{4}$University of California, San Francisco, CA, USA\\    
   \,$^{5}$Stanford University, Stanford, CA, USA\\
   \,$^{6}$MRC Cognition and Brain Sciences Unit, Cambridge, UK\\
-  \,$^{7}$Stellenbosch University, Stellenbosch, South Africa\\  
+  \,$^{7}$Stellenbosch University, Stellenbosch, South Africa\\
+  \,$^{8}$http://dipy.org/developers.html  
   }
-
 
 \history{}
 
@@ -144,11 +202,30 @@ more $T_{2}$ reference images, and a collection of diffusion-weighted images tha
 
 Because of its unique capability to depict structural connectivity, during the last 10 years, dMRI had an increasing popularity with more than five thousand papers published according to PubMed only for 2012. This popularity is also evident from the large number of software tools available for the analysis of diffusion weighted images. Most of these tools are written in C/C++: 3D Slicer \citep{pieper:06}, AFNI \citep{cox-afni:12}, MITK \citep{fritzsche-mitk:12}, BrainVoyager QX \citep{goebel-brainvoyager:12}, DTI-Query/Quench \citep{sherbondy:05}, FreeSurfer \citep{fischl-freesurfer:12}, FSL-FDT \citep{smith-fdt:04}, MedInria \citep{toussaint-souplet-etal:07}, MRtrix \citep{Tournier2012}, Diffusion Toolkit/Trackvis \citep{wang-diffusion-toolkit:07}, and FiberNavigator \citep{vaillancourt:11, chamberland:13}, R: TractoR \citep{ clayden-TractoR:11}, Java: Camino \citep{Cook2006} and Matlab: ExploreDTI \citep{leemans-exploredti:09}. 
 
-Dipy which stands for \textit{Diffusion Imaging in Python} is the first collective effort to create a diffusion MRI analysis library in Python language. Python is a general purpose, object-oriented programming language which emphasizes in code readability. Code readability, a key feature of Python enables people who are not necessarily programming gurus to understand and extend the underlying code in a simple and comprehensive manner. We think that this is a powerful asset for the design of the next generation of medical imaging analysis tools. In the past we found that many researchers were using available tools without understanding the underlying details, often because the details were hidden from the users. Dipy attacks this problem be being free, open source (BSD license), simple and well documented. 
+Dipy which stands for \textit{Diffusion Imaging in Python} is the first collective effort to create a diffusion MRI analysis library in Python language. Python is a general purpose, object-oriented programming language which emphasizes in code readability. Code readability, a key feature of Python enables people who are not necessarily programming gurus to understand and extend the underlying code in a simple and comprehensive manner. We think that this is a powerful asset for the design of the next generation of medical imaging analysis tools. In the past we found that many researchers were using available tools without understanding the underlying details, often because the details were hidden from the users. Dipy tackles this problem be being free, open source (BSD license), simple and well documented. 
 
-The simplicity of dipy stems from two reasons. First, we think that software design is crucial and we spend a good amount of time to design our API. Second, dipy uses numpy for its basic numerical processing (e.g. matrix, tensor, linear algebra operations). 
+Dipy is built on top of production-ready high-performance Python libraries. Primarily, Dipy uses the Numpy Array \citep{van_numpy:11} as its core structure. Numpy arrays are the standard representation for numerical data in Python and enable efficient implementation of numerical computations allowing vectorizing calculations, avoiding copying data in memory, and minimizing operations. The Numpy Array is part of a more general numerical library (Numpy\footnote{\url{http://numpy.org}}) which can be used for example for matrix, tensor and linear algebra operations. Dipy also depends on Scipy\footnote{\url{http://scipy.org}} (a superset of Numpy) for nonlinear optimization and other volumetric operations. Cython\footnote{\url{http://cython.org}} is used in rare cases when both standard Python and Numpy/Scipy are not efficient enough for the task at hand. Cython interprets Python code into plain C performance by adding static type declarations. The last hard dependency for Dipy is Nibabel\footnote{\url{http://nipy.org/nibab}} which is used for loading and saving medical imaging datasets.
 
-Numpy paper \citep{van_numpy:11}.
+Furthermore, Dipy recommends the use of IPython\footnote{\url{http://ipython.org}} for interacting with the datasets and debugging the code, the IPython notebook for teaching, Matplotlib\footnote{\url{http://matplotlib.org}} for plotting 2D/3D datasets and Python-VTK\footnote{\url{http://vtk.org}} for more advanced 3D interactive visualization. Nonetheless, these are optional dependencies and they are not required for the standard use of Dipy.
+
+\citep{perez_ipython:07}, \citep{perez_python:11}, \citep{mckinney_python:12}, 
+
+
+
+
+\begin{python}
+from dipy.viz import fvtk
+ren = fvtk.ren()
+class Test(object):
+  def __init__(self, a):
+    pass
+
+@parametric
+def f(x):
+  return x**2
+for i in range(10):
+  print f(i)
+\end{python}
 
 
 \section{Philosophy and Mission}
