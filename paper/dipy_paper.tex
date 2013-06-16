@@ -187,7 +187,7 @@ Tracking
    Probabilistic
 Post-tracking
    Segmentation
-   Track_counts
+   Track\_counts
    Track Lengths & other statistics
    Connectivity matrix?
 Conclusions
@@ -207,6 +207,108 @@ Dipy is built on top of production-ready high-performance Python libraries. Prim
 Furthermore, Dipy recommends the use of IPython\footnote{\url{http://ipython.org}} for interacting with the datasets and debugging the code, the IPython notebook for teaching, Matplotlib\footnote{\url{http://matplotlib.org}} for plotting 2D/3D datasets and Python-VTK\footnote{\url{http://vtk.org}} for more advanced 3D interactive visualization. Nonetheless, these are optional dependencies and they are not required for the standard use of Dipy.
 
 In the following sections, we will explain the philosophy and main design concepts behind Dipy. We will also give examples which cover different parts of the diffusion MR analysis pipeline from the local voxel reconstruction of orientation distribution functions to streamline generation and visualization. 
+
+\section{Philosophy and Mission}
+
+The purpose of Dipy is to make it easier to do better diffusion MR imaging research. We aim to build software that is clearly written, clearly explained, a good fit for the underlying ideas and a natural home for collaboration. We hope that, if we fail to do this, you will let us know and we will try and make it better.
+
+Say something about the international collaboration and not being lab specific.
+
+\section{Terminology}
+
+The diffusion MRI community needs to agree on definitions for fiber tracking. Unfortunately,
+there are many examples of confusing and contradictory definitions used in the literature and used
+by clinicians, researchers and laboratories. Here, we make several suggestions and define the terms
+used in this paper. We first separate our terms in three sections: i) general terms, ii) terms that
+concern anatomy and iii) terms that concern imaging.
+General. Fiber : a long and thin structure. Hence, fiber tracking is a general term that can be
+used in any field that reconstructs fibrous structures, such as hair fibers, celery fibers, muscle fibers,
+prostate fibers, brain fibers, etc.
+Brain Anatomy. Axon: the long fiber-like part of a nerve cell along which impulses are conducted
+from the cell (µm scale). Tract: a group of neuronal axons in the central nervous system (mm
+scale). Fiber bundle: a group of ﬁbers usually with an anatomical or functional meaning, e.g.
+arcuate fasciculus, fornix, etc. A fiber bundle for the area of brain anatomy is synonymous to a
+tract, also often called fiber tract. The term tract can be misleading when talking for example about
+the corticospinal tract. The corticospinal tract is not a single tract but a group of tracts.
+Brain Imaging. Streamline: an imaginary line approximating the underlying fiber. Streamlines bundle: a group of streamlines with similar shape and spatial characteristics. These do not necessarily
+correspond to individual ﬁber bundles. Tractography: the process of generating streamlines of brain
+fibers. This is synonymous with fiber tracking in the central nervous system.
+
+\section{General design aspects}
+
+API (module diagram), Git/Github, continuous integration, sphinx for documentation, nosetests for testing
+
+Need a diagram with the base (numpy, nibabel) and the rest of the modules on top.
+
+Dipy contains the following modules
+
+\tiny
+\begin{verbatim}
+| modules       | main usage                | sub-modules                        |
+| ------------- | ------------------------- | ---------------------------------- |
+| reconst       | reconstruction modules    | dti, dsi, csd, odf, shm, gqi       |
+| tracking      | tractography algorithms   | EuDX, Modular tracking (det, prob),|
+|               |                           | distances, metrics, utils          |
+| core          | general usage functions   | spheres, gradients, electrostatics,|
+|               |                           | geometry, ndindex                  |       
+| viz           | 2D/3D visualization       | fvtk, 2D sphere plots, colormaps   |
+| io            | input/io utilities        | pickles, gradients, dpy(HDF5)      |
+| external      | other software            | fsl                                |
+| align         | alignment, reslicing      | aniso2iso                          |
+| sims          | voxel & volume simulations| voxel, phantom                     |
+| data          | small data & online data  | fetcher                            |
+| segment       | clustering & segmentation | quickbundles                       |
+
+There are also some command line scripts in dipy/bin and many tests.
+\end{verbatim}
+\normalsize
+
+\begin{python}
+import dipy
+dipy.__version__
+'0.7.0.dev'
+\end{python}
+
+\section{Preprocessing}
+
+\subsection{Background removal}
+
+\section{Reconstruction}
+
+\subsection{Diffusion Tensor Imaging}
+
+The diffusion tensor model is a model that describes the diffusion within a
+voxel. First proposed by Basser and colleagues \citep{basser-mattiello-etal:94}, it has been very
+influential in demonstrating the utility of diffusion MRI in characterizing the
+micro-structure of white matter tissue and of the biophysical properties of
+tissue, inferred from local diffusion properties and it is still very commonly
+used.
+
+The diffusion tensor models the diffusion signal as:
+\begin{eqnarray*}
+\frac{S(\mathbf{g}, b)}{S_0} = e^{-b\mathbf{g}^T \mathbf{D} \mathbf{g}}
+\end{eqnarray*}
+Where $\mathbf{g}$ is a unit vector in 3 space indicating the direction of
+measurement and b are the parameters of measurement, such as the strength and
+duration of diffusion-weighting gradient. $S(\mathbf{g}, b)$ is the
+diffusion-weighted signal measured and $S_0$ is the signal conducted in a
+measurement with no diffusion weighting. $\mathbf{D}$ is a positive-definite quadratic
+form, which contains six free parameters to be fit. These six parameters are:
+\begin{eqnarray*}
+\mathbf{D} = \begin{pmatrix}
+D_{xx} & D_{xy} & D_{xz} \\ 
+D_{yx} & D_{yy} & D_{yz} \\ 
+D_{zx} & D_{zy} & D_{zz}
+\end{pmatrix}
+\end{eqnarray*}
+This matrix is a variance/covariance matrix of the diffusivity along the three
+spatial dimensions. Note that we can assume that diffusivity has antipodal
+symmetry, so elements across the diagonal are equal. For example:
+$D_{xy} = D_{yx}$. This is why there are only 6 free parameters to estimate
+here.
+
+In the following example we show how to reconstruct your diffusion datasets
+using a single tensor model.
 
 \begin{python}
 fimg = "raw.nii.gz"
@@ -234,18 +336,41 @@ from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
 \end{python}
 
+\subsection{Diffusion Spectrum Imaging}
 
-\section{Philosophy and Mission}
+\subsection{QBall Imaging}
 
-The purpose of Dipy is to make it easier to do better diffusion MR imaging research. We aim to build software that is clearly written, clearly explained, a good fit for the underlying ideas and a natural home for collaboration. We hope that, if we fail to do this, you will let us know and we will try and make it better.
+\subsection{Constrained Spherical Deconvolution} 
 
-Say something about the international collaboration and not being lab specific.
+\section{Fiber tracking}
 
-\section{General design aspects}
+\subsection{Deterministic}
 
-API (module diagram), Git/Github, continuous integration, sphinx for documentation, nosetests for testing
+\subsection{Probabilistic}
 
-\section{LaTex Formatting Stuff}
+\section{Post-tracking}
+
+\subsection{Segmentation}
+
+\subsection{ROIs - streamlines intersections}
+
+Talk about track\_counts.
+
+\subsection{Streamline statistics}
+
+Talk about lenghts and other metrics on streamlines
+
+\section{Discussion/Conclusion}
+
+\section*{Acknowledgments}
+Who do we need to acknowledge?
+
+\section*{Disclosure/Conflict-of-Interest Statement}
+There are no conflicts of interest.
+
+\section{LaTex Formatting}
+
+This is information for the coauthors of this paper. This section will be removed from the last version of this paper.
 
 This is to show how graphics (EPS) files are included. We use EPS for
 speed. The first one is spread across both columns, and the second one
@@ -256,8 +381,7 @@ is just in a single column:
 \caption{This is the figure caption - and a label to refer to it in the text \label{Fig:big_picture}}
 \end{figure*}
 
-When we want to refer to this figure we use the label (see
-Fig.~\ref{Fig:big_picture}).
+When we want to refer to this figure we use the label (see Fig.~\ref{Fig:big_picture}).
 
 \begin{figure}
 \includegraphics[scale=0.15]{Figures/Fig_11_MDF_arcuate}
@@ -287,7 +411,7 @@ Comparison & Coverage \% (s.d.) & Overlap (s.d.) \\ \hline
 \end{tabular}}{}
 \end{table}
 
-References go like this: in parentheses \citep{Garyfallidis_thesis,Mori1999}, and in running text \citet{Garyfallidis_thesis}.
+References go like this: in parentheses \citep{Garyfallidis_thesis, Mori1999}, and in running text \citet{Garyfallidis_thesis}.
 
 And here is an example of how to add some code.
 
@@ -297,7 +421,6 @@ ren = fvtk.ren()
 class Test(object):
   def __init__(self, a):
     pass
-
 @parametric
 def f(x):
   return x**2
@@ -306,12 +429,6 @@ for i in range(10):
 \end{python}
 
 
-\section*{Acknowledgments}
-Who do we need to acknowledge?
-
-\section*{Disclosure/Conflict-of-Interest Statement}
-Is it true that there are no conflicts of interest relating to this
-work?
 
 \selectlanguage{british}%
 \bibliographystyle{apalike2}
