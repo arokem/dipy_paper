@@ -238,6 +238,7 @@ Streamlines bundle(or simply bundle): a group of streamlines with similar shape 
 
 Tractography: the process of generating streamlines of brain fibers. This is synonymous with fiber tracking in the central nervous system.
 
+
 \section{General design aspects}
 
 API (module diagram), Git/Github, continuous integration, sphinx for documentation, nosetests for testing
@@ -275,7 +276,21 @@ dipy.__version__
 
 \section{Preprocessing}
 
+\subsection{Load/Save data}
+
+\begin{python}
+fimg = "raw.nii.gz"
+import nibabel as nib
+img = nib.load(fimg)
+data = img.get_data()
+\end{python}
+
 \subsection{Background removal}
+
+\begin{python}
+from dipy.segment.mask import hist_mask
+mask = hist_mask(data[..., 0])
+\end{python}
 
 \section{Reconstruction}
 
@@ -338,7 +353,13 @@ fa = fractional_anisotropy(tenfit.evals)
 
 from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
+
+from dipy.reconst.dti import tensor_sphericity
+sph = tensor_sphericity(tenfit.evals)
+
 \end{python}
+
+\citep{westin:97}
 
 \subsection{Diffusion Spectrum Imaging}
 
