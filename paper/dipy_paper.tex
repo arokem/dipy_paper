@@ -128,21 +128,18 @@ magnetic gradients to estimate diffusion in different directions and
 locations in the brain non-invasively. Many methods have been developed
 to model the local configuration of nerve fibers in the white matter
 based on this information and to infer the trajectory of fascicles
-connecting different parts of the brain. However, no single open source
-software platform gathers implementations of all these different
-methods, where they can be easily understood and compared. Dipy aims to
-provide transparent implementations for all the different steps of dMRI
-analysis with a relatively uniform API.
+connecting different parts of the brain. Dipy gathers implementations 
+of all these different methods, where they can be easily understood and 
+compared. Dipy aims to provide transparent implementations for all the 
+different steps of dMRI analysis with a relatively uniform API.
 
 Dipy implements classical signal reconstruction techniques, such as the
-diffusion tensor model (Basser et al., 1994) and deterministic fiber
-tractography (Mori et al., 1999). In addition, it implements cutting
-edge novel reconstruction techniques, such as generalized Q imaging (Yeh
-et al., 2010) and diffusion spectrum imaging with deconvolution
-(Canales-Rodriguez et al. 2010), as well as methods for probabilistic
-tracking (Berman et al., 2008) and unique methods for tractography
-clustering (Garyfallidis et al., 2012). Many additional utility
-functions, to calculate various statistics of dMRI data, visualization
+diffusion tensor model and deterministic fiber tractography. 
+In addition, it implements cutting edge novel reconstruction techniques, 
+such as constrained spherical deconvolution and diffusion spectrum imaging 
+with deconvolution, as well as methods for probabilistic
+tracking and unique methods for tractography clustering. Many additional 
+utility functions, to calculate various statistics of dMRI data, visualization
 functions, as well as file-handling routines exist to assist in the
 development of novel techniques.
  
@@ -160,9 +157,9 @@ international team of contributors, spanning 6 different academic
 institutions in 4 countries and 3 continents, and still growing
 (http://dipy.org).
 
-\section{Keywords:} Python, Diffusion MRI, Diffusion Tensor model,
-Deconvolution, Medical imaging, Open source software, Deterministic
-tractography, Probabilistic tractography, Visualisation.
+\section{Keywords:} Python, Diffusion MRI, Diffusion Tensor,
+Spherical Deconvolution, Medical imaging, Free Open Source Software, Deterministic
+tractography, Probabilistic tractography, Fiber tracking, Medical Visualization.
 
 \end{abstract}
 
@@ -196,13 +193,13 @@ Conclusions
 \section{Introduction}
 
 \emph{Diffusion MRI} (dMRI) \citep{stejskal-tanner:65, lebihan-breton:85,merboldt-hanicke-etal:85, taylor-bushell:85, callaghan:91} is the principal non-invasive method that provides information about the directional structure of neuronal pathways found in the white matter and other body tissue with fiber-like structure. dMRI acquires one or 
-more $T_{2}$ reference images, and a collection of diffusion-weighted images that attenuate the $T_{2}$ signal according to the amount of diffusion along prescribed gradient directions \citep{behrens-johansen-berg:09, jones:10}. 
+more $T_{2}$ reference images, and a collection of diffusion-weighted images that attenuate the $T_{2}$ signal according to the amount of diffusion along prescribed gradient directions \citep{behrens-johansen-berg:09, jones:10}.
 
 Because of its unique capability to depict structural connectivity, during the last 10 years, dMRI had an increasing popularity with more than five thousand papers published according to PubMed only for 2012. This popularity is also evident from the large number of software tools available for the analysis of diffusion weighted images. Most of these tools are written in C/C++: 3D Slicer \citep{pieper:06}, AFNI \citep{cox-afni:12}, MITK \citep{fritzsche-mitk:12}, BrainVoyager QX \citep{goebel-brainvoyager:12}, DTI-Query/Quench \citep{sherbondy:05}, FreeSurfer \citep{fischl-freesurfer:12}, FSL-FDT \citep{smith-fdt:04}, MedInria \citep{toussaint-souplet-etal:07}, MRtrix \citep{Tournier2012}, Diffusion Toolkit/Trackvis \citep{wang-diffusion-toolkit:07}, FiberNavigator \citep{vaillancourt:11, chamberland:13}. A few only are written in other languages as R: TractoR \citep{ clayden-TractoR:11}, Java: Camino \citep{Cook2006} and Matlab: ExploreDTI \citep{leemans-exploredti:09}. 
 
 Dipy which stands for \textit{Diffusion Imaging in Python} is the first collective effort to create a diffusion MRI analysis library using the Python language. Python is a general purpose, object-oriented programming language which emphasizes in code readability. Code readability, a key feature of Python enables people who are not necessarily programming gurus to understand and extend the underlying code in a simple and comprehensive manner. We think that this is a powerful asset for the design of the next generation of medical imaging analysis tools. In the past we found that many researchers were using available tools without understanding the underlying details, often because the details were hidden from the users. Dipy tackles this problem be being free, open source (BSD license), simple and well documented. In addition, the recent explosion of Python users, the many Python tools for scientific computing \citep{perez_python:11}, \citep{mckinney_python:12}, \citep{perez_ipython:07} and the recent stack of neuroimaging\footnote{\url{http://nipy.org}} modules make Dipy a nice addition for those who prefer Python as their favorite language.
 
-Dipy is built on top of production-ready high-performance Python libraries. Primarily, Dipy uses the Numpy Array \citep{van_numpy:11} as its core structure. Numpy arrays are the standard representation for numerical data in Python and enable efficient implementation of numerical computations allowing vectorizing calculations, avoiding copying data in memory, and minimizing operations. The Numpy Array is part of a more general numerical library (Numpy\footnote{\url{http://numpy.org}}) which can be used for example for matrix, tensor and linear algebra operations. Dipy also depends on Scipy\footnote{\url{http://scipy.org}} (a superset of Numpy) for nonlinear optimization and other volumetric operations. Cython\footnote{\url{http://cython.org}} is used in rare cases when both standard Python and Numpy/Scipy are not efficient enough for the task at hand. Cython interprets Python code into plain C performance by adding static type declarations. The last hard dependency for Dipy is Nibabel\footnote{\url{http://nipy.org/nibab}} which is used for loading and saving medical imaging datasets.
+Dipy is built on top of production-ready high-performance Python libraries. Primarily, Dipy uses the Numpy Array \citep{van_numpy:11} as its core structure. Numpy arrays are the standard representation for numerical data in Python and enable efficient implementation of numerical computations allowing vectorizing calculations, avoiding copying data in memory, and minimizing operations. The Numpy Array is part of a more general numerical library (Numpy\footnote{\url{http://numpy.org}}) which can be used for example for matrix, tensor and linear algebra operations. Dipy also depends on Scipy\footnote{\url{http://scipy.org}} (a superset of Numpy) for nonlinear optimization and other volumetric operations. Cython\footnote{\url{http://cython.org}} is used in rare cases when both standard Python and Numpy/Scipy are not efficient enough for the task at hand. Cython interprets Python code into plain C performance by adding static type declarations. The last hard dependency for Dipy is Nibabel\footnote{\url{http://nipy.org/nibab}} which is used for loading and saving medical imaging file formats.
 
 Furthermore, Dipy recommends the use of IPython\footnote{\url{http://ipython.org}} for interacting with the datasets and debugging the code, the IPython notebook for teaching, Matplotlib\footnote{\url{http://matplotlib.org}} for plotting 2D/3D datasets and Python-VTK\footnote{\url{http://vtk.org}} for more advanced 3D interactive visualization. Nonetheless, these are optional dependencies and they are not required for the standard use of Dipy.
 
@@ -210,29 +207,36 @@ In the following sections, we will explain the philosophy and main design concep
 
 \section{Philosophy and Mission}
 
-The purpose of Dipy is to make it easier to do better diffusion MR imaging research. We aim to build software that is clearly written, clearly explained, a good fit for the underlying ideas and a natural home for collaboration. We hope that, if we fail to do this, you will let us know and we will try and make it better.
+Mission: The purpose of Dipy is to make it easier to do better diffusion MR imaging research. We aim to build software that is clearly written, clearly explained, well tested, a good fit for the underlying ideas and a natural home for collaboration. We hope that, if we fail to do this, you will let us know and we will try and make it 
+better.
 
-Say something about the international collaboration and not being lab specific.
+Dipy is a true international project where everyone from everywhere in the world is welcome to contribute as long as they agree with our mission statement. For example, lets assume that one has made a nice new discovery and wants to share some code. Even if the discovery is very important the code will not be included in the main project without tests and code reviews from other members of the team. In that way we make sure that we keep quality assurance at a high level and we increase the life span of the project by making sure that at least two or three developers are familiar with the submitted shared code.
+
+Using this work ethic Dipy has managed to grow into an international and multi-departmental team of highly skilled contributors from different levels of education (Master students, PhD students, Post-Docs and Professors) spanning the fields of Computer Science, Medicine, Applied Mathematics, Biomedical Engineering and Psychology. 
+
 
 \section{Terminology}
 
-The diffusion MRI community needs to agree on definitions for fiber tracking. Unfortunately,
-there are many examples of confusing and contradictory definitions used in the literature and used
-by clinicians, researchers and laboratories. Here, we make several suggestions and define the terms
-used in this paper. We first separate our terms in three sections: i) general terms, ii) terms that
-concern anatomy and iii) terms that concern imaging.
-General. Fiber : a long and thin structure. Hence, fiber tracking is a general term that can be
+In the recent paper of \citep{Cote2013tractometer} a specific terminology for dMRI was suggested. We think that this suggestion is reasonable and we would like to use the same terms in this paper. 
+
+Fiber: a long and thin structure. Hence, fiber tracking is a general term that can be
 used in any field that reconstructs fibrous structures, such as hair fibers, celery fibers, muscle fibers,
 prostate fibers, brain fibers, etc.
-Brain Anatomy. Axon: the long fiber-like part of a nerve cell along which impulses are conducted
-from the cell (µm scale). Tract: a group of neuronal axons in the central nervous system (mm
-scale). Fiber bundle: a group of ﬁbers usually with an anatomical or functional meaning, e.g.
+
+Axon: the long fiber-like part of a nerve cell along which impulses are conducted from the cell ($\mu$m scale). 
+
+Tract: a group of neuronal axons in the central nervous system (mm scale).
+
+Fiber bundle: a group of fibers usually with an anatomical or functional meaning, e.g.
 arcuate fasciculus, fornix, etc. A fiber bundle for the area of brain anatomy is synonymous to a
 tract, also often called fiber tract. The term tract can be misleading when talking for example about
 the corticospinal tract. The corticospinal tract is not a single tract but a group of tracts.
-Brain Imaging. Streamline: an imaginary line approximating the underlying fiber. Streamlines bundle: a group of streamlines with similar shape and spatial characteristics. These do not necessarily
-correspond to individual ﬁber bundles. Tractography: the process of generating streamlines of brain
-fibers. This is synonymous with fiber tracking in the central nervous system.
+
+Streamline: an imaginary line approximating the underlying fiber. This is synonymous with a track or curve. 
+
+Streamlines bundle(or simply bundle): a group of streamlines with similar shape and spatial characteristics. These do not necessarily correspond to individual fiber bundles. 
+
+Tractography: the process of generating streamlines of brain fibers. This is synonymous with fiber tracking in the central nervous system.
 
 \section{General design aspects}
 
