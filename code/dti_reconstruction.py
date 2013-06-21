@@ -13,6 +13,8 @@ data = img.get_data()
 
 mask = hist_mask(data[..., 0])
 
+nib.save(nib.Nifti1Image(mask, img.get_affine()), 'mask.nii.gz')
+
 tenmodel = dti.TensorModel(gtab)
 
 print('Performing DTI full brain ... (be patient)')
