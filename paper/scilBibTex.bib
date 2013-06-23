@@ -12322,7 +12322,115 @@ publisher = {Oxford University Press}
     abstract = {<p>Tractography based on diffusion weighted imaging (DWI) data is a method for identifying the major white matter fascicles (tracts) in the living human brain. The health of these tracts is an important factor underlying many cognitive and neurological disorders. <italic>In vivo</italic>, tissue properties may vary systematically along each tract for several reasons: different populations of axons enter and exit the tract, and disease can strike at local positions within the tract. Hence quantifying and understanding diffusion measures along each fiber tract (Tract Profile) may reveal new insights into white matter development, function, and disease that are not obvious from mean measures of that tract. We demonstrate several novel findings related to Tract Profiles in the brains of typically developing children and children at risk for white matter injury secondary to preterm birth. First, fractional anisotropy (FA) values vary substantially within a tract but the Tract FA Profile is consistent across subjects. Thus, Tract Profiles contain far more information than mean diffusion measures. Second, developmental changes in FA occur at specific positions within the Tract Profile, rather than along the entire tract. Third, Tract Profiles can be used to compare white matter properties of individual patients to standardized Tract Profiles of a healthy population to elucidate unique features of that patient's clinical condition. Fourth, Tract Profiles can be used to evaluate the association between white matter properties and behavioral outcomes. Specifically, in the preterm group reading ability is positively correlated with FA measured at specific locations on the left arcuate and left superior longitudinal fasciculus and the magnitude of the correlation varies significantly along the Tract Profiles. We introduce open source software for automated fiber-tract quantification (AFQ) that measures Tract Profiles of MRI parameters for 18 white matter tracts. With further validation, AFQ Tract Profiles have potential for informing clinical management and decision-making.</p>},
     number = {11},
     doi = {10.1371/journal.pone.0049790}
-}        
+}
+
+@article{Koay2006,
+abstract = {A unifying theoretical and algorithmic framework for diffusion tensor estimation is presented. Theoretical connections among the least squares (LS) methods, (linear least squares (LLS), weighted linear least squares (WLLS), nonlinear least squares (NLS) and their constrained counterparts), are established through their respective objective functions, and higher order derivatives of these objective functions, i.e., Hessian matrices. These theoretical connections provide new insights in designing efficient algorithms for NLS and constrained NLS (CNLS) estimation. Here, we propose novel algorithms of full Newton-type for the NLS and CNLS estimations, which are evaluated with Monte Carlo simulations and compared with the commonly used Levenberg-Marquardt method. The proposed methods have a lower percent of relative error in estimating the trace and lower reduced chi2 value than those of the Levenberg-Marquardt method. These results also demonstrate that the accuracy of an estimate, particularly in a nonlinear estimation problem, is greatly affected by the Hessian matrix. In other words, the accuracy of a nonlinear estimation is algorithm-dependent. Further, this study shows that the noise variance in diffusion weighted signals is orientation dependent when signal-to-noise ratio (SNR) is low (<or=5). A new experimental design is, therefore, proposed to properly account for the directional dependence in diffusion weighted signal variance.},
+author = {Koay, Cheng Guan and Chang, Lin-Ching and Carew, John D and Pierpaoli, Carlo and Basser, Peter J},
+doi = {10.1016/j.jmr.2006.06.020},
+file = {:Users/arokem/Documents/MendeleyDesktop/Koay et al. - 2006 - A unifying theoretical and algorithmic framework for least squares methods of estimation in diffusion tensor imaging.pdf:pdf},
+issn = {1090-7807},
+journal = {Journal of Magnetic Resonance},
+keywords = {Algorithms,Brain Mapping,Brain Mapping: methods,Chi-Square Distribution,Computer Simulation,Diffusion Magnetic Resonance Imaging,Diffusion Magnetic Resonance Imaging: methods,Humans,Least-Squares Analysis,Models,Theoretical},
+month = sep,
+number = {1},
+pages = {115--25},
+pmid = {16828568},
+title = {{A unifying theoretical and algorithmic framework for least squares methods of estimation in diffusion tensor imaging.}},
+url = {http://www.ncbi.nlm.nih.gov/pubmed/16828568},
+volume = {182},
+year = {2006}
+}
+
+@article{Chang2005,
+abstract = {Signal variability in diffusion weighted imaging (DWI) is influenced by both thermal noise and spatially and temporally varying artifacts such as subject motion and cardiac pulsation. In this paper, the effects of DWI artifacts on estimated tensor values, such as trace and fractional anisotropy, are analyzed using Monte Carlo simulations. A novel approach for robust diffusion tensor estimation, called RESTORE (for robust estimation of tensors by outlier rejection), is proposed. This method uses iteratively reweighted least-squares regression to identify potential outliers and subsequently exclude them. Results from both simulated and clinical diffusion data sets indicate that the RESTORE method improves tensor estimation compared to the commonly used linear and nonlinear least-squares tensor fitting methods and a recently proposed method based on the Geman-McClure M-estimator. The RESTORE method could potentially remove the need for cardiac gating in DWI acquisitions and should be applicable to other MR imaging techniques that use univariate or multivariate regression to fit MRI data to a model.},
+author = {Chang, Lin-Ching and Jones, Derek K and Pierpaoli, Carlo},
+doi = {10.1002/mrm.20426},
+file = {:Users/arokem/Documents/MendeleyDesktop/Chang, Jones, Pierpaoli - 2005 - RESTORE robust estimation of tensors by outlier rejection.pdf:pdf},
+issn = {0740-3194},
+journal = {Magnetic resonance in medicine : official journal of the Society of Magnetic Resonance in Medicine / Society of Magnetic Resonance in Medicine},
+keywords = {Algorithms,Anisotropy,Artifacts,Cardiovascular Physiological Phenomena,Diffusion Magnetic Resonance Imaging,Diffusion Magnetic Resonance Imaging: methods,Image Enhancement,Image Enhancement: methods,Least-Squares Analysis,Monte Carlo Method,Quality Control,Reproducibility of Results,Sensitivity and Specificity},
+month = may,
+number = {5},
+pages = {1088--95},
+pmid = {15844157},
+title = {{RESTORE: robust estimation of tensors by outlier rejection.}},
+url = {http://www.ncbi.nlm.nih.gov/pubmed/15844157},
+volume = {53},
+year = {2005}
+}
+
+@article{Chang2012,
+abstract = {Physiological noise artifacts, especially those originating from cardiac pulsation and subject motion, are common in clinical Diffusion tensor-MRI acquisitions. Previous works show that signal perturbations produced by artifacts can be severe and neglecting to account for their contribution can result in erroneous diffusion tensor values. The Robust Estimation of Tensors by Outlier Rejection (RESTORE) method has been shown to be an effective strategy for improving tensor estimation on a voxel-by-voxel basis in the presence of artifactual data points in diffusion-weighted images. In this article, we address potential instabilities that may arise when using RESTORE and propose practical constraints to improve its usability. Moreover, we introduce a method, called informed RESTORE designed to remove physiological noise artifacts in datasets acquired with low redundancy (less than 30-40 diffusion-weighted image volumes)--a condition in which the original RESTORE algorithm may converge to an incorrect solution. This new method is based on the notion that physiological noise is more likely to result in signal dropouts than signal increases. Results from both Monte Carlo simulation and clinical diffusion data indicate that informed RESTORE performs very well in removing physiological noise artifacts for low redundancy diffusion-weighted image datasets.},
+author = {Chang, Lin-Ching and Walker, Lindsay and Pierpaoli, Carlo},
+doi = {10.1002/mrm.24173},
+file = {:Users/arokem/Documents/MendeleyDesktop/InformedRestore\_Chang\_2012.pdf:pdf},
+issn = {1522-2594},
+journal = {Magnetic resonance in medicine : official journal of the Society of Magnetic Resonance in Medicine / Society of Magnetic Resonance in Medicine},
+keywords = {artifact,diffusion tensor,diffusion tensor magnetic resonance,dt-mri,fractional anisotropy,imaging,increasingly used in clinical,is,outlier,restore,robust estimation,settings for its ability,to,trace},
+month = nov,
+number = {5},
+pages = {1654--63},
+pmid = {22287298},
+title = {{Informed RESTORE: A method for robust estimation of diffusion tensor from low redundancy datasets in the presence of physiological noise artifacts.}},
+url = {http://www.ncbi.nlm.nih.gov/pubmed/22287298},
+volume = {68},
+year = {2012}
+}
+@article{Frank2002,
+abstract = {The methods of group theory are applied to the problem of characterizing the diffusion measured in high angular resolution MR experiments. This leads to a natural representation of the local diffusion in terms of spherical harmonics. In this representation, it is shown that isotropic diffusion, anisotropic diffusion from a single fiber, and anisotropic diffusion from multiple fiber directions fall into distinct and separable channels. This decomposition can be determined for any voxel without any prior information by a spherical harmonic transform, and for special cases the magnitude and orientation of the local diffusion may be determined. Moreover, non-diffusion-related asymmetries produced by experimental artifacts fall into channels distinct from the fiber channels, thereby allowing their separation and a subsequent reduction in noise from the reconstructed fibers. In the case of a single fiber, the method reduces identically to the standard diffusion tensor method. The method is applied to normal volunteer brain data collected with a stimulated echo spiral high angular resolution diffusion-weighted (HARD) acquisition.},
+author = {Frank, Lawrence R},
+doi = {10.1002/mrm.10156},
+file = {:Users/arokem/Documents/MendeleyDesktop/Frank - 2002 - Characterization of anisotropy in high angular resolution diffusion-weighted MRI.pdf:pdf},
+issn = {0740-3194},
+journal = {Magnetic resonance in medicine : official journal of the Society of Magnetic Resonance in Medicine / Society of Magnetic Resonance in Medicine},
+keywords = {Anisotropy,Brain,Brain: anatomy \& histology,Brain: physiology,Diffusion,Humans,Image Processing, Computer-Assisted,Magnetic Resonance Imaging,Magnetic Resonance Imaging: methods,Mathematics,Models, Theoretical},
+month = jun,
+number = {6},
+pages = {1083--99},
+pmid = {12111955},
+title = {{Characterization of anisotropy in high angular resolution diffusion-weighted MRI.}},
+url = {http://www.ncbi.nlm.nih.gov/pubmed/12111955},
+volume = {47},
+year = {2002}
+}
+@article{Frank2001,
+abstract = {The diffusion in voxels with multidirectional fibers can be quite complicated and not necessarily well characterized by the standard diffusion tensor model. High angular resolution diffusion-weighted acquisitions have recently been proposed as a method to investigate such voxels, but the reconstruction methods proposed require sophisticated estimation schemes. We present here a simple algorithm for the identification of diffusion anisotropy based upon the variance of the estimated apparent diffusion coefficient (ADC) as a function of measurement direction. The rationale for this method is discussed, and results in normal human subjects acquired with a novel diffusion-weighted stimulated-echo spiral acquisition are presented which distinguish areas of anisotropy that are not apparent in the relative anisotropy maps derived from the standard diffusion tensor model. Published 2001 Wiley-Liss, Inc.},
+author = {Frank, L R},
+file = {:Users/arokem/Documents/MendeleyDesktop/Frank - 2001 - Anisotropy in high angular resolution diffusion-weighted MRI.pdf:pdf},
+issn = {0740-3194},
+journal = {Magnetic resonance in medicine : official journal of the Society of Magnetic Resonance in Medicine / Society of Magnetic Resonance in Medicine},
+keywords = {Algorithms,Anisotropy,Brain,Brain: anatomy \& histology,Diffusion,Humans,Image Enhancement,Image Processing, Computer-Assisted,Magnetic Resonance Imaging,Reference Values},
+month = jun,
+number = {6},
+pages = {935--9},
+pmid = {11378869},
+title = {{Anisotropy in high angular resolution diffusion-weighted MRI.}},
+url = {http://www.ncbi.nlm.nih.gov/pubmed/12111955},
+volume = {45},
+year = {2001}
+}
+@ARTICLE{Halchenko2012,
+  
+ AUTHOR={Halchenko, Yaroslav O.  and  Hanke, Michael},   
+     
+TITLE={Open is not enough. Lets take the next step: An integrated, community-driven computing platform for neuroscience},      
+    
+JOURNAL={Frontiers in Neuroinformatics},      
+    
+VOLUME={6},      
+    
+YEAR={2012},      
+    
+NUMBER={22},     
+      
+URL={http://www.frontiersin.org/neuroinformatics/10.3389/fninf.2012.00022/fulltext},       
+    
+DOI={10.3389/fninf.2012.00022},      
+    
+ISSN={1662-5196},      
+    
+ABSTRACT={}}
 
 @comment{jabref-meta: groupsversion:3;}
 
