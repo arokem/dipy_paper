@@ -243,8 +243,8 @@ dipy.__version__
 
 \section{Preprocessing}
 
-\subsection{Load/Save data}
-The most basic operation that we do in Neuroimaging is to load some data from the disk which are often extracted from an MRI scanner. Surprisingly this is often a difficult task as different scanners and software read/write the data in different ways. Nibabel a library for reading medical imaging formats is coming here to the rescue supporting ANALYZE (plain, SPM99, SPM2), GIFTI, NIfTI1, MINC, MGH, ECAT, PAR/REC, Freesurfer(geometry, morphometry files) and with a growing support for DICOM. 
+\subsection{Load/Save data}\label{loadsave}
+The most basic operation that we do in Neuroimaging is to load some data from the disk which are often extracted from an MRI scanner. Surprisingly this is often a difficult task as different scanners and software read/write the data in different ways. Nibabel, a library for reading medical imaging formats, is coming here to the rescue supporting ANALYZE (plain, SPM99, SPM2), GIFTI, NIfTI1, MINC, MGH, ECAT, PAR/REC, Freesurfer(geometry, morphometry files) and with a growing support for DICOM. 
 
 The most common file format used in dMRI is the NifTI1. Assuming that we have a file with our 4D raw diffusion data we can load it in the following way.
 \begin{python}
@@ -252,22 +252,22 @@ fimg = "raw.nii.gz"
 import nibabel as nib
 img = nib.load(fimg)
 \end{python}
-\texttt{fimg} holds the filename for the file, \texttt{nib} is a shortcut for the Nibabel module, \texttt{img} is an object that Nibabel creates which contains all the information from the file e.g. the header, the 3D data and the affine. We can obtain all these using \texttt{get} methods.
+\texttt{fimg} holds the pathname for the file, \texttt{nib} is a shortcut for the Nibabel module, \texttt{img} is an object that Nibabel creates which contains all the information from the file e.g. the header, the data and the affine. We can obtain all these using \texttt{get} methods.
 \begin{python}
 data = img.get_data()
 affine = img.get_affine()
 header = img.get_header()
 voxel_size = header.get_zooms()[:3]
 \end{python}
-The \texttt{data} is an Numpy array which contains the actual 4D image (a collection of 3D volumes). Using \texttt{data.shape} we can obtain the dimensions of the image. In this example the dimensions are (81, 106, 76, 160). The first three dimensions contain the size of the volume and the last dimension has the information for the different diffusion gradients. The variable \texttt{affine} provides a $4\times4$ array which contains the transformation information to go from voxel (image) coordinates to world coordinates (scanner). This can be useful when registering, saving or visualizing images. The \texttt{voxel\_size} is a tuple with 3 values. In this example the \texttt{voxel\_size} is (2, 2, 2) i.e. 2mm cubic.
+The \texttt{data} is an Numpy array which contains the actual 4D image (a collection of 3D volumes). Using \texttt{data.shape} we can obtain the dimensions of the image. In this example the dimensions are (81, 106, 76, 160). The first three dimensions contain the size of the volume and the last dimension has the information for the different diffusion gradients. The variable \texttt{affine} provides a $4\times4$ matrix which contains the transformation information to go from voxel image coordinates to world mm coordinates. This matrix can be useful when registering, saving or visualizing images. The \texttt{voxel\_size} is a tuple with 3 values. In this example the \texttt{voxel\_size} is (2, 2, 2) i.e. 2mm cubic.
 
-Lets now assume that we want to extract and save from the 4D data only the first volume which usually is the one without any implied diffusion gradients. This is also known as the S0 (S for signal, and 0 for no gradients). This is very easy using the following code.
+Supposing that we want to extract and save from the 4D data only the first volume which usually is the one without any diffusion gradients. This volume is also known as the S0. This is very easy using the following code.
 \begin{python}
 S0 = data[:,:,:,0]
-img2 = Nifti1Image(S0, affine)
+img2 = nib.Nifti1Image(S0, affine)
 nib.save(img2, "S0.nii.gz")
 \end{python}
-As we said \texttt{data} is a Numpy array. Numpy arrays provide simple ways (slicing) to extract information from N-dimensional datasets. For example \texttt{data[10:20, 10:20, 10:20, 30:50]} would give a new sub-array with \texttt{shape} (10, 10, 10, 20). When single column : is used that means that all points in this dimension are used. To save this new array we will need to update the affine. 
+As we said previously \texttt{data} is a Numpy array. Numpy arrays provide simple ways to extract information from N-dimensional datasets, an operation known as slicing. For example, \texttt{data[10:20, 10:20, 10:20, 30:50]} would give a new sub-array with \texttt{shape} (10, 10, 10, 20). When a single column (:) is used that means that all points in this dimension are used. The only delicate point here is that in order to save this new array we will need to update the affine. 
 \begin{python}
 import numpy as np
 sub_data = data[10:20, 10:20, 10:20, 30:50]
@@ -276,7 +276,6 @@ sub_affine[:3, 3] += np.array([10, 10, 10])
 sub_img = Nifti1Image(sub_data, sub_affine)
 nib.save(sub_img, "sub_data.nii.gz")
 \end{python} 
-For more information about Numpy and slicing have a look at [REFERENCE].
 
 \subsection{Background removal}
 
@@ -287,7 +286,23 @@ mask = otsu_mask(data[..., 0])
 
 \section{Reconstruction}
 
-In diffusion MRI, the motion of water molecules is probed in a spatial- and direction-specific manner. That is, in every spatial location in the brain (typically sampled in voxels each covering a volume of approximately 2x2x2 mm), the diffusion in several different directions is probed through the application of directional magnetic gradients. Many different models and algorithms have been proposed to describe the full diffusion orientation distribution function (dODF) from these measurements. In addition, the diffusion surface in every voxel is used to infer the spatial geometry of the underlying tissue. This is referred to as the fiber orientation distribution function (fODF, sometimes also referred to as the FOD). Different algorithms to reconstruct the dODF and fODF have different advantages in describing the data and Dipy contains implementations of several of these algorithms. In what follows, we will review the different reconstruction algorithms that are implemented in Dipy and demonstrate the use of these implementations with code examples.  
+In diffusion MRI, the motion of water molecules is probed in a spatial- and direction-specific manner. That is, in every spatial location in the brain (typically sampled in voxels each covering a volume of approximately $2\times2\times2$ mm), the diffusion in several different directions is probed through the application of directional magnetic gradients. If we want to describe how the molecules diffuse in each voxel we have to study this phenomenon in a statistical way. When a molecule is at position $\mathbf{x}_{0}$, we cannot read exactly where it will be after time $t$, we can only model a distribution of possible locations i.e. a probability displacement distribution also known as the diffusion propagator. Therefore, this motion is described by a propagator $P(\mathbf{x};\mathbf{x}_{0},t)$   which defines the probability of being in $\mathbf{x}$ after a time $t$, starting at $\mathbf{x}_{0}$.
+Stejskal and Tanner \citep{stejskal-tanner:65} showed that the spin echo magnitude $S(\mathbf{q},t)$ from a pulsed gradient spin echo (PGSE) experiment is directly related to the diffusion propagator by the following (inverse) Fourier relation 
+\begin{equation}
+S(\mathbf{q},t)=S_{0}\int P(\mathbf{r},t)e^{i\mathbf{q}\cdot\mathbf{r}}d\mathbf{r}\label{eq:fourier}
+\end{equation}
+\noindent where $S_{0}$ is the signal in the absence of the applied magnetic diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$, $\mathbf{q}$ is the spin displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic gradient $\mathbf{g}$ which in turn are directly related with the b-vectors shown in section \ref{loadsave}. 
+In theory, if we apply the Fourier transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion propagator) for every voxel. However, in practice, infeasibly long acquisition time is required and perfect experimental conditions. Therefore, a discrete method called Diffusion Spectrum Imaging(DSI) has been used (see section).
+Nonetheless DSI still needs long acquisitions. An alternative is to work on reconstructing only a spherical projection of the 3D PDF. This often called the diffusion orientation distribution function (dODF). Another alternative is to make assumptions about the distribution of the PDF. In this later category belongs the most famous imaging method: Diffusion Tensor Imaging (DTI) which often people assume that it is the same as dMRI.  
+
+Here we make the difference very clear. Assuming that the diffusion propagator is given by a 3-dimensional Gaussian distribution from eq.~\ref{eq:fourier} we write
+\begin{equation}
+P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{r}^{T}\mathbf{D}^{-1}\mathbf{r}}{4t})
+\end{equation}
+\noindent where $\mathbf{D}$ is known as the diffusion tensor. This Tensor is a $3x3$ positive definite symmetric matrix that can be completely described by a centred ellipsoid with 3 principal axes and associated eigenvalues $\lambda_{1},\lambda_{2},\lambda_{3}$.
+
+%For Ariel: I commented out this part talking about the fODF because I think it will create a confusion with our current terminology. I will only talk quickly about the fODF on the CSD section. Tournier introduced this term but I don't think that he actually solved any problem. The fODF is nothing more than a sharpened ODF with some constrains. But definitely it is not a representation of the actual fiber. I think we should try to use this term at the minimum. 
+%In addition, the diffusion surface in every voxel is used to infer the spatial geometry of the underlying tissue. This is referred to as the fiber orientation distribution function (fODF, sometimes also referred to as the FOD). Different algorithms to reconstruct the dODF and fODF have different advantages in describing the data and Dipy contains implementations of several of these algorithms. In what follows, we will review the different reconstruction algorithms that are implemented in Dipy and demonstrate the use of these implementations with code examples.  
 
 
 \subsection{Diffusion Tensor Imaging}
