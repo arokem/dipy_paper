@@ -244,30 +244,30 @@ dipy.__version__
 \section{Preprocessing}
 
 \subsection{Load/Save data}\label{loadsave}
-The most basic operation that we do in Neuroimaging is to load some data from the disk which are often extracted from an MRI scanner. Surprisingly this is often a difficult task as different scanners and software read/write the data in different ways. Nibabel, a library for reading medical imaging formats, is coming here to the rescue supporting ANALYZE (plain, SPM99, SPM2), GIFTI, NIfTI1, MINC, MGH, ECAT, PAR/REC, Freesurfer(geometry, morphometry files) and with a growing support for DICOM. 
+The most basic operation that we do in Neuroimaging is to load some data from the disk which are generated from an MRI scanner. Surprisingly this is often a difficult task as different scanners and software read/write the data in different ways. Nibabel, a library for reading medical imaging formats, is coming here to the rescue supporting ANALYZE (plain, SPM99, SPM2), GIFTI, NIfTI1, MINC, MGH, ECAT, PAR/REC, Freesurfer(geometry, morphometry files) and with a growing support for DICOM. 
 
-The most common file format used in dMRI is the NifTI1. Assuming that we have a file with our 4D raw diffusion data we can load it in the following way.
+The most common file format used in dMRI is the NIfTI1. Assuming that we have a file with our 4D raw diffusion data we can load it in the following way:
 \begin{python}
 fimg = "raw.nii.gz"
 import nibabel as nib
 img = nib.load(fimg)
 \end{python}
-\texttt{fimg} holds the pathname for the file, \texttt{nib} is a shortcut for the Nibabel module, \texttt{img} is an object that Nibabel creates which contains all the information from the file e.g. the header, the data and the affine. We can obtain all these using \texttt{get} methods.
+Where \texttt{fimg} holds the filename for the 4D NIfTI1 file, \texttt{nib} is a shortcut for the Nibabel module, \texttt{img} is an object that Nibabel creates which contains all the information from the file e.g. the header, the data and the affine. We can obtain all these using \texttt{get} methods:
 \begin{python}
 data = img.get_data()
 affine = img.get_affine()
 header = img.get_header()
 voxel_size = header.get_zooms()[:3]
 \end{python}
-The \texttt{data} is an Numpy array which contains the actual 4D image (a collection of 3D volumes). Using \texttt{data.shape} we can obtain the dimensions of the image. In this example the dimensions are (81, 106, 76, 160). The first three dimensions contain the size of the volume and the last dimension has the information for the different diffusion gradients. The variable \texttt{affine} provides a $4\times4$ matrix which contains the transformation information to go from voxel image coordinates to world mm coordinates. This matrix can be useful when registering, saving or visualizing images. The \texttt{voxel\_size} is a tuple with 3 values. In this example the \texttt{voxel\_size} is (2, 2, 2) i.e. 2mm cubic.
+Here \texttt{data} is a Numpy array which contains the actual 4D image (a collection of 3D volumes). Using \texttt{data.shape} we can obtain the dimensions of the image. In this example the dimensions are (81, 106, 76, 160). The first three dimensions contain the size of the volume and the last dimension has the information for the different diffusion gradients. The variable \texttt{affine} provides a $4\times4$ matrix which contains the transformation matrix which maps voxel image coordinates to world mm coordinates. This matrix can be useful when registering, saving or visualizing images. The \texttt{voxel\_size} is a tuple with 3 values. In this example the \texttt{voxel\_size} is (2, 2, 2) i.e. $2mm^3$.
 
-Supposing that we want to extract and save from the 4D data only the first volume which usually is the one without any diffusion gradients. This volume is also known as the S0. This is very easy using the following code.
+Supposing that we want to extract and save from the 4D data only the first volume which usually is the one without any diffusion gradients. This volume is also known as the \texttt{S0}. We can do that very easily using the following code.
 \begin{python}
 S0 = data[:,:,:,0]
 img2 = nib.Nifti1Image(S0, affine)
 nib.save(img2, "S0.nii.gz")
 \end{python}
-As we said previously \texttt{data} is a Numpy array. Numpy arrays provide simple ways to extract information from N-dimensional datasets, an operation known as slicing. For example, \texttt{data[10:20, 10:20, 10:20, 30:50]} would give a new sub-array with \texttt{shape} (10, 10, 10, 20). When a single column (:) is used that means that all points in this dimension are used. The only delicate point here is that in order to save this new array we will need to update the affine. 
+As we said previously \texttt{data} is a Numpy array. Numpy arrays provide simple ways to extract information from N-dimensional datasets, an operation known as slicing. For example, \texttt{data[10:20, 10:20, 10:20, 30:50]} returns a new sub-array with \texttt{shape} (10, 10, 10, 20). When a single column (:) is used that means that all points in this dimension are used. The only delicate point here is that in order to save this new array we will need to update the affine. Here is how we can do this:
 \begin{python}
 import numpy as np
 sub_data = data[10:20, 10:20, 10:20, 30:50]
@@ -278,20 +278,49 @@ nib.save(sub_img, "sub_data.nii.gz")
 \end{python} 
 
 \subsection{Background removal}
-
+In order to remove the background and keep only the parts that are in the brain we can use a function called \texttt{medotsu}.
 \begin{python}
-from dipy.segment.mask import otsu_mask
-mask = otsu_mask(data[..., 0])
+from dipy.segment.mask import medotsu
+mask, S0_mask = medotsu(data[..., 0])
 \end{python}
+\texttt{medotsu} uses first a median filter to smooth the \texttt{S0} and then otsu, an automated histogram method [REFERENCE] to separate the brain (foreground) from its background. It returns two arrays, the \texttt{mask}, a 3D array with 1s at the foreground and 0s in the background and the masked \texttt{S0} \texttt{S0\_mask} a 3D array whith the actual \texttt{S0} values in the foreground and 0s in the background.
+
+Alternatively, FSL's brain extraction tool (bet) is accessible through our external module with \texttt{dipy.external.fsl.bet}.
+
+\subsection{Gradient Table}\label{gtab}
+The b-value $b$ or \emph{diffusion weighting} is a function of the amplitude, duration, temporal spacing and timing parameters of the specific paradigm. In the case of the classical Stejskal-Tanner pulsed gradient spin-echo (PGSE) sequence, at the time of readout
+\[
+b=\gamma^{2}G^{2}\delta^{2}\left(\Delta-\frac{\delta}{3}\right),
+\]
+\noindent where $\gamma$ is the gyromagnetic ratio, $\delta$ denotes the pulse width, $G$ is the gradient amplitude and $\Delta$ the centre to centre spacing. $\gamma$ is a constant which depends on the nucleus, but we can change the other three parameters and in that way control the b-value. By changing the b-value along different gradient directions the MR physists can alternate the quality and duration of the dMRI experiment. The gradient unit directions are often referred as b-vectors. Both b-values and b-vectors are absolutely necessary knowledge for analysing diffusion data and can be usually read from one or two different files. Here is an example:
+\begin{python}
+fbval = "raw.bval"
+fbvec = "raw.bvec"
+from dipy.io import read_bvals_bvecs
+bvals, bvecs = read_bvals_bvecs(fbval, fbvec)
+\end{python}
+These parameters are stored in a utility class, created by the \texttt{gradient\_table} function:
+\begin{python}
+from dipy.core.gradients import gradient_table
+gtab = gradient_table(bvals, bvecs)
+\end{python}
+Here, \texttt{gtab} is an instance of a \texttt{GradientTable} object. This object makes sure that the b-values and b-vectors will come out in a form that Dipy knows how to use. For example:
+\begin{python}
+gtab.bvals.shape
+gtab.bvecs.shape
+\end{python}
+should always return (N,) and (N, 3) respectively, where N is equal to the size of the last dimension of \texttt{data}. Often, it is useful to know the number and position of b-values with value 0 (b0s), an utility method is provided for this purpose with \texttt{gtab.b0s\_mask}.
+
+The \texttt{GradientTable} object can be used not only to store b-values and b-vectors but also other acquisition parameters like TR, TE, $\delta$, $\Delta$. Therefore, it is an abstract representation of the acquisition specific parameters.
 
 \section{Reconstruction}
 
-In diffusion MRI, the motion of water molecules is probed in a spatial- and direction-specific manner. That is, in every spatial location in the brain (typically sampled in voxels each covering a volume of approximately $2\times2\times2$ mm), the diffusion in several different directions is probed through the application of directional magnetic gradients. If we want to describe how the molecules diffuse in each voxel we have to study this phenomenon in a statistical way. When a molecule is at position $\mathbf{x}_{0}$, we cannot read exactly where it will be after time $t$, we can only model a distribution of possible locations i.e. a probability displacement distribution also known as the diffusion propagator. Therefore, this motion is described by a propagator $P(\mathbf{x};\mathbf{x}_{0},t)$   which defines the probability of being in $\mathbf{x}$ after a time $t$, starting at $\mathbf{x}_{0}$.
-Stejskal and Tanner \citep{stejskal-tanner:65} showed that the spin echo magnitude $S(\mathbf{q},t)$ from a pulsed gradient spin echo (PGSE) experiment is directly related to the diffusion propagator by the following (inverse) Fourier relation 
+In diffusion MRI, the motion of water molecules is probed in a spatial- and direction-specific manner. That is, in every spatial location in the brain (typically sampled in voxels each covering a volume of approximately $2\times2\times2$ mm), the diffusion in several different directions is probed through the application of directional magnetic gradients. This motion takes place at a microscopic level, therefore, if we want to describe how the molecules diffuse we have to study this phenomenon with a statistical mindset. When a molecule is at position $\mathbf{x}_{0}$, we cannot read exactly where it will be after time $t$, we can only model a distribution of possible locations i.e. a probability displacement distribution also known as the diffusion propagator $P$. This motion is described by a propagator $P(\mathbf{x};\mathbf{x}_{0},t)$ which defines the probability of being in $\mathbf{x}$ after a time $t$, starting at $\mathbf{x}_{0}$.
+Stejskal and Tanner \citep{stejskal-tanner:65} showed that the spin echo magnitude $S(\mathbf{q},t)$ from a pulsed gradient spin echo (PGSE) experiment is directly related to the diffusion propagator by the following (inverse) Fourier relation
 \begin{equation}
 S(\mathbf{q},t)=S_{0}\int P(\mathbf{r},t)e^{i\mathbf{q}\cdot\mathbf{r}}d\mathbf{r}\label{eq:fourier}
 \end{equation}
-\noindent where $S_{0}$ is the signal in the absence of the applied magnetic diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$, $\mathbf{q}$ is the spin displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic gradient $\mathbf{g}$ which in turn are directly related with the b-vectors shown in section \ref{loadsave}. 
+\noindent where $S_{0}$ is the signal in the absence of the applied magnetic diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$ and $\mathbf{q}$ is the spin displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic gradient $\mathbf{g}$ which in turn are directly related with the b-vectors shown in section \ref{loadsave}. 
 In theory, if we apply the Fourier transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion propagator) for every voxel. However, in practice, infeasibly long acquisition time is required and perfect experimental conditions. Therefore, a discrete method called Diffusion Spectrum Imaging(DSI) has been used (see section).
 Nonetheless DSI still needs long acquisitions. An alternative is to work on reconstructing only a spherical projection of the 3D PDF. This often called the diffusion orientation distribution function (dODF). Another alternative is to make assumptions about the distribution of the PDF. In this later category belongs the most famous imaging method: Diffusion Tensor Imaging (DTI) which often people assume that it is the same as dMRI.  
 
@@ -311,29 +340,12 @@ The diffusion tensor model is a model of the dODF. It was first proposed by Bass
 
 That said, these measures are popular among users of dMRI and also quite useful in the sense that behavioral variance in a variety of measures can be predicted based on these measures [REFERENCES?]. Fitting the tensor model and computing univariate statistics from it in Dipy is straightforward. In the following example, we show how the tensor model is fit to data and how univariate measures can be computed.
 
-First, data is loaded into memory, using the nibabel library:
+First, data is loaded into memory, using the Nibabel library:
 \begin{python}
 fimg = "raw.nii.gz"
 import nibabel as nib
 img = nib.load(fimg)
 data = img.get_data()
-
-\end{python}
-
-Next, the b-vectors indicating the directions of the application of gradients in each of the measurements and the b-values indicating the parameters of diffusion sensitization (amplitude of the gradients, their duration, etc.) are read from files that store the values of these parameters:
-
-\begin{python}
-fbval = "raw.bval"
-fbvec = "raw.bvec"
-from dipy.io import read_bvals_bvecs
-bvals, bvecs = read_bvals_bvecs(fbval, fbvec)
-\end{python}
-
-These parameters are stored in a utility class, created by the $\tt{gradient_table}$ function, which represents the measurement parameters and direction and which is used by the model classes:
-
-\begin{python}
-from dipy.core.gradients import gradient_table
-gtab = gradient_table(bvals, bvecs)
 \end{python}
 
 Next, we can import the diffusion tensor model class and initialize a $\tt{TensorModel}$ class instance: 
@@ -344,7 +356,7 @@ ten = TensorModel(gtab)
 
 Note that at this point in the code no data analysis has occurred yet. Since the analysis of every voxel in the brain will rely on similar infra-structure, the $\tt{TensorModel}$ class instance only sets up this skeleton for the analysis. This same skeleton will be reused for each one of the voxels in the data here, but can also be reused for other data in a similar fashion 
 
-The advantage of this separation of the model and the fit is that [SOMEONE WILL EXPLAIN THIS HERE, BECAUSE HONESTLY, I DON'T UNDERSTAND!!!]. 
+The advantage of this separation of the model and the fit is that we can fit many different datasets with the same initialization parameters. 
 
 Next, we pass the data to the fit method of the . This returns a $\tt{TensorFit}$ class instance which relates to this specific data: 
 
