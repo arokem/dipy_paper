@@ -361,7 +361,7 @@ cfa = color_fa(fa, tenfit.evecs)
 \end{python}
 Finally, a few more points about the implementation of DTI. The first is that there is still ongoing research on fitting methods for the tensor model \citep{Koay2006}. Several different methods have been implemented, including non-linear least-squares, ordinary least-squares and weighted least-squares fitting \citep{chung-lu-etal:06}. In addition, there is ongoing research on methods to robustly fit the tensor model, in the face of noisy data \citep{Chang2005, Chang2012}. %An implementation of a robust tensor fitting algorithm (RESTORE) is currently in development and should be in the distributed code in version 0.7 of the software. 
 
-The second is that many more univariate measures have been implemented. Not only can users compute FA, MD, color_FA, but also other statistics that have been proposed in the literature, such as the diffusion linearity, planarity and sphericity \citep{westin:97}, as well as the tensor mode, tensor norm \cite{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics are available under the \texttt{dipy.reconst.dti} module.
+The second is that many more univariate measures have been implemented. Not only can users compute FA, MD, DEC, but also other statistics that have been proposed in the literature, such as the diffusion linearity, planarity and sphericity \citep{westin:97}, as well as the tensor mode, tensor norm \cite{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics are available under the \texttt{dipy.reconst.dti} module.
 
 \subsection{Diffusion Spectrum Imaging}
 
