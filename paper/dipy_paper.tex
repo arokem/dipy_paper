@@ -241,6 +241,9 @@ dipy.__version__
 '0.7.0.dev'
 \end{python}
 
+In Dipy we consider as reconstruction phase as the one that starts after preprocessing and specific models are fitted in each voxel. Other voxel-based parameters can be calculated as well. The reconstruction phase is necessary for tracking because it provides the local direction information. During tracking these information will be propagated from voxel to voxel.  
+
+
 \section{Preprocessing}
 
 \subsection{Load/Save data}\label{loadsave}
@@ -304,31 +307,21 @@ These parameters are stored in a utility class, created by the \texttt{gradient\
 from dipy.core.gradients import gradient_table
 gtab = gradient_table(bvals, bvecs)
 \end{python}
-Here, \texttt{gtab} is an instance of a \texttt{GradientTable} object. This object makes sure that the b-values and b-vectors will come out in a form that Dipy knows how to use. For example:
-\begin{python}
-gtab.bvals.shape
-gtab.bvecs.shape
-\end{python}
-should always return (N,) and (N, 3) respectively, where N is equal to the size of the last dimension of \texttt{data}. Often, it is useful to know the number and position of b-values with value 0 (b0s), an utility method is provided for this purpose with \texttt{gtab.b0s\_mask}.
+Here, \texttt{gtab} is an instance of a \texttt{GradientTable} object. This object makes sure that the b-values and b-vectors will come out in a form that Dipy knows how to use. For example, the \texttt{shape} of \texttt{gtab.bvals}and \texttt{gtabl.bvecs} should always return (N,) and (N, 3) respectively, where N is equal to the size of the last dimension of \texttt{data}. Often, it is useful to know the number and position of b-values with value 0 (b0s), an utility method is provided for this purpose with \texttt{gtab.b0s\_mask}.
 
-The \texttt{GradientTable} object can be used not only to store b-values and b-vectors but also other acquisition parameters like TR, TE, $\delta$, $\Delta$. Therefore, it is an abstract representation of the acquisition specific parameters.
+The \texttt{GradientTable} object can be used not only to store b-values and b-vectors but also other acquisition parameters like TR, TE, $\delta$ and $\Delta$. Therefore, it is an abstract representation of the acquisition specific parameters.
 
 \section{Reconstruction}
 
-In diffusion MRI, the motion of water molecules is probed in a spatial- and direction-specific manner. That is, in every spatial location in the brain (typically sampled in voxels each covering a volume of approximately $2\times2\times2$ mm), the diffusion in several different directions is probed through the application of directional magnetic gradients. This motion takes place at a microscopic level, therefore, if we want to describe how the molecules diffuse we have to study this phenomenon with a statistical mindset. When a molecule is at position $\mathbf{x}_{0}$, we cannot read exactly where it will be after time $t$, we can only model a distribution of possible locations i.e. a probability displacement distribution also known as the diffusion propagator $P$. This motion is described by a propagator $P(\mathbf{x};\mathbf{x}_{0},t)$ which defines the probability of being in $\mathbf{x}$ after a time $t$, starting at $\mathbf{x}_{0}$.
+In diffusion MRI, the motion of water molecules is probed in a spatial- and direction-specific manner. That is, in every spatial location in the brain (typically sampled in voxels each covering a volume of approximately $2\times2\times2$ mm), the diffusion in several different directions is probed through the application of directional magnetic gradients. This motion takes place at a microscopic level, therefore, if we want to describe how the molecules diffuse we have to study this phenomenon with from a statistical point of view. When a molecule is at position $\mathbf{x}_{0}$, we cannot read exactly where it will be after time $t$, we can only model a distribution of possible locations i.e. a probability displacement distribution. This is also known as the diffusion propagator $P$. This motion is described by the propagator $P(\mathbf{x};\mathbf{x}_{0},t)$ which defines the probability of being in $\mathbf{x}$ after a time $t$, starting at $\mathbf{x}_{0}$.
 Stejskal and Tanner \citep{stejskal-tanner:65} showed that the spin echo magnitude $S(\mathbf{q},t)$ from a pulsed gradient spin echo (PGSE) experiment is directly related to the diffusion propagator by the following (inverse) Fourier relation
 \begin{equation}
 S(\mathbf{q},t)=S_{0}\int P(\mathbf{r},t)e^{i\mathbf{q}\cdot\mathbf{r}}d\mathbf{r}\label{eq:fourier}
 \end{equation}
-\noindent where $S_{0}$ is the signal in the absence of the applied magnetic diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$ and $\mathbf{q}$ is the spin displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic gradient $\mathbf{g}$ which in turn are directly related with the b-vectors shown in section \ref{loadsave}. 
-In theory, if we apply the Fourier transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion propagator) for every voxel. However, in practice, infeasibly long acquisition time is required and perfect experimental conditions. Therefore, a discrete method called Diffusion Spectrum Imaging(DSI) has been used (see section).
-Nonetheless DSI still needs long acquisitions. An alternative is to work on reconstructing only a spherical projection of the 3D PDF. This often called the diffusion orientation distribution function (dODF). Another alternative is to make assumptions about the distribution of the PDF. In this later category belongs the most famous imaging method: Diffusion Tensor Imaging (DTI) which often people assume that it is the same as dMRI.  
+\noindent where $S_{0}$ is the signal in the absence of the applied magnetic diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$ and $\mathbf{q}$ is the spin displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic gradient $\mathbf{g}$ which in turn are directly related with the b-vectors discussed in section \ref{loadsave}. 
+In theory, if we apply the Fourier transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion propagator) for every voxel. In practice, unfeasibly long acquisition time is required and perfect experimental conditions. Therefore, a discrete method called Diffusion Spectrum Imaging(DSI) has been used (see section SECTION).
+Nonetheless DSI still needs long acquisitions. An alternative is to work on reconstructing only a spherical projection of the 3D PDF. This often called the diffusion orientation distribution function (dODF) or simply ODF. Another alternative is to make assumptions about the distribution of the PDF. In this later category belongs the most popular imaging method in dMRI: Diffusion Tensor Imaging (DTI).
 
-Here we make the difference very clear. Assuming that the diffusion propagator is given by a 3-dimensional Gaussian distribution from eq.~\ref{eq:fourier} we write
-\begin{equation}
-P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{r}^{T}\mathbf{D}^{-1}\mathbf{r}}{4t})
-\end{equation}
-\noindent where $\mathbf{D}$ is known as the diffusion tensor. This Tensor is a $3x3$ positive definite symmetric matrix that can be completely described by a centred ellipsoid with 3 principal axes and associated eigenvalues $\lambda_{1},\lambda_{2},\lambda_{3}$.
 
 %For Ariel: I commented out this part talking about the fODF because I think it will create a confusion with our current terminology. I will only talk quickly about the fODF on the CSD section. Tournier introduced this term but I don't think that he actually solved any problem. The fODF is nothing more than a sharpened ODF with some constrains. But definitely it is not a representation of the actual fiber. I think we should try to use this term at the minimum. 
 %In addition, the diffusion surface in every voxel is used to infer the spatial geometry of the underlying tissue. This is referred to as the fiber orientation distribution function (fODF, sometimes also referred to as the FOD). Different algorithms to reconstruct the dODF and fODF have different advantages in describing the data and Dipy contains implementations of several of these algorithms. In what follows, we will review the different reconstruction algorithms that are implemented in Dipy and demonstrate the use of these implementations with code examples.  
@@ -336,52 +329,39 @@ P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{
 
 \subsection{Diffusion Tensor Imaging}
 
-The diffusion tensor model is a model of the dODF. It was first proposed by Basser and colleagues \citep{basser-mattiello-etal:94} and has since been very influential in demonstrating the utility of diffusion MRI in characterizing the micro-structure of white matter tissue. The model relies on the assumption that diffusion is a Gaussian process. Using this assumption the dODF can be modeled with 6 parameters, describing the variance and covariance of the Gaussian diffusion along the three primary axes. From these parameters, several useful measures can be derived: the primary diffusion direction, which in some places in the brain (e.g. in the corpus callosum, the large fiber bundle in the center of the brain that connects the two hemispheres) corresponds to the direction of the white matter fibers in the voxel. Other useful measures quantify the diffusivity along this primary direction and along other directions, as well as the mean diffusivity. The variation in diffusivity along different directions can be. These measures (mean diffusivity, or MD and fractional anisotropy, or FA) are often used to describe the biophysical properties of the underlying tissue. Though many have resorted to describing FA as a measure of "tissue integrity", there is no real basis . Though the density of the tissue and in particular the density of the myelin wrapping the axons in the voxel may affect MD and FA, changes in other factors, such as the dispersion of fiber directions in the voxel crossing may also increase or decrease these measures \citep{wandell-yeatman:13}. Therefore, interpretation of group differences in FA, or longitudinal changes in FA over time should be carefully handled and compared to the results from other modeling techniques.   
+Often people assume that DTI and dMRI are synonymous. This is not correct. In DTI there is a crucial assumption that the propagator is described only by a 3D Gaussian distribution. With this assumption from eq.~\ref{eq:fourier} we can write
+\begin{equation}
+P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{r}^{T}\mathbf{D}^{-1}\mathbf{r}}{4t})
+\end{equation}
+\noindent where $\mathbf{D}$ is known as the diffusion tensor. This tensor is a $3x3$ positive definite symmetric matrix that can be completely described by a centered ellipsoid with 3 principal axes and associated eigenvalues $\lambda_{1},\lambda_{2},\lambda_{3}$.
+
+DTI was first proposed by Basser and colleagues \citep{basser-mattiello-etal:94} and has since been very influential in demonstrating the utility of dMRI in characterizing the micro-structure of white matter tissue. The model relies on the assumption that diffusion is a Gaussian process. Using this assumption the dODF can be modeled with 6 parameters, describing the variance and covariance of the Gaussian diffusion along the three primary axes. From these parameters, several useful measures can be derived: the primary diffusion direction, which in some places in the brain (e.g. in the corpus callosum, the large fiber bundle in the center of the brain that connects the two hemispheres) corresponds to the direction of the white matter fibers in the voxel. Other useful measures quantify the diffusivity along this primary direction and along other directions, as well as the mean diffusivity. The variation in diffusivity along different directions can be. These measures (mean diffusivity, or MD and fractional anisotropy, or FA) are often used to describe the biophysical properties of the underlying tissue. Though many have resorted to describing FA as a measure of "tissue integrity", there is no real basis. Though the density of the tissue and in particular the density of the myelin wrapping the axons in the voxel may affect MD and FA, changes in other factors, such as the dispersion of fiber directions in the voxel crossing may also increase or decrease these measures \citep{wandell-yeatman:13}. Therefore, interpretation of group differences in FA, or longitudinal changes in FA over time should be carefully handled and compared to the results from other modeling techniques [REFERENCES e.g. DTI hitch hiker's guide].
 
 That said, these measures are popular among users of dMRI and also quite useful in the sense that behavioral variance in a variety of measures can be predicted based on these measures [REFERENCES?]. Fitting the tensor model and computing univariate statistics from it in Dipy is straightforward. In the following example, we show how the tensor model is fit to data and how univariate measures can be computed.
 
-First, data is loaded into memory, using the Nibabel library:
-\begin{python}
-fimg = "raw.nii.gz"
-import nibabel as nib
-img = nib.load(fimg)
-data = img.get_data()
-\end{python}
-
-Next, we can import the diffusion tensor model class and initialize a $\tt{TensorModel}$ class instance: 
+First, \texttt{data}, \texttt{mask} and \texttt{gtab} are created as we saw in section \ref{loadsave}. Next, we can import the diffusion tensor model class and initialize a \texttt{TensorModel} class instance with the name \texttt{ten\_model}: 
 \begin{python}
 from dipy.reconst.dti import TensorModel
-ten = TensorModel(gtab)
+ten\_model = TensorModel(gtab)
 \end{python}
-
-Note that at this point in the code no data analysis has occurred yet. Since the analysis of every voxel in the brain will rely on similar infra-structure, the $\tt{TensorModel}$ class instance only sets up this skeleton for the analysis. This same skeleton will be reused for each one of the voxels in the data here, but can also be reused for other data in a similar fashion 
-
-The advantage of this separation of the model and the fit is that we can fit many different datasets with the same initialization parameters. 
-
-Next, we pass the data to the fit method of the . This returns a $\tt{TensorFit}$ class instance which relates to this specific data: 
-
+Note that at this point in the code no data analysis has occurred yet. Since the analysis of every voxel in the brain will rely on similar infra-structure, the \texttt{TensorModel} class instance only sets up the skeleton for the analysis. This same skeleton will be reused for each one of the voxels in the data here, but can also be reused for other data in a similar fashion. 
+Next, we pass the data to the fit method of the \texttt{tensor\_model}. This returns a \texttt{TensorFit} class instance which relates to the specific data and mask: 
 \begin{python}
-tenfit = ten.fit(data)
+ten_fit = ten.fit(data, mask)
 \end{python}
-
-Once a fit has been conducted, we can compute a variety of derived univariate measures, such as the fractional anisotropy: 
-
+The advantage of this separation of the model and the fit is that we can fit many different data with the same initialization parameters without duplicating code. Once a fit has been conducted, we can compute a variety of derived univariate measures, such as the fractional anisotropy (FA) [REFERENCE]: 
 \begin{python}
 from dipy.reconst.dti import fractional_anisotropy
 fa = fractional_anisotropy(tenfit.evals)
 \end{python}
-
-
-It is common to represent the primary diffusion direction using an RGB representation [REFERENCE?]. The following call does that:
- 
+It is common to represent the primary diffusion direction using an RGB representation and create a DEC map[REFERENCE?]:
 \begin{python}
 from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
 \end{python}
+Finally, a few more points about the implementation of DTI. The first is that there is still ongoing research on fitting methods for the tensor model \citep{Koay2006}. Several different methods have been implemented, including non-linear least-squares, ordinary least-squares and weighted least-squares fitting \citep{chung-lu-etal:06}. In addition, there is ongoing research on methods to robustly fit the tensor model, in the face of noisy data \citep{Chang2005, Chang2012}. %An implementation of a robust tensor fitting algorithm (RESTORE) is currently in development and should be in the distributed code in version 0.7 of the software. 
 
-Finally, a few more points about the implementation of DTI. The first is that there is still ongoing research on fitting methods for the tensor model \citep{Koay2006}. Several different methods have been implemented, including non-linear least-squares, ordinary least-squares and weighted least-squares fitting \citep{chung-lu-etal:06}. In addition, there is ongoing research on methods to robustly fit the tensor model, in the face of noisy data \citep{Chang2005, Chang2012}. An implementation of a robust tensor fitting algorithm (RESTORE) is currently in development and should be in the distributed code in version 0.7 of the software. 
-
-The second comment is that many univariate measures have been implemented. Not only can users compute FA, MD and the direction of the principal diffusion direction, but also other statistics that have been proposed in the literature, such as the diffusion linearity, planarity and sphericity \citep{westin:97}, as well as the tensor mode and tensor norm \cite{Ennis2006}
+The second is that many more univariate measures have been implemented. Not only can users compute FA, MD, color_FA, but also other statistics that have been proposed in the literature, such as the diffusion linearity, planarity and sphericity \citep{westin:97}, as well as the tensor mode, tensor norm \cite{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics are available under the \texttt{dipy.reconst.dti} module.
 
 \subsection{Diffusion Spectrum Imaging}
 
