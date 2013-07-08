@@ -17,7 +17,7 @@
 \definecolor{MatchingBrackets}{rgb}{0.25,0.5,0.5}
 \definecolor{Keywords}{rgb}{0,0.6,0}
 \definecolor{self}{rgb}{0,0,0}
-\definecolor{Strings}{rgb}{0.6,0.2,0}
+\definecolor{Strings}{rgb}{0.6,0.,0}
 \definecolor{Comments}{rgb}{0,0.63,1}
 \definecolor{Backquotes}{rgb}{0,0,0}
 \definecolor{Classname}{rgb}{0,0,0}
@@ -79,6 +79,7 @@ emphstyle={\color{self}\slshape},
 \usepackage{multirow}
 \usepackage{rotating}
 \usepackage{hyperref}
+%\usepackage{units}
 
 \makeatletter
 \newfloat{algorithm}{H}{loa}[section]
@@ -284,18 +285,15 @@ nib.save(sub_img, "sub_data.nii.gz")
 In order to remove the background and keep only the parts that are in the brain we can use a function called \texttt{medotsu}.
 \begin{python}
 from dipy.segment.mask import medotsu
-mask, S0_mask = medotsu(data[..., 0])
+mask, S0_mask = medotsu(data[:, :, :, 0])
 \end{python}
 \texttt{medotsu} uses first a median filter to smooth the \texttt{S0} and then otsu, an automated histogram method [REFERENCE] to separate the brain (foreground) from its background. It returns two arrays, the \texttt{mask}, a 3D array with 1s at the foreground and 0s in the background and the masked \texttt{S0} \texttt{S0\_mask} a 3D array whith the actual \texttt{S0} values in the foreground and 0s in the background.
 
 Alternatively, FSL's brain extraction tool (bet) is accessible through our external module with \texttt{dipy.external.fsl.bet}.
 
 \subsection{Gradient Table}\label{gtab}
-The b-value $b$ or \emph{diffusion weighting} is a function of the amplitude, duration, temporal spacing and timing parameters of the specific paradigm. In the case of the classical Stejskal-Tanner pulsed gradient spin-echo (PGSE) sequence, at the time of readout
-\[
-b=\gamma^{2}G^{2}\delta^{2}\left(\Delta-\frac{\delta}{3}\right),
-\]
-\noindent where $\gamma$ is the gyromagnetic ratio, $\delta$ denotes the pulse width, $G$ is the gradient amplitude and $\Delta$ the centre to centre spacing. $\gamma$ is a constant which depends on the nucleus, but we can change the other three parameters and in that way control the b-value. By changing the b-value along different gradient directions the MR physists can alternate the quality and duration of the dMRI experiment. The gradient unit directions are often referred as b-vectors. Both b-values and b-vectors are absolutely necessary knowledge for analysing diffusion data and can be usually read from one or two different files. Here is an example:
+The b-value $b$ or \emph{diffusion weighting} is a function of the amplitude, duration, temporal spacing and timing parameters of the specific paradigm. In the case of the classical Stejskal-Tanner pulsed gradient spin-echo (PGSE) sequence, at the time of readout $b=\gamma^{2}G^{2}\delta^{2}\left(\Delta-\delta/3 \right)$, 
+where $\gamma$ is the gyromagnetic ratio, $\delta$ denotes the pulse width, $G$ is the gradient amplitude and $\Delta$ the centre to centre spacing. $\gamma$ is a constant which depends on the nucleus, but we can change the other three parameters and in that way control the b-value. By changing the b-value along different gradient directions the MR physists can alternate the quality and duration of the dMRI experiment. The gradient unit directions are often referred as b-vectors. Both b-values and b-vectors are absolutely necessary knowledge for analysing diffusion data and can be usually read from one or two different files. Here is an example:
 \begin{python}
 fbval = "raw.bval"
 fbvec = "raw.bvec"
@@ -307,7 +305,7 @@ These parameters are stored in a utility class, created by the \texttt{gradient\
 from dipy.core.gradients import gradient_table
 gtab = gradient_table(bvals, bvecs)
 \end{python}
-Here, \texttt{gtab} is an instance of a \texttt{GradientTable} object. This object makes sure that the b-values and b-vectors will come out in a form that Dipy knows how to use. For example, the \texttt{shape} of \texttt{gtab.bvals}and \texttt{gtabl.bvecs} should always return (N,) and (N, 3) respectively, where N is equal to the size of the last dimension of \texttt{data}. Often, it is useful to know the number and position of b-values with value 0 (b0s), an utility method is provided for this purpose with \texttt{gtab.b0s\_mask}.
+Here, \texttt{gtab} is an instance of a \texttt{GradientTable} object. This object makes sure that the b-values and b-vectors will come out in a form that Dipy knows how to use. For example, the \texttt{shape} of \texttt{gtab.bvals}and \texttt{gtabl.bvecs} should always return $N$ and $N\times3$ respectively, where N is equal to the size of the last dimension of \texttt{data}. Often, it is useful to know the number and position of b-values with value 0 (b0s), an utility method is provided for this purpose with \texttt{gtab.b0s\_mask}.
 
 The \texttt{GradientTable} object can be used not only to store b-values and b-vectors but also other acquisition parameters like TR, TE, $\delta$ and $\Delta$. Therefore, it is an abstract representation of the acquisition specific parameters.
 
@@ -319,15 +317,14 @@ Stejskal and Tanner \citep{stejskal-tanner:65} showed that the spin echo magnitu
 S(\mathbf{q},t)=S_{0}\int P(\mathbf{r},t)e^{i\mathbf{q}\cdot\mathbf{r}}d\mathbf{r}\label{eq:fourier}
 \end{equation}
 \noindent where $S_{0}$ is the signal in the absence of the applied magnetic diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$ and $\mathbf{q}$ is the spin displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic gradient $\mathbf{g}$ which in turn are directly related with the b-vectors discussed in section \ref{loadsave}. 
-In theory, if we apply the Fourier transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion propagator) for every voxel. In practice, unfeasibly long acquisition time is required and perfect experimental conditions. Therefore, a discrete method called Diffusion Spectrum Imaging(DSI) has been used (see section SECTION).
+In theory, if we apply the Fourier transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion propagator) for every voxel. In practice, unfeasibly long acquisition time is required and perfect experimental conditions. Therefore, a discrete method called Diffusion Spectrum Imaging(DSI) has been used (see section \ref{dsi}).
 Nonetheless DSI still needs long acquisitions. An alternative is to work on reconstructing only a spherical projection of the 3D PDF. This often called the diffusion orientation distribution function (dODF) or simply ODF. Another alternative is to make assumptions about the distribution of the PDF. In this later category belongs the most popular imaging method in dMRI: Diffusion Tensor Imaging (DTI).
-
 
 %For Ariel: I commented out this part talking about the fODF because I think it will create a confusion with our current terminology. I will only talk quickly about the fODF on the CSD section. Tournier introduced this term but I don't think that he actually solved any problem. The fODF is nothing more than a sharpened ODF with some constrains. But definitely it is not a representation of the actual fiber. I think we should try to use this term at the minimum. 
 %In addition, the diffusion surface in every voxel is used to infer the spatial geometry of the underlying tissue. This is referred to as the fiber orientation distribution function (fODF, sometimes also referred to as the FOD). Different algorithms to reconstruct the dODF and fODF have different advantages in describing the data and Dipy contains implementations of several of these algorithms. In what follows, we will review the different reconstruction algorithms that are implemented in Dipy and demonstrate the use of these implementations with code examples.  
 
 
-\subsection{Diffusion Tensor Imaging}
+\subsection{Diffusion Tensor Imaging}\label{dti}
 
 Often people assume that DTI and dMRI are synonymous. This is not correct. In DTI there is a crucial assumption that the propagator is described only by a 3D Gaussian distribution. With this assumption from eq.~\ref{eq:fourier} we can write
 \begin{equation}
@@ -337,24 +334,24 @@ P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{
 
 DTI was first proposed by Basser and colleagues \citep{basser-mattiello-etal:94} and has since been very influential in demonstrating the utility of dMRI in characterizing the micro-structure of white matter tissue. The model relies on the assumption that diffusion is a Gaussian process. Using this assumption the dODF can be modeled with 6 parameters, describing the variance and covariance of the Gaussian diffusion along the three primary axes. From these parameters, several useful measures can be derived: the primary diffusion direction, which in some places in the brain (e.g. in the corpus callosum, the large fiber bundle in the center of the brain that connects the two hemispheres) corresponds to the direction of the white matter fibers in the voxel. Other useful measures quantify the diffusivity along this primary direction and along other directions, as well as the mean diffusivity. The variation in diffusivity along different directions can be. These measures (mean diffusivity, or MD and fractional anisotropy, or FA) are often used to describe the biophysical properties of the underlying tissue. Though many have resorted to describing FA as a measure of "tissue integrity", there is no real basis. Though the density of the tissue and in particular the density of the myelin wrapping the axons in the voxel may affect MD and FA, changes in other factors, such as the dispersion of fiber directions in the voxel crossing may also increase or decrease these measures \citep{wandell-yeatman:13}. Therefore, interpretation of group differences in FA, or longitudinal changes in FA over time should be carefully handled and compared to the results from other modeling techniques [REFERENCES e.g. DTI hitch hiker's guide].
 
-That said, these measures are popular among users of dMRI and also quite useful in the sense that behavioral variance in a variety of measures can be predicted based on these measures [REFERENCES?]. Fitting the tensor model and computing univariate statistics from it in Dipy is straightforward. In the following example, we show how the tensor model is fit to data and how univariate measures can be computed.
+That said, these measures are popular among users of dMRI and also quite useful in the sense that behavioral variance in a variety of measures can be predicted based on these measures [REF]. Fitting the tensor model and computing univariate statistics from it in Dipy is straightforward. In the following example, we show how the tensor model is fit to data and how univariate measures can be computed.
 
 First, \texttt{data}, \texttt{mask} and \texttt{gtab} are created as we saw in section \ref{loadsave}. Next, we can import the diffusion tensor model class and initialize a \texttt{TensorModel} class instance with the name \texttt{ten\_model}: 
 \begin{python}
 from dipy.reconst.dti import TensorModel
-ten\_model = TensorModel(gtab)
+ten_model = TensorModel(gtab)
 \end{python}
 Note that at this point in the code no data analysis has occurred yet. Since the analysis of every voxel in the brain will rely on similar infra-structure, the \texttt{TensorModel} class instance only sets up the skeleton for the analysis. This same skeleton will be reused for each one of the voxels in the data here, but can also be reused for other data in a similar fashion. 
 Next, we pass the data to the fit method of the \texttt{tensor\_model}. This returns a \texttt{TensorFit} class instance which relates to the specific data and mask: 
 \begin{python}
 ten_fit = ten.fit(data, mask)
 \end{python}
-The advantage of this separation of the model and the fit is that we can fit many different data with the same initialization parameters without duplicating code. Once a fit has been conducted, we can compute a variety of derived univariate measures, such as the fractional anisotropy (FA) [REFERENCE]: 
+The advantage of this separation of the model and the fit is that we can fit many different data with the same initialization parameters without duplicating code. Once a fit has been conducted, we can compute a variety of derived univariate measures, such as the fractional anisotropy (FA) [REF]: 
 \begin{python}
 from dipy.reconst.dti import fractional_anisotropy
-fa = fractional_anisotropy(tenfit.evals)
+fa = fractional_anisotropy(ten_fit.evals)
 \end{python}
-It is common to represent the primary diffusion direction using an RGB representation and create a DEC map[REFERENCE?]:
+It is common to represent the primary diffusion direction using an RGB representation and create a DEC map[REF]:
 \begin{python}
 from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
@@ -363,7 +360,48 @@ Finally, a few more points about the implementation of DTI. The first is that th
 
 The second is that many more univariate measures have been implemented. Not only can users compute FA, MD, DEC, but also other statistics that have been proposed in the literature, such as the diffusion linearity, planarity and sphericity \citep{westin:97}, as well as the tensor mode, tensor norm \cite{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics are available under the \texttt{dipy.reconst.dti} module.
 
-\subsection{Diffusion Spectrum Imaging}
+\subsection{Diffusion Spectrum Imaging}\label{dsi}
+
+For those who have acquired DSI type of data, i.e. data with multiple b-values and gradients which span a Cartesian keyhole grid \citep{tuch:02, wedeen-hagmann-etal:05, Garyfallidis_thesis}, Dipy provides currently three different models. The standard \texttt{DiffusionSpectrumModel} can be accessed using:
+\begin{python}
+from dipy.reconst.dsi import DiffusionSpectrumModel
+dsi_model = DiffusionSpectrumModel(gtab)
+\end{python}
+It was shown by Wedeen et al. \citep{wedeen-hagmann-etal:05} that the dMRI signal is positive for any type of spin motion without net flux (i.e.~spin displacements due to thermal molecular agitation) or other random fluxes such as intravoxel incoherent motion. Under this assumption we can replace the complex signal $S$ with its modulus $|S|$ in Eq.~\ref{eq:fourier} and apply the Fourier transform:
+\begin{eqnarray}
+P(\mathbf{r}) & = & S_{0}^{-1}\int|S(\mathbf{q})|\exp(-i2\pi\mathbf{q}\cdot\mathbf{r})d\mathbf{q}\label{eq:P_modulus}
+\end{eqnarray}
+In DSI this triple-integral is approximated in a discrete way and the PDF P comes out for every single voxel as a 3D array. We can obtain $P$ using:
+\begin{python}
+dsi_fit = dsi_model.fit(data)
+dsi_pdf = dsi_fit.pdf()
+\end{python}
+However, this method is recommended only when the dimensions of data are very small. This is because the \texttt{dsi\_pdf} is a 6D array with 3 dimensions for the voxel positions and 3 for the $\mathbf{q}$ positions. Therefore, for a moderate data set of $150\times150\times90\times$ where every PDF is $35\times35\times35$ we would need about 600GBytes of RAM. As a solution to this problem Dipy provides a method which can facilitate traversing through each voxel and calculating each voxel independently:
+\begin{python}
+from dipy.core.ndindex import ndindex
+for index in ndindex(data.shape[:-1]):
+    vox_pdf = dsi_model.fit(dataslice[index]).pdf()
+\end{python}
+With this method we do not need to store all the PDFs at once. If it absolutely necessary to save all the PDFs then we advise to create a Numpy memory-map which will store the are as binary file on disk. Memory-mapped files are used for accessing small segments of large files on disk, without reading the entire file into memory.
+
+Recently, an alternative method for DSI was proposed by \citep{canales-rodriguez-etal:10} which applies a Lucy-Richardson deconvolution in the 3D PDF and achieves a higher angular resolution for resolving crossing fibers. This can be used in exactly the same way as with the standard DSI method:
+\begin{python}
+from dipy.reconst.dsi import
+                      DiffusionSpectrumDeconvModel
+dsid_model = DiffusionSpectrumDeconvModel(gtab)
+dsid_fit = dsid_model.fit(data)
+\end{python}
+Since we are mainly interested in the angular structure of the underlying tissue, we further simplify the data by taking the weighted radial summation of $P(\mathbf{r})$
+\begin{equation}
+\psi_{DSI}(\hat{\mathbf{u}})=\int_{0}^{\infty}P(r\hat{\mathbf{u}})r^{2}dr\label{eq:ODF_DSI}
+\end{equation}
+\noindent This defines the orientation density function (ODF) for DSI which measures the quantity of diffusion in the direction of the unit vector $\mathbf{\hat{u}}$ where $\mathbf{r=}r\hat{\mathbf{u}}$. $\psi_{DSI}$ as we know is a function on a sphere. Therefore, in order to calculate it or even visualize it we will need a sphere. Here is how we can obtain this ODF:
+\begin{python}
+from dipy.data import get_sphere
+sphere = get_sphere("symmetric724")
+dsi_odf = dsi_fit.odf(sphere)
+\end{python}
+where \texttt{sphere} is an object holding the vertices and faces of the sphere. Here we used a symmetric sphere with 724 vertices. The \texttt{dsi\_odf} is an array of the 724 ODF values corresponding to the vertices of the sphere. Note at this point that in order to find the ODF we have to first create the diffusion propagator by applying the Fourier transform on the lattice. Nonetheless, Dipy for reasons explained before does not store the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way to calculate a slightly different ODF using the Cosine transform. This is available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The advantage of GQI is that it is much faster to calculate than DSI or DSID. 
 
 \subsection{QBall Imaging}
 
