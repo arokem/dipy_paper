@@ -85,8 +85,8 @@ emphstyle={\color{self}\slshape},
 \newfloat{algorithm}{H}{loa}[section]
 \floatname{algorithm}{Algorithm}
 \counterwithout{algorithm}{algorithm}
-\def\argmin{\mathop{\operator@font arg\,min}} 
-\def\argmax{\mathop{\operator@font arg\,max}} 
+\def\argmin{\mathop{\operator@font arg\,min}}
+\def\argmax{\mathop{\operator@font arg\,max}}
 \makeatother
 
 \copyrightyear{}
@@ -97,18 +97,18 @@ emphstyle={\color{self}\slshape},
 
 \title[DIPY]{Dipy, a library for the analysis of diffusion MRI data}
 
-\author[Garyfallidis, Brett, Amirbekian, Rokem,  van der Walt, Descoteaux, 
+\author[Garyfallidis, Brett, Amirbekian, Rokem,  van der Walt, Descoteaux,
 Nimmo-Smith]{Eleftherios~Garyfallidis\,$^{1,2,*}$, Matthew~Brett\,$^{3}$,
   Bago~Amirbekian\,$^{4}$, Ariel~Rokem\,$^{5}$, Stefan~van der Walt\,$^{7}$, Maxime~Descoteaux\,$^{2}$, Ian~Nimmo-Smith\,$^{6}$ and Dipy~Contributors $^{8}$\footnote{to whom correspondence should be addressed. e-mail: garyfallidis@gmail.com}}
 
 \address{\,$^{1}$University of Cambridge, Cambridge, UK\\
-  \,$^{2}$University of Sherbrooke, Sherbrooke, CA\\ 
+  \,$^{2}$University of Sherbrooke, Sherbrooke, CA\\
   \,$^{3}$University of California, Henry H. Wheeler, Jr. Brain Imaging Center, Berkeley, CA.\\
-  \,$^{4}$University of California, San Francisco, CA, USA\\    
+  \,$^{4}$University of California, San Francisco, CA, USA\\
   \,$^{5}$Stanford University, Stanford, CA, USA\\
   \,$^{6}$MRC Cognition and Brain Sciences Unit, Cambridge, UK\\
   \,$^{7}$Stellenbosch University, Stellenbosch, South Africa\\
-  \,$^{8}$http://dipy.org/developers.html  
+  \,$^{8}$http://dipy.org/developers.html
   }
 
 \history{}
@@ -129,11 +129,11 @@ magnetic gradients to estimate diffusion in different directions and
 locations in the brain non-invasively. Many methods have been developed
 to model the local configuration of nerve fibers in the white matter
 based on this information and to infer the trajectory of nerve fascicles
-connecting different parts of the brain. 
+connecting different parts of the brain.
 
-Dipy gathers implementations  of many different methods, where they can be easily understood and compared. Dipy aims to provide transparent implementations for all the different steps of dMRI analysis with a uniform API. We have implemented classical signal reconstruction techniques, such as the diffusion tensor model and deterministic fiber tractography. In addition, it implements cutting edge novel reconstruction techniques, 
+Dipy gathers implementations  of many different methods, where they can be easily understood and compared. Dipy aims to provide transparent implementations for all the different steps of dMRI analysis with a uniform API. We have implemented classical signal reconstruction techniques, such as the diffusion tensor model and deterministic fiber tractography. In addition, it implements cutting edge novel reconstruction techniques,
 such as constrained spherical deconvolution and diffusion spectrum imaging with deconvolution, as well as methods for probabilistic tracking and unique methods for tractography clustering. Many additional utility functions, to calculate various statistics of dMRI data, visualization functions, as well as file-handling routines exist to assist in the development and use of novel techniques.
- 
+
 In contrast to many other scientific software projects, dipy is not being developed by a single research group. Rather, it is an open project that encourages contributions from any scientist/developer through the github Pull Request mechanism and open discussions on github and on the project mailing list. Consequently, dipy has today an international team of contributors, spanning 6 different academic institutions in 4 countries and 3 continents, and still growing (http://dipy.org).
 
 \section{Keywords:} Python, Diffusion MRI, Diffusion Tensor,
@@ -149,15 +149,15 @@ Introduction
 Philosophy/Mission
 General Design Aspects
 How we work (git/github etc)
-File Formats 
+File Formats
 Preprocessing
    Load/Save data
    Mask the background
 Reconstruction
-   DTI 
+   DTI
    DSI
    QBall
-   Spherical Deconvolution 
+   Spherical Deconvolution
 Tracking
    Deterministic
    Probabilistic
@@ -181,26 +181,26 @@ Dipy (\textit{Diffusion Imaging in Python}) is the first collective effort to cr
 
 Dipy takes advantage of the growing ecosystem of tools written for scientific computing in Python. It is built on top of production-ready high-performance Python libraries. Primarily, Dipy depends on Numpy\footnote{\url{http://numpy.org}}. The core structure of this library is an implementation of an Array \citep{van_numpy:11} class. Numpy arrays are used for representation of numerical data in Python and enable efficient implementation of numerical computations, such as vectorized computations, avoiding copying data in memory, and minimizing operations. Numpy is also used for matrix, tensor and linear algebra operations.  Dipy further depends on Scipy\footnote{\url{http://scipy.org}} for nonlinear optimization and other volumetric operations. Cython\footnote{\url{http://cython.org}} is used in rare cases when both standard Python and Numpy/Scipy are not efficient enough for the task at hand. Cython interprets Python code into plain C performance by adding static type declarations. The last absolute dependency for Dipy is Nibabel\footnote{\url{http://nipy.org/nibabel}} which is used for loading and saving medical imaging file formats.
 
-Optional dependencies, that are not required for analysis, are used for visualization of diffusion data and the results of analysis. Matplotlib\footnote{\url{http://matplotlib.org}} is used for 2D and 3D plotting. In addition, Python-VTK\footnote{\url{http://vtk.org}} is used for more advanced 3D interactive visualization. Furthermore, we recommend using IPython\footnote{\url{http://ipython.org}} the interactive Python shell for calling and debugging our scripts. 
+Optional dependencies, that are not required for analysis, are used for visualization of diffusion data and the results of analysis. Matplotlib\footnote{\url{http://matplotlib.org}} is used for 2D and 3D plotting. In addition, Python-VTK\footnote{\url{http://vtk.org}} is used for more advanced 3D interactive visualization. Furthermore, we recommend using IPython\footnote{\url{http://ipython.org}} the interactive Python shell for calling and debugging our scripts.
 
-In the following sections, we will explain the philosophy and main design concepts behind Dipy. We will also give examples which cover different parts of the diffusion MR analysis pipeline from the local voxel reconstruction of orientation distribution functions to streamline generation and visualization. 
+In the following sections, we will explain the philosophy and main design concepts behind Dipy. We will also give examples which cover different parts of the diffusion MR analysis pipeline from the local voxel reconstruction of orientation distribution functions to streamline generation and visualization.
 
 \section{Philosophy and Mission}
 
 Mission: The purpose of Dipy is to make it easier to do better diffusion MR imaging research. We aim to build software that is clearly written, clearly explained, well tested, a good fit for the underlying ideas and a natural home for collaboration.
 
-Dipy is a true international project where everyone from anywhere in the world is welcome to contribute as long as they agree with our mission statement. In order to be faithful to our mission we all have to follow specific policies. For example, lets assume that a scientist makes a nice new discovery and wants to share some code. Even if the discovery is of substantial importance the code will not be included in the main project without extended testing from the main author and code reviews from other members of the team. For the code reviews we make sure that at least two developers. In that way we make sure that quality assurance is kept at the highest level. 
+Dipy is a true international project where everyone from anywhere in the world is welcome to contribute as long as they agree with our mission statement. In order to be faithful to our mission we all have to follow specific policies. For example, lets assume that a scientist makes a nice new discovery and wants to share some code. Even if the discovery is of substantial importance the code will not be included in the main project without extended testing from the main author and code reviews from other members of the team. For the code reviews we make sure that at least two developers. In that way we make sure that quality assurance is kept at the highest level.
 
-Using this work ethic Dipy has managed to grow into an international and multi-departmental team of highly skilled contributors from different levels of education (Master students, PhD students, Post-Docs and Professors) spanning the fields of Computer Science, Medicine, Applied Mathematics, Biomedical Engineering and Psychology. 
+Using this work ethic Dipy has managed to grow into an international and multi-departmental team of highly skilled contributors from different levels of education (Master students, PhD students, Post-Docs and Professors) spanning the fields of Computer Science, Medicine, Applied Mathematics, Biomedical Engineering and Psychology.
 
 
 \section{Terminology}
 
-As in many other fields of science, dMRI is a field that uses specific terminology to describe the constructs of the measurement, as well as to describe the interpretation of the results of the analysis. We rely on a recent paper \citep{Cote2013tractometer}, that has proposed specific terminology for describing different constructs of the dMRI field. In this section we will describe constructs of the measurement, as well as constructs used to interpret the results of the analysis. We will use this terminology to explain the analysis code and interpretation of data in subsequent sections. 
+As in many other fields of science, dMRI is a field that uses specific terminology to describe the constructs of the measurement, as well as to describe the interpretation of the results of the analysis. We rely on a recent paper \citep{Cote2013tractometer}, that has proposed specific terminology for describing different constructs of the dMRI field. In this section we will describe constructs of the measurement, as well as constructs used to interpret the results of the analysis. We will use this terminology to explain the analysis code and interpretation of data in subsequent sections.
 
 The measurement of dMRI data relies on the application of a pulsed magnetic gradient and the degree of sensitization to diffusion depends on a number of parameters, including the duration of the gradient, time that elapses between pulses of the gradient and the gradient amplitude. These parameters are together summarized in what is referred to as the "b-value".  As described above, the measurement is conducted in several different directions and these are encoded in so-called "b-vectors". These are unit vectors that describe the direction relative to the scanner coordinate frame in which the gradients are applied. Different algorithms are used to determine the placement of these b vectors (e.g. \citep{jones-etal:99}).
 
-While we are ultimately interested in the identification of the trajectories of bundles of axons, which are the long fiber-like part of a nerve cell along which electrical impulses are conducted from cell to cell (and whose size is on the $\mu$m scale), the measurement is conducted on a much larger scale. Typically, the measurement is conducted in a grid of "voxels" of approximately 2x2x2 mm. We are therefore limited to describe the trajectories of "fascicles" of nerves. One of the major achievements of this field is that it is now possible to reliably and accurately identify major fascicles in individual experimental participants or patients. These major fascicles are also known as "tracts". This is a term taken from neuroanatomy and describes a group of neuronal axons within the central nervous system (mm scale). 
+While we are ultimately interested in the identification of the trajectories of bundles of axons, which are the long fiber-like part of a nerve cell along which electrical impulses are conducted from cell to cell (and whose size is on the $\mu$m scale), the measurement is conducted on a much larger scale. Typically, the measurement is conducted in a grid of "voxels" of approximately 2x2x2 mm. We are therefore limited to describe the trajectories of "fascicles" of nerves. One of the major achievements of this field is that it is now possible to reliably and accurately identify major fascicles in individual experimental participants or patients. These major fascicles are also known as "tracts". This is a term taken from neuroanatomy and describes a group of neuronal axons within the central nervous system (mm scale).
 
 For the purpose of interpretation of these data, a "fiber" can be any long and thin structure. Hence, fiber tracking is a general term that can be used in any field that reconstructs fibrous structures, such as hair fibers, celery fibers, muscle fibers, prostate fibers, brain fibers, etc. "Fiber bundles" denote groups of fibers usually with an anatomical or functional meaning. These can be major tracts in the brain, such as the arcuate fasciculus, which connects parts of the posterior temporal lobe with the frontal lobe, the fornix, which connects the medial temporal lobe with sub-cortical structures, such as the hypothalamus and amygdala,  etc. A fiber bundle for the area of brain anatomy is synonymous to a tract, also often called fiber tract. The term tract can be misleading when talking for example about the corticospinal tract, because the corticospinal tract is in fact not a single tract but a group of tracts (including corticobulbar projections, the pyramidal tract, etc.).
 
@@ -223,7 +223,7 @@ Dipy contains the following modules
 | tracking      | tractography algorithms   | EuDX, Modular tracking (det, prob),|
 |               |                           | distances, metrics, utils          |
 | core          | general usage functions   | spheres, gradients, electrostatics,|
-|               |                           | geometry, ndindex                  |       
+|               |                           | geometry, ndindex                  |
 | viz           | 2D/3D visualization       | fvtk, 2D sphere plots, colormaps   |
 | io            | input/io utilities        | pickles, gradients, dpy(HDF5)      |
 | external      | other software            | fsl                                |
@@ -242,13 +242,13 @@ dipy.__version__
 '0.7.0.dev'
 \end{python}
 
-In Dipy we consider as reconstruction phase as the one that starts after preprocessing and specific models are fitted in each voxel. Other voxel-based parameters can be calculated as well. The reconstruction phase is necessary for tracking because it provides the local direction information. During tracking these information will be propagated from voxel to voxel.  
+In Dipy we consider as reconstruction phase as the one that starts after preprocessing and specific models are fitted in each voxel. Other voxel-based parameters can be calculated as well. The reconstruction phase is necessary for tracking because it provides the local direction information. During tracking these information will be propagated from voxel to voxel.
 
 
 \section{Preprocessing}
 
 \subsection{Load/Save data}\label{loadsave}
-The most basic operation that we do in Neuroimaging is to load some data from the disk which are generated from an MRI scanner. Surprisingly this is often a difficult task as different scanners and software read/write the data in different ways. Nibabel, a library for reading medical imaging formats, is coming here to the rescue supporting ANALYZE (plain, SPM99, SPM2), GIFTI, NIfTI1, MINC, MGH, ECAT, PAR/REC, Freesurfer(geometry, morphometry files) and with a growing support for DICOM. 
+The most basic operation that we do in Neuroimaging is to load some data from the disk which are generated from an MRI scanner. Surprisingly this is often a difficult task as different scanners and software read/write the data in different ways. Nibabel, a library for reading medical imaging formats, is coming here to the rescue supporting ANALYZE (plain, SPM99, SPM2), GIFTI, NIfTI1, MINC, MGH, ECAT, PAR/REC, Freesurfer(geometry, morphometry files) and with a growing support for DICOM.
 
 The most common file format used in dMRI is the NIfTI1. Assuming that we have a file with our 4D raw diffusion data we can load it in the following way:
 \begin{python}
@@ -279,7 +279,7 @@ sub_affine = affine.copy()
 sub_affine[:3, 3] += np.array([10, 10, 10])
 sub_img = Nifti1Image(sub_data, sub_affine)
 nib.save(sub_img, "sub_data.nii.gz")
-\end{python} 
+\end{python}
 
 \subsection{Background removal}
 In order to remove the background and keep only the parts that are in the brain we can use a function called \texttt{medotsu}.
@@ -292,7 +292,7 @@ mask, S0_mask = medotsu(data[:, :, :, 0])
 Alternatively, FSL's brain extraction tool (bet) is accessible through our external module with \texttt{dipy.external.fsl.bet}.
 
 \subsection{Gradient Table}\label{gtab}
-The b-value $b$ or \emph{diffusion weighting} is a function of the amplitude, duration, temporal spacing and timing parameters of the specific paradigm. In the case of the classical Stejskal-Tanner pulsed gradient spin-echo (PGSE) sequence, at the time of readout $b=\gamma^{2}G^{2}\delta^{2}\left(\Delta-\delta/3 \right)$, 
+The b-value $b$ or \emph{diffusion weighting} is a function of the amplitude, duration, temporal spacing and timing parameters of the specific paradigm. In the case of the classical Stejskal-Tanner pulsed gradient spin-echo (PGSE) sequence, at the time of readout $b=\gamma^{2}G^{2}\delta^{2}\left(\Delta-\delta/3 \right)$,
 where $\gamma$ is the gyromagnetic ratio, $\delta$ denotes the pulse width, $G$ is the gradient amplitude and $\Delta$ the centre to centre spacing. $\gamma$ is a constant which depends on the nucleus, but we can change the other three parameters and in that way control the b-value. By changing the b-value along different gradient directions the MR physists can alternate the quality and duration of the dMRI experiment. The gradient unit directions are often referred as b-vectors. Both b-values and b-vectors are absolutely necessary knowledge for analysing diffusion data and can be usually read from one or two different files. Here is an example:
 \begin{python}
 fbval = "raw.bval"
@@ -316,12 +316,12 @@ Stejskal and Tanner \citep{stejskal-tanner:65} showed that the spin echo magnitu
 \begin{equation}
 S(\mathbf{q},t)=S_{0}\int P(\mathbf{r},t)e^{i\mathbf{q}\cdot\mathbf{r}}d\mathbf{r}\label{eq:fourier}
 \end{equation}
-\noindent where $S_{0}$ is the signal in the absence of the applied magnetic diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$ and $\mathbf{q}$ is the spin displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic gradient $\mathbf{g}$ which in turn are directly related with the b-vectors discussed in section \ref{loadsave}. 
+\noindent where $S_{0}$ is the signal in the absence of the applied magnetic diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$ and $\mathbf{q}$ is the spin displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic gradient $\mathbf{g}$ which in turn are directly related with the b-vectors discussed in section \ref{loadsave}.
 In theory, if we apply the Fourier transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion propagator) for every voxel. In practice, unfeasibly long acquisition time is required and perfect experimental conditions. Therefore, a discrete method called Diffusion Spectrum Imaging(DSI) has been used (see section \ref{dsi}).
 Nonetheless DSI still needs long acquisitions. An alternative is to work on reconstructing only a spherical projection of the 3D PDF. This often called the diffusion orientation distribution function (dODF) or simply ODF. Another alternative is to make assumptions about the distribution of the PDF. In this later category belongs the most popular imaging method in dMRI: Diffusion Tensor Imaging (DTI).
 
-%For Ariel: I commented out this part talking about the fODF because I think it will create a confusion with our current terminology. I will only talk quickly about the fODF on the CSD section. Tournier introduced this term but I don't think that he actually solved any problem. The fODF is nothing more than a sharpened ODF with some constrains. But definitely it is not a representation of the actual fiber. I think we should try to use this term at the minimum. 
-%In addition, the diffusion surface in every voxel is used to infer the spatial geometry of the underlying tissue. This is referred to as the fiber orientation distribution function (fODF, sometimes also referred to as the FOD). Different algorithms to reconstruct the dODF and fODF have different advantages in describing the data and Dipy contains implementations of several of these algorithms. In what follows, we will review the different reconstruction algorithms that are implemented in Dipy and demonstrate the use of these implementations with code examples.  
+%For Ariel: I commented out this part talking about the fODF because I think it will create a confusion with our current terminology. I will only talk quickly about the fODF on the CSD section. Tournier introduced this term but I don't think that he actually solved any problem. The fODF is nothing more than a sharpened ODF with some constrains. But definitely it is not a representation of the actual fiber. I think we should try to use this term at the minimum.
+%In addition, the diffusion surface in every voxel is used to infer the spatial geometry of the underlying tissue. This is referred to as the fiber orientation distribution function (fODF, sometimes also referred to as the FOD). Different algorithms to reconstruct the dODF and fODF have different advantages in describing the data and Dipy contains implementations of several of these algorithms. In what follows, we will review the different reconstruction algorithms that are implemented in Dipy and demonstrate the use of these implementations with code examples.
 
 
 \subsection{Diffusion Tensor Imaging}\label{dti}
@@ -336,17 +336,17 @@ DTI was first proposed by Basser and colleagues \citep{basser-mattiello-etal:94}
 
 That said, these measures are popular among users of dMRI and also quite useful in the sense that behavioral variance in a variety of measures can be predicted based on these measures [REF]. Fitting the tensor model and computing univariate statistics from it in Dipy is straightforward. In the following example, we show how the tensor model is fit to data and how univariate measures can be computed.
 
-First, \texttt{data}, \texttt{mask} and \texttt{gtab} are created as we saw in section \ref{loadsave}. Next, we can import the diffusion tensor model class and initialize a \texttt{TensorModel} class instance with the name \texttt{ten\_model}: 
+First, \texttt{data}, \texttt{mask} and \texttt{gtab} are created as we saw in section \ref{loadsave}. Next, we can import the diffusion tensor model class and initialize a \texttt{TensorModel} class instance with the name \texttt{ten\_model}:
 \begin{python}
 from dipy.reconst.dti import TensorModel
 ten_model = TensorModel(gtab)
 \end{python}
-Note that at this point in the code no data analysis has occurred yet. Since the analysis of every voxel in the brain will rely on similar infra-structure, the \texttt{TensorModel} class instance only sets up the skeleton for the analysis. This same skeleton will be reused for each one of the voxels in the data here, but can also be reused for other data in a similar fashion. 
-Next, we pass the data to the fit method of the \texttt{tensor\_model}. This returns a \texttt{TensorFit} class instance which relates to the specific data and mask: 
+Note that at this point in the code no data analysis has occurred yet. Since the analysis of every voxel in the brain will rely on similar infra-structure, the \texttt{TensorModel} class instance only sets up the skeleton for the analysis. This same skeleton will be reused for each one of the voxels in the data here, but can also be reused for other data in a similar fashion.
+Next, we pass the data to the fit method of the \texttt{tensor\_model}. This returns a \texttt{TensorFit} class instance which relates to the specific data and mask:
 \begin{python}
 ten_fit = ten.fit(data, mask)
 \end{python}
-The advantage of this separation of the model and the fit is that we can fit many different data with the same initialization parameters without duplicating code. Once a fit has been conducted, we can compute a variety of derived univariate measures, such as the fractional anisotropy (FA) [REF]: 
+The advantage of this separation of the model and the fit is that we can fit many different data with the same initialization parameters without duplicating code. Once a fit has been conducted, we can compute a variety of derived univariate measures, such as the fractional anisotropy (FA) [REF]:
 \begin{python}
 from dipy.reconst.dti import fractional_anisotropy
 fa = fractional_anisotropy(ten_fit.evals)
@@ -356,7 +356,7 @@ It is common to represent the primary diffusion direction using an RGB represent
 from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
 \end{python}
-Finally, a few more points about the implementation of DTI. The first is that there is still ongoing research on fitting methods for the tensor model \citep{Koay2006}. Several different methods have been implemented, including non-linear least-squares, ordinary least-squares and weighted least-squares fitting \citep{chung-lu-etal:06}. In addition, there is ongoing research on methods to robustly fit the tensor model, in the face of noisy data \citep{Chang2005, Chang2012}. %An implementation of a robust tensor fitting algorithm (RESTORE) is currently in development and should be in the distributed code in version 0.7 of the software. 
+Finally, a few more points about the implementation of DTI. The first is that there is still ongoing research on fitting methods for the tensor model \citep{Koay2006}. Several different methods have been implemented, including non-linear least-squares, ordinary least-squares and weighted least-squares fitting \citep{chung-lu-etal:06}. In addition, there is ongoing research on methods to robustly fit the tensor model, in the face of noisy data \citep{Chang2005, Chang2012}. %An implementation of a robust tensor fitting algorithm (RESTORE) is currently in development and should be in the distributed code in version 0.7 of the software.
 
 The second is that many more univariate measures have been implemented. Not only can users compute FA, MD, DEC, but also other statistics that have been proposed in the literature, such as the diffusion linearity, planarity and sphericity \citep{westin:97}, as well as the tensor mode, tensor norm \cite{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics are available under the \texttt{dipy.reconst.dti} module.
 
@@ -401,22 +401,32 @@ from dipy.data import get_sphere
 sphere = get_sphere("symmetric724")
 dsi_odf = dsi_fit.odf(sphere)
 \end{python}
-where \texttt{sphere} is an object holding the vertices and faces of the sphere. Here we used a symmetric sphere with 724 vertices. The \texttt{dsi\_odf} is an array of the 724 ODF values corresponding to the vertices of the sphere. Note at this point that in order to find the ODF we have to first create the diffusion propagator by applying the Fourier transform on the lattice. Nonetheless, Dipy for reasons explained before does not store the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way to calculate a slightly different ODF using the Cosine transform. This is available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The advantage of GQI is that it is much faster to calculate than DSI or DSID. 
+where \texttt{sphere} is an object holding the vertices and faces of the sphere. Here we used a symmetric sphere with 724 vertices. The \texttt{dsi\_odf} is an array of the 724 ODF values corresponding to the vertices of the sphere. Note at this point that in order to find the ODF we have to first create the diffusion propagator by applying the Fourier transform on the lattice. Nonetheless, Dipy for reasons explained before does not store the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way to calculate a slightly different ODF using the Cosine transform. This is available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The advantage of GQI is that it is much faster to calculate than DSI or DSID.
 
 \subsection{QBall Imaging}
 
-
-
-\subsection{Constrained Spherical Deconvolution} 
-
-Constrained spherical deconvolution \citep{tournier-calamante-etal:07}, or CSD, is an algorithm for fitting the fiber ODF using a spherical harmonic basis function. Spherical harmonics (SH) are mathematical functions that can be used to construct an orthonormal basis function on the sphere. In analogy to the 1D time-domain, they can be thought of as a Fourier basis set on the surface of the sphere, which can be used to describe any spherical function (such as the dODF and fODF) up to the highest frequency (termed 'order' for SH) of the functions included in the set used as a basis set. Due to their practical mathematical properties, there have been several cases of using spherical harmonics to describe dMRI data, starting from the work of Larry Frank \citep{Frank2001, Frank2002}. CSD applies two major constraints on the fitting of the fODF. The first is that it applies a non-negativity constraint: fODF values that are smaller than 0 are non-physical and are precluded. The other is that CSD applies a sparseness constraint on the fODF - it assumes that only a few of the fODF values will be larger than 0. Applying these two constraints allows fitting the SH basis set up to very high orders - in essence fitting more parameters than data is present. This is known as 'super-resolution'.
+Spherical harmonics (SH) are mathematical functions that can be used to construct an orthonormal basis function on the sphere. In analogy to the 1D time-domain, they can be thought of as a Fourier basis set on the surface of the sphere, which can be used to describe any spherical function (such as the ODF) up to the highest frequency (termed 'order' for SH) of the functions included in the set used as a basis set. Due to their practical mathematical properties, there have been several cases of using spherical harmonics to describe dMRI data, starting from the work of Larry Frank \citep{Frank2001, Frank2002}.
 
 \begin{python}
-from dipy.reconst.shm import
-          ConstrainedSphericalDeconvModel as CsdModel
+from dipy.reconst.shm import QballModel
+qb_model = QballModel(gtab, order=4, smooth=0.006)
+qb_fit = qb_model.fit(data)
+qb_odf = qb_fit.odf(sphere)
+from dipy.reconst.odf import minmax_normalize
+qb_nodf = minmax_normalize(qb_odf)
+\end{python}
+
+
+\subsection{Constrained Spherical Deconvolution}
+
+Constrained spherical deconvolution \citep{tournier-calamante-etal:07}, or CSD, is an algorithm for fitting the fiber ODF using a spherical harmonic basis function.  CSD applies two major constraints on the fitting of the fODF. The first is that it applies a non-negativity constraint: fODF values that are smaller than 0 are non-physical and are precluded. The other is that CSD applies a sparseness constraint on the fODF - it assumes that only a few of the fODF values will be larger than 0. Applying these two constraints allows fitting the SH basis set up to very high orders - in essence fitting more parameters than data is present. This is known as 'super-resolution'.
+
+\begin{python}
+from dipy.reconst.csdeconv import
+        ConstrainedSphericalDeconvModel as CsdModel
 csd_model = CsdModel(gtab, response)
 \end{python}
- 
+
 \section{Fiber tracking}
 
 \subsection{Deterministic}
@@ -437,7 +447,7 @@ Talk about lenghts and other metrics on streamlines
 
 \section{Discussion/Conclusion}
 
-We have described the Dipy library for analysis of diffusion MRI data. Dipy is a part of the Neuroimaging in Python community (http://nipy.org), a growing community of scientists and developers who are participating in the development of open source software for neuroimaging written in the Python language  . One major source of support for this community comes in the form of the Neurodebian distribution \citep{Halchenko2012}. Neurodebian is a platform for maintenance and deployment of software for the analysis of neuroscience data, based on free open source software (FOSS) practices. 
+We have described the Dipy library for analysis of diffusion MRI data. Dipy is a part of the Neuroimaging in Python community (http://nipy.org), a growing community of scientists and developers who are participating in the development of open source software for neuroimaging written in the Python language  . One major source of support for this community comes in the form of the Neurodebian distribution \citep{Halchenko2012}. Neurodebian is a platform for maintenance and deployment of software for the analysis of neuroscience data, based on free open source software (FOSS) practices.
 
 \section*{Acknowledgments}
 Who do we need to acknowledge?
