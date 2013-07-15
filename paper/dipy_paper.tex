@@ -405,11 +405,18 @@ where \texttt{sphere} is an object holding the vertices and faces of the sphere.
 
 \subsection{QBall Imaging}
 
+
+
 \subsection{Constrained Spherical Deconvolution} 
 
 Constrained spherical deconvolution \citep{tournier-calamante-etal:07}, or CSD, is an algorithm for fitting the fiber ODF using a spherical harmonic basis function. Spherical harmonics (SH) are mathematical functions that can be used to construct an orthonormal basis function on the sphere. In analogy to the 1D time-domain, they can be thought of as a Fourier basis set on the surface of the sphere, which can be used to describe any spherical function (such as the dODF and fODF) up to the highest frequency (termed 'order' for SH) of the functions included in the set used as a basis set. Due to their practical mathematical properties, there have been several cases of using spherical harmonics to describe dMRI data, starting from the work of Larry Frank \citep{Frank2001, Frank2002}. CSD applies two major constraints on the fitting of the fODF. The first is that it applies a non-negativity constraint: fODF values that are smaller than 0 are non-physical and are precluded. The other is that CSD applies a sparseness constraint on the fODF - it assumes that only a few of the fODF values will be larger than 0. Applying these two constraints allows fitting the SH basis set up to very high orders - in essence fitting more parameters than data is present. This is known as 'super-resolution'.
- 
 
+\begin{python}
+from dipy.reconst.shm import
+          ConstrainedSphericalDeconvModel as CsdModel
+csd_model = CsdModel(gtab, response)
+\end{python}
+ 
 \section{Fiber tracking}
 
 \subsection{Deterministic}
@@ -497,7 +504,6 @@ def f(x):
 for i in range(10):
   print f(i)
 \end{python}
-
 
 
 \selectlanguage{british}%
