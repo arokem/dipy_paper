@@ -405,7 +405,9 @@ where \texttt{sphere} is an object holding the vertices and faces of the sphere.
 
 \subsection{QBall Imaging}
 
-Spherical harmonics (SH) are mathematical functions that can be used to construct an orthonormal basis function on the sphere. In analogy to the 1D time-domain, they can be thought of as a Fourier basis set on the surface of the sphere, which can be used to describe any spherical function (such as the ODF) up to the highest frequency (termed 'order' for SH) of the functions included in the set used as a basis set. Due to their practical mathematical properties, there have been several cases of using spherical harmonics to describe dMRI data, starting from the work of Larry Frank \citep{Frank2001, Frank2002}.
+Spherical harmonics (SH) are mathematical functions that can be used to construct an orthonormal basis for a function on the sphere. In practice, these can be used to approximate any spherical function (such as the ODF) up to a highest frequency (SH order). Due to their practical mathematical properties, there have been several cases of using spherical harmonics to describe dMRI data, starting from the work of \citet{Frank2001, Frank2002} and \citet{tuch-reese-etal:02}.
+
+
 
 \begin{python}
 from dipy.reconst.shm import QballModel
@@ -416,6 +418,10 @@ from dipy.reconst.odf import minmax_normalize
 qb_nodf = minmax_normalize(qb_odf)
 \end{python}
 
+
+\begin{python}
+
+\end{python}
 
 \subsection{Constrained Spherical Deconvolution}
 
