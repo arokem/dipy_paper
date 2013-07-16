@@ -2,6 +2,7 @@ import numpy as np
 import nibabel as nib
 from dipy.data import fetch_stanford_hardi, read_stanford_hardi, get_sphere
 from dipy.reconst.shm import CsaOdfModel, QballModel
+from dipy.reconst.csdeconv import ConstrainedSphericalDeconvModel, ConstrainedSDTModel
 from dipy.reconst.dti import TensorModel
 from dipy.viz import fvtk
 
