@@ -403,29 +403,37 @@ dsi_odf = dsi_fit.odf(sphere)
 \end{python}
 where \texttt{sphere} is an object holding the vertices and faces of the sphere. Here we used a symmetric sphere with 724 vertices. The \texttt{dsi\_odf} is an array of the 724 ODF values corresponding to the vertices of the sphere. Note at this point that in order to find the ODF we have to first create the diffusion propagator by applying the Fourier transform on the lattice. Nonetheless, Dipy for reasons explained before does not store the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way to calculate a slightly different ODF using the Cosine transform. This is available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The advantage of GQI is that it is much faster to calculate than DSI or DSID.
 
-\subsection{QBall Imaging}
+\subsection{Q-ball Imaging}
 
-Spherical harmonics (SH) are mathematical functions that can be used to construct an orthonormal basis for a function on the sphere. In practice, these can be used to approximate any spherical function (such as the ODF) up to a highest frequency (SH order). Due to their practical mathematical properties, there have been several cases of using spherical harmonics to describe dMRI data, starting from the work of \citet{Frank2001, Frank2002} and \citet{tuch-reese-etal:02}.
+Spherical harmonics (SH) are mathematical functions that can be used to construct an orthonormal basis for a function on the sphere. In practice, these can be used to approximate any spherical function (such as the ODF) up to a highest frequency (SH order). Due to their practical mathematical properties, there have been several cases of using spherical harmonics to describe dMRI data, starting from the work of \citet{Frank2001, Frank2002} and \citet{tuch-reese-etal:02}. In fact, Tuch showed that the Funk Radon Transform (FRT), used in a method he called q-ball imaging (QBI), reconstructs a smoothed version the ODF directly from a \emph{single spherical shell} dMRI acquisition. This q-ball ODF $\psi_{QBI}$ can be obtained analytically from a SH estimation of the diffusion signal \citep{descoteaux-angelino-etal:07, hess-mukherjee-etal:06, anderson:05}:
+\begin{equation}\label{eq.qball}
+\psi_{QBI}(\theta, \phi) = \sum_{j=1}^{R} 2\pi \frac{c_j}{S_0} P_{l(j)} (0) Y_{j} (\theta, \phi)
+\end{equation}
+where $P_{l(j)}$ is the Legendre polynomial of order $l$ corresponding to coefficient $j$ and the coefficients have been normalized by the S0 image. Hence, the q-ball ODF is a linear transformation of the SH coefficient, $c_j$. This technique is called analytical QBI (aQBI), in contrast to the original QBI solution, which performs the FRT numerically.
+The SH of order $l$ and phase $m$, $Y_{l}^{m}(\theta, \phi)$, arise from the angular solution to Laplace’s equation in spherical coordinates and they form an orthonormal basis for
+complex functions defined on the unit sphere. However, in single-shell acquisitions, S is real and symmetric. Hence, it is common to define a real and symmetric modified orthonormal SH basis, $Y_{j}$, using only even order terms and real/imaginary parts of $Y_{l}^{m}(\theta, \phi)$. Therefore, the measured signal S is estimated with a truncated SH series of order $l_{max}$, which has $R = (l_{max} +1)( l_{max} +2)/2$ terms. For example, for $l_{max} = 4, 6, 8, and 16$ SH series have $R = 15, 28, 45,$ and $153$ coefficients respectively.
 
-
-
+In Dipy we have implemented 3 different Q-ball methods in module \texttt{dipy.reconst.shm}: a) \citep{descoteaux-angelino-etal:07}, b) \citep{aganj-lenglet-etal:10} and c) \citep{tristan-vega-westin-etal:09}. For example (a) can be used in the following way:
 \begin{python}
 from dipy.reconst.shm import QballModel
-qb_model = QballModel(gtab, order=4, smooth=0.006)
+qb_model = QballModel(gtab, order=6, smooth=0.006)
 qb_fit = qb_model.fit(data)
 qb_odf = qb_fit.odf(sphere)
 from dipy.reconst.odf import minmax_normalize
 qb_nodf = minmax_normalize(qb_odf)
 \end{python}
-
-
+Important points here are that SH order needs to be $6$ and the regularization parameter $0.006$. Furthermore, because the analytical ODF method produces more rounded ODFs it is useful for visualization purposes to us min-max normalization. The SH coefficients are accessible using the attribute \texttt{qb\_fit.shm\_coeff}. Methods (b) and (c) can be used in a very similar way. For example, for the Constant Solid Angle (CSA) \citep{aganj-lenglet-etal:10} method (b) we only need to remove the normalization function and reduce the SH order as the CSA method becomes considerably noiser in higher orders:
 \begin{python}
-
+from dipy.reconst.shm import CsaOdfModel
+csa_model = CsaOdfModel(gtab, order=4,
+                        smooth=0.006)
+csa_odf = csamodel.fit(data).odf(sphere)
 \end{python}
+On a side note the term Constant Solid Angle derives from the fact that this method calculates the ODF with the radial distance in mind as we saw in eq.~\ref{eq:ODF_DSI}. The analytical Q-ball method does not integrate the $r^2$ term and therefore it generates more rounded ODFs that require normalization.
 
 \subsection{Constrained Spherical Deconvolution}
 
-Constrained spherical deconvolution \citep{tournier-calamante-etal:07}, or CSD, is an algorithm for fitting the fiber ODF using a spherical harmonic basis function.  CSD applies two major constraints on the fitting of the fODF. The first is that it applies a non-negativity constraint: fODF values that are smaller than 0 are non-physical and are precluded. The other is that CSD applies a sparseness constraint on the fODF - it assumes that only a few of the fODF values will be larger than 0. Applying these two constraints allows fitting the SH basis set up to very high orders - in essence fitting more parameters than data is present. This is known as 'super-resolution'.
+Constrained spherical deconvolution (CSD) \citep{tournier-calamante-etal:07}, is an algorithm for  the fiber ODF using a spherical harmonic basis function. CSD applies two major constraints on the fitting of the fODF. The first is that it applies a non-negativity constraint: fODF values that are smaller than 0 are non-physical and are precluded. The other is that CSD applies a sparseness constraint on the fODF - it assumes that only a few of the fODF values will be larger than 0. Applying these two constraints allows fitting the SH basis set up to very high orders - in essence fitting more parameters than data is present. This is known as 'super-resolution'.
 
 \begin{python}
 from dipy.reconst.csdeconv import
