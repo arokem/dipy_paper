@@ -411,7 +411,7 @@ Spherical harmonics (SH) are mathematical functions that can be used to construc
 \end{equation}
 where $P_{l(j)}$ is the Legendre polynomial of order $l$ corresponding to coefficient $j$ and the coefficients have been normalized by the S0 image. Hence, the q-ball ODF is a linear transformation of the SH coefficient, $c_j$. This technique is called analytical QBI (aQBI), in contrast to the original QBI solution, which performs the FRT numerically.
 The SH of order $l$ and phase $m$, $Y_{l}^{m}(\theta, \phi)$, arise from the angular solution to Laplace's equation in spherical coordinates and they form an orthonormal basis for
-complex functions defined on the unit sphere. However, in single-shell acquisitions, S is real and symmetric. Hence, it is common to define a real and symmetric modified orthonormal SH basis, $Y_{j}$, using only even order terms and real/imaginary parts of $Y_{l}^{m}(\theta, \phi)$. Therefore, the measured signal S is estimated with a truncated SH series of order $l_{max}$, which has $R = (l_{max} +1)( l_{max} +2)/2$ terms. For example, for $l_{max} = 4, 6, 8, and 16$ SH series have $R = 15, 28, 45,$ and $153$ coefficients respectively.
+complex functions defined on the unit sphere. However, in single-shell acquisitions, S is real and symmetric. Hence, it is common to define a real and symmetric modified orthonormal SH basis, $Y_{j}$, using only even order terms and real/imaginary parts of $Y_{l}^{m}(\theta, \phi)$. Therefore, the measured signal S is estimated with a truncated SH series of order $l_{max}$, which has $R = (l_{max} +1)( l_{max} +2)/2$ terms. For example, for $l_{max} = 4, 6, 8$, and $16$ SH series have $R = 15, 28, 45$, and $153$ coefficients respectively.
 
 In Dipy we have implemented 3 different Q-ball methods in module \texttt{dipy.reconst.shm}: a) \citep{descoteaux-angelino-etal:07}, b) \citep{aganj-lenglet-etal:10} and c) \citep{tristan-vega-westin-etal:09}. For example (a) can be used in the following way:
 \begin{python}
@@ -433,16 +433,33 @@ On a side note the term Constant Solid Angle derives from the fact that this met
 
 \subsection{Constrained Spherical Deconvolution}
 
-Constrained spherical deconvolution (CSD) \citep{tournier-calamante-etal:07}, is an algorithm for  the fiber ODF using a spherical harmonic basis function. CSD applies two major constraints on the fitting of the fODF.
+The method of spherical deconvolution \citep{tournier-calamante-etal:04} can be used to estimate the distribution of fibre orientations present within each voxel. With this method, the signal measured on single spherical shell acquisitions can be expressed as the convolution over spherical coordinates of the response function with the fiber orientation distribution. The response function describes the signal intensity that would be measured as a function of orientation for a single fiber aligned along the z-axis. In the spherical harmonics (SH) framework, the convolution operation is performed as follows. For each harmonic order $l$, the SH coefficients of the signal profile $S(\theta, \phi)$ and the FOD $F(\theta, \phi)$ are written as vectors $\mathbf{s}_l$ and $\mathbf{f}_l$ of length $2l+1$, whereas the rotational harmonic coefficients of the convolution kernel R (the response function) are written as a matrix $\mathbf{R}_l$ of size $(2l+ 1)\times(2l+ 1)$. The convolution operation then simply consists of one matrix multiplication per harmonic order l: $\mathbf{s}_l=\mathbf{R}\cdot\mathbf{f}_l$. The spherical deconvolution operation can be performed by simple matrix inversion. However, the spherical deconvolution problem is ill-posed and thus susceptible to noise.
 
+Constrained super-resolved spherical deconvolution (CSD) \citep{tournier-calamante-etal:07} give a robust solution to this problem by applying two major constraints on the fitting of the fODF. The first is that it applies a non-negativity constraint: fODF values that are smaller than 0 are non-physical and are precluded. The other is that CSD applies a sparseness constraint on the fODF - it assumes that only a few of the fODF values will be larger than 0. Applying these two constraints allows fitting the SH basis set up to very high orders - in essence fitting more parameters than data is present. This is known as \emph{super-resolution}. This super-resolved method can be accessed in Dipy using:
 \begin{python}
 from dipy.reconst.csdeconv import
         ConstrainedSphericalDeconvModel as CsdModel
 csd_model = CsdModel(gtab, response)
 \end{python}
+The main choice to be considered is the estimation of the single fiber response function.  We assume that $R$ is derived from a prolate tensor. The eigenvalues of this tensor are estimated from the voxels with FA $> 0.7$. The input parameter \texttt{response} is a tuple with two parameters: a) the eigen-values of the tensor and b) the estimated average S0 signal for those voxels. The response function is usually estimated from the corpus callosum areas. For further information on how to iniate the CSD please read our examples in \texttt{dipy.org}.
 
-The first is that it applies a non-negativity constraint: fODF values that are smaller than 0 are non-physical and are precluded. The other is that CSD applies a sparseness constraint on the fODF - it assumes that only a few of the fODF values will be larger than 0. Applying these two constraints allows fitting the SH basis set up to very high orders - in essence fitting more parameters than data is present. This is known as 'super-resolution'.
+Dipy also implements a second constrained spherical deconvolution method: The Spherical Deconvolution Transform (SDT) is a sharpening operation which transforms the smooth diffusion ODF into a sharper fiber ODF. The method is inspired by CSD \cite{tournier-calamante-etal:07} with, the main difference that the CSD is applied directly to the initial signal and the SDT directly to the ODF. 
 
+The idea here is that an ODF, for example the analytical Q-ball ODF $\psi_{QBI}$, can be formed by the convolution between the single fiber diffusion ODF kernel $R$ and the true fiber ODF $\psi_{SDT}$. 
+\begin{equation}
+\psi_{QBI}(\mathbf{u})=\displaystyle\int_{|w|=1} R(\mathbf{u} \cdot \mathbf{w}) \psi_{SDT}(\mathbf{w}) dw\label{eq:Conv}
+\end{equation}
+Therefore, the deconvolution of $\psi_{QBI}$ can recover a sharper $\psi_{SDT}$. We can derive the formula for the $\psi_{SDT}$ using symmetrized spherical harmonics.
+\begin{equation}
+\psi_{SDT}(\mathbf{u})=\displaystyle\sum_{j=1}^{R}2\pi P_{l_{j}}(0) \frac{c_j}{f_j}Y_{j}(\mathbf{u})\label{eq:ODF_SDT}
+\end{equation}
+For the derivation and explanation of the formula see \citep{descoteaux-deriche-etal:09}.
+\begin{python}
+from dipy.reconst.csdeconv import
+        ConstrainedSDTModel as SdtModel
+sdt_model = SdtModel(gtab, response)
+\end{python}
+Here the response function is given as a ratio .. 
 \section{Fiber tracking}
 
 \subsection{Deterministic}
