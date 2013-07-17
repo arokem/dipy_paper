@@ -106,7 +106,7 @@ csd_model = ConstrainedSphericalDeconvModel(gtab, response)
 
 csd_fit = csd_model.fit(data_small)
 
-csd_odf = csd_model.odf(sphere)
+csd_odf = csd_fit.odf(sphere)
 
 print 'Visualizing CSD ODFs ...'
 
