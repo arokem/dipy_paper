@@ -76,3 +76,45 @@ fvtk.record(ren, n_frames=1, out_path='csa_odfs_positive.png',
 fvtk.clear(ren)
 
 # Constrained Spherical Deconvolution
+
+tenmodel = TensorModel(gtab)
+
+ci, cj, ck = np.array(data.shape[:3]) / 2
+
+w = 10
+
+roi = data[ci - w: ci + w,
+           cj - w: cj + w,
+           ck - w: ck + w]
+
+tenfit = tenmodel.fit(roi)
+
+from dipy.reconst.dti import fractional_anisotropy
+
+FA = fractional_anisotropy(tenfit.evals)
+FA[np.isnan(FA)] = 0
+indices = np.where(FA > 0.7)
+lambdas = tenfit.evals[indices][:, :2]
+S0s = roi[indices][:, np.nonzero(gtab.b0s_mask)[0]]
+S0 = np.mean(S0s)
+l01 = np.mean(lambdas, axis=0)
+evals = np.array([l01[0], l01[1], l01[1]])
+
+response = (evals, S0)
+
+csd_model = ConstrainedSphericalDeconvModel(gtab, response)
+
+csd_fit = csd_model.fit(data_small)
+
+csd_odf = csd_model.odf(sphere)
+
+print 'Visualizing CSD ODFs ...'
+
+ren = fvtk.ren()
+fvtk.add(ren, fvtk.sphere_funcs(csd_odf, sphere, scale=1.3, norm=False, colormap='jet'))
+fvtk.show(ren)
+# print('Saving illustration as csa_odfs_positive.png')
+fvtk.record(ren, n_frames=1, out_path='csd_odfs.png',
+            size=(600, 600), magnification=4)
+fvtk.clear(ren)
+
