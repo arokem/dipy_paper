@@ -19,24 +19,6 @@ dtifit = dtimodel.fit(data_small)
 dtiodfs = dtifit.odf(sphere)
 
 
-def ellipsoids(evals, evecs, sphere):
-
-    from dipy.core.ndindex import ndindex
-
-    v = sphere.vertices
-    ellipsoid = np.zeros(evals.shape[:-1] + (v.shape[0],))
-    for index in ndindex(evals.shape[:-1]):
-        ea = np.diag(evals[index])
-        ev = evecs[index]
-
-        proj = np.dot(ea, v.T)
-
-        push = np.sqrt(proj[0, :]**2 + proj[1, :]**2 + proj[2, :]**2)
-        ellipsoid[index] = push
-
-    return ellipsoid
-
-
 ren = fvtk.ren()
 fvtk.add(ren, fvtk.sphere_funcs(dtiodfs, sphere, colormap=None))
 #fvtk.show(ren)
@@ -45,7 +27,7 @@ fvtk.record(ren, n_frames=1, out_path='tensorodfs.png',
 
 fvtk.clear(ren)
 
-fvtk.add(ren, fvtk.tensor(dtifit.evals, dtifit.evecs, sphere))
+fvtk.add(ren, fvtk.tensor(dtifit.evals, dtifit.evecs, sphere, autocolor=True))
 fvtk.show(ren)
 fvtk.record(ren, n_frames=1, out_path='ellipsoids.png',
             size=(600, 600), magnification=4)
