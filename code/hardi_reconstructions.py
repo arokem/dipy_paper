@@ -45,11 +45,9 @@ fvtk.record(ren, n_frames=1, out_path='tensorodfs.png',
 
 fvtk.clear(ren)
 
-els = ellipsoids(dtifit.evals, dtifit.evecs, sphere)
-
-fvtk.add(ren, fvtk.sphere_funcs(els, sphere, colormap=None, norm=False, radial_scale=True))
+fvtk.add(ren, fvtk.tensor(dtifit.evals, dtifit.evecs, sphere))
 fvtk.show(ren)
-fvtk.record(ren, n_frames=1, out_path='tensorodfs.png',
+fvtk.record(ren, n_frames=1, out_path='ellipsoids.png',
             size=(600, 600), magnification=4)
 
 1/0
