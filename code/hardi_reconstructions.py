@@ -32,8 +32,6 @@ fvtk.show(ren)
 fvtk.record(ren, n_frames=1, out_path='ellipsoids.png',
             size=(600, 600), magnification=4)
 
-1/0
-
 order = 4
 qballmodel = QballModel(gtab, order, smooth=0.006)
 print 'Computing the qball ODFs...'
