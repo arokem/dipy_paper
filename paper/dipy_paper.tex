@@ -461,12 +461,20 @@ sdt_model = SdtModel(gtab, response)
 \end{python}
 Here the response function is given as a ratio ..
 
-
-
-
 \section{Fiber tracking}
 
 \subsection{Deterministic}
+
+\subsubsection{EuDX}
+We created an algorithm that has many similarities with the classical deterministic methods~\cite{MCC+99,CLC+99,BPP+00} and with more recent ones as those described in Descoteaux et al.~\cite{Descoteaux2009} and briefly in Yeh et al.~\cite{Yeh2010}. Our concentration was to create a more general tractography algorithm which can be used
+with very different families of anistropic functions and work well in crossing areas. This algorithm which we call EuDX [REF] is applied usually in native space image coordinates and it assumes that the voxel dimensions are equal in all three dimensions. If the provided data do not have isotropic voxel size then a reslicing preprocessing step to isotropic is required. 
+
+In order to create tracks we need to provide initially one or more seed points $S$. These can be chosen randomly or we can specify them explicitly. However, these seed points need to be constrained by the volume's dimensions. Every seed point $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the integration we solve
+for $\mathbf{p}_{t}=\mathbf{p}_{0}+\int_{0}^{t}\mathbf{v}(\mathbf{p}(\mathbf{s}))d\mathbf{s}$ and we perform the integration numerically using Euler's method
+\begin{equation}
+\mathbf{p}_{n+1}=\mathbf{p}_{n}+\mathbf{v}(\mathbf{p}_{n})\Delta s\label{eq: euler}
+\end{equation}
+\noindent where $\Delta s$ is the propagation step size which should be at least smaller than the voxel size and $\mathbf{v}$ is the propagation direction. 
 
 \subsection{Probabilistic}
 
