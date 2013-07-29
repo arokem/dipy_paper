@@ -7,6 +7,7 @@
 \definecolor{deepblue}{rgb}{0,0,0.5}
 \definecolor{deepred}{rgb}{0.6,0,0}
 \definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{white}{rgb}{1,1,1}
 
 \usepackage{listings}
 \usepackage{setspace}
@@ -78,7 +79,8 @@ emphstyle={\color{self}\slshape},
 
 \usepackage{multirow}
 \usepackage{rotating}
-\usepackage{hyperref}
+%\usepackage{xcolor}
+\usepackage[pdfborder={0 0 0}]{hyperref}
 %\usepackage{units}
 
 \makeatletter
@@ -459,22 +461,30 @@ from dipy.reconst.csdeconv import
         ConstrainedSDTModel as SdtModel
 sdt_model = SdtModel(gtab, response)
 \end{python}
-Here the response function is given as a ratio ..
+Here the response function is given as a ratio ...
+
+\subsection{Peaks from models}
 
 \section{Fiber tracking}
 
 \subsection{Deterministic}
 
 \subsubsection{EuDX}
-We created an algorithm that has many similarities with the classical deterministic methods~\cite{MCC+99,CLC+99,BPP+00} and with more recent ones as those described in Descoteaux et al.~\cite{Descoteaux2009} and briefly in Yeh et al.~\cite{Yeh2010}. Our concentration was to create a more general tractography algorithm which can be used
-with very different families of anistropic functions and work well in crossing areas. This algorithm which we call EuDX [REF] is applied usually in native space image coordinates and it assumes that the voxel dimensions are equal in all three dimensions. If the provided data do not have isotropic voxel size then a reslicing preprocessing step to isotropic is required. 
+Euler Delta Crossings (EuDX)~\citep{Garyfallidis_thesis} is the first tracking method that was implemented in Dipy. We created an algorithm that has many similarities with the classical deterministic methods~\citep{Mori1999, conturo-lori-etal:99, basser-pajevic-etal:00} and with more recent ones as those described in Descoteaux et al.~\citep{descoteaux-deriche-etal:09} and Yeh et al.~\citep{yeh-etal:10}. Our concentration was to create a simple deterministic algorithm which can be used with very different families of reconstruction models, work well in crossing areas and be efficient so that it can be used for quick quality inspection. EuDX is applied usually in native space image coordinates and it assumes that the voxel dimensions are equal in all three dimensions. If the provided data do not have isotropic voxel size then a reslicing preprocessing step to isotropic is required.
 
-In order to create tracks we need to provide initially one or more seed points $S$. These can be chosen randomly or we can specify them explicitly. However, these seed points need to be constrained by the volume's dimensions. Every seed point $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the integration we solve
+In order to create tracks we need to provide initially one or more seed points $s$. These can be chosen randomly or we can specify them explicitly. However, these seed points need to be constrained by the volume's dimensions. Every seed point $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the integration we solve
 for $\mathbf{p}_{t}=\mathbf{p}_{0}+\int_{0}^{t}\mathbf{v}(\mathbf{p}(\mathbf{s}))d\mathbf{s}$ and we perform the integration numerically using Euler's method
 \begin{equation}
-\mathbf{p}_{n+1}=\mathbf{p}_{n}+\mathbf{v}(\mathbf{p}_{n})\Delta s\label{eq: euler}
+\mathbf{p}_{n+1}=\mathbf{p}_{n}+\mathbf{v}(\mathbf{p}_{n})\Delta s\label{eq:euler}
 \end{equation}
-\noindent where $\Delta s$ is the propagation step size which should be at least smaller than the voxel size and $\mathbf{v}$ is the propagation direction. 
+\noindent where $\Delta s$ is the propagation step size which should be at least smaller than the voxel size and $\mathbf{v}$ is the propagation direction.
+\begin{python}
+from dipy.tracking.eudx import EuDX
+eu = EuDX(FA, peak_indices,
+          odf_vertices = sphere.vertices,
+          a_low=0.2)
+tensor_streamlines = [line for line in eu]
+\end{python}
 
 \subsection{Probabilistic}
 
