@@ -464,6 +464,18 @@ sdt_model = SdtModel(gtab, response)
 Here the response function is given as a ratio ...
 
 \subsection{Peaks from models}
+In the previous sections we saw how the reconstruction models have a uniform API and can be called in similar ways. For example, they all have an odf() method. This design gives us the opportunity to create utility functions where the model is one of the parameters. \texttt{peaks\_from\_model} is a multipurpose function which can be used to a) find the maxima (peaks) of the ODFs, b) find the directions of the maxima in the ODFs, c) compress the ODFs as spherical harmonics and d) calculate many metrics simultaneously and on the fly, e.g. generalized fractional anisotropy, without the need of creating all ODFs at once.
+\begin{python}
+from dipy.reconst.odf import peaks_from_model
+pmd = peaks_from_model(model=odf_model,
+                       data=data,
+                       sphere=sphere,
+                       relative_peak_threshold=.8,
+                       min_separation_angle=45,
+                       mask=mask,
+                       return_odf=False,
+                       return_sh=True)
+\end{python}
 
 \section{Fiber tracking}
 
@@ -472,21 +484,21 @@ Here the response function is given as a ratio ...
 \subsubsection{EuDX}
 Euler Delta Crossings (EuDX)~\citep{Garyfallidis_thesis} is the first tracking method that was implemented in Dipy. We created an algorithm that has many similarities with the classical deterministic methods~\citep{Mori1999, conturo-lori-etal:99, basser-pajevic-etal:00} and with more recent ones as those described in Descoteaux et al.~\citep{descoteaux-deriche-etal:09} and Yeh et al.~\citep{yeh-etal:10}. Our concentration was to create a simple deterministic algorithm which can be used with very different families of reconstruction models, work well in crossing areas and be efficient so that it can be used to quickly inspect the reconstruction results. EuDX is applied usually in native space image coordinates and it assumes that the voxel dimensions are equal in all three dimensions. If the provided data do not have isotropic voxel size then a reslicing preprocessing step to isotropic is required.
 
-In order to create streamlines we need to provide initially one or more seed points $s$. These can be chosen randomly or we can specify them explicitly. However, these seed points need to be constrained by the volume's dimensions. Every seed point $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the integration we solve
+In order to create streamlines we need to provide initially one or more seed points $s$. The points from where the streamlines will start growing. These can be chosen randomly or we can specify them explicitly. However, these seed points need to be constrained by the volume's dimensions. Every seed point $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the integration we solve
 for $\mathbf{p}_{t}=\mathbf{p}_{0}+\int_{0}^{t}\mathbf{v}(\mathbf{p}(\mathbf{s}))d\mathbf{s}$ and we perform the integration numerically using Euler's method
 \begin{equation}
 \mathbf{p}_{n+1}=\mathbf{p}_{n}+\mathbf{v}(\mathbf{p}_{n})\Delta s\label{eq:euler}
 \end{equation}
-\noindent where $\Delta s$ is the propagation step size which should be at least smaller than the voxel size and $\mathbf{v}$ is the propagation direction. Furthermore, EuDX uses trilinear interpolation for the calculation the next direction integrating directional information from the surrounding voxels.
+\noindent where $\Delta s$ is the propagation step size which should be at least smaller than the voxel size and $\mathbf{v}$ is the propagation direction. Furthermore, EuDX uses trilinear interpolation for the calculation of the next direction integrating directional information from the surrounding voxels.
 
 The first parameter of EuDX can be an array of dimensions $X\times Y\times Z$ like FA or $X\times Y\times Z \times W$ like the ODF, or quantitative anisotropy (QA)~\citep{yeh-etal:10}. These arrays can be used for stopping the propagation if the value in the current voxel is lower than \texttt{a\_low}. For efficiency, the peak directions are discretized on a unit sphere. For this purpose, the second parameter is another array of dimensions $X\times Y\times Z$ or $X\times Y\times Z\times W$ but this time these are the indices of the directions approximated on the sphere. An example is given here for tensor based streamlines:
 \begin{python}
 from dipy.tracking.eudx import EuDX
-eu = EuDX(a=FA, ind=peak_indices, seeds=start_rois,
+eu = EuDX(a=FA, ind=peak_indices, seeds=10**4,
           sphere=sphere, a_low=0.2)
 tensor_streamlines = [line for line in eu]
 \end{python}
-The input parameter \texttt{seeds} can be given as an integer and this will generate random seeds in the entire volume or it can be given as $N\times 3$ array of seed points. The instance of EuDX returns back an iterator.
+The input parameter \texttt{seeds} can be given as an integer, this will generate random seeds in the entire volume, or it can be given as $N\times 3$ array of seed points. This last explicit specification of seed points has the advantage that it allows us to seed from specific ROIs or from the gray matter - white matter boundary which has been shown to generate more robust tracking results \citep{Cote2013tractometer}. The instance of EuDX returns back an iterator. In every call of the iterator a new streamline is returned. This technique allows to save directly streamlines in the disk without loading all streamlines in memory.
 
 \subsection{Probabilistic}
 
