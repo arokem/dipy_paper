@@ -445,7 +445,7 @@ csd_model = CsdModel(gtab, response)
 \end{python}
 The main choice to be considered is the estimation of the single fiber response function.  We assume that $R$ is derived from a prolate tensor. The eigenvalues of this tensor are estimated from the voxels with FA $> 0.7$. The input parameter \texttt{response} is a tuple with two parameters: a) the eigen-values of the tensor and b) the estimated average S0 signal for those voxels. The response function is usually estimated from the corpus callosum areas. For further information on how to iniate the CSD please read our examples in \texttt{dipy.org}.
 
-Dipy also implements a second constrained spherical deconvolution method: The Spherical Deconvolution Transform (SDT) is a sharpening operation which transforms the smooth diffusion ODF into a sharper fiber ODF. The method is inspired by CSD \cite{tournier-calamante-etal:07} with, the main difference that the CSD is applied directly to the initial signal and the SDT directly to the ODF.
+Dipy also implements a second constrained spherical deconvolution method: The Spherical Deconvolution Transform (SDT) is a sharpening operation which transforms the smooth diffusion ODF into a sharper fiber ODF. The method is inspired by CSD \cite{tournier-calamante-etal:07} with, the main difference that the CSD is applied directly to the initial signal and the SDT directly to the ODF \citep{descoteaux:08}.
 
 The idea here is that an ODF, for example the analytical Q-ball ODF $\psi_{QBI}$, can be formed by the convolution between the single fiber diffusion ODF kernel $R$ and the true fiber ODF $\psi_{SDT}$.
 \begin{equation}
@@ -461,7 +461,7 @@ from dipy.reconst.csdeconv import
         ConstrainedSDTModel as SdtModel
 sdt_model = SdtModel(gtab, ratio)
 \end{python}
-Here the response function is given as the ratio of the smallest eigenvalue over the largest eigenvalue.
+Here the response function is provided as a scalar parameter, the ratio of the smallest eigenvalue over the largest eigenvalue. Both spherical deconvolution methods perform similarly \citep{GaryfallidisISBI2013a}.
 
 \subsection{Peaks from models}
 In the previous sections we showed that the reconstruction models have a uniform API and can be called in similar ways. For example, they all have an odf() method. This design gives us the opportunity to create utility functions where the model is one of the parameters. \texttt{peaks\_from\_model} is a multipurpose function which can be used to a) find the maxima (peaks) of the ODFs, b) find the directions of the maxima in the ODFs which can be useful for tracking, c) discretize those directions on the unit sphere for efficiency, d) compress the ODFs as spherical harmonics to reduce memory usage and e) calculate many metrics simultaneously, e.g. generalized fractional anisotropy (GFA), without the need of creating all ODFs at once. \texttt{peaks\_from\_model} can be called as:
@@ -475,17 +475,19 @@ pmd = peaks_from_model(model=dsi_model,
                        mask=mask,
                        return_odf=False,
                        return_sh=True)
-GFa = pmd.gfa
+gfa = pmd.gfa
 \end{python}
 The model parameter can be any of the models discussed in the previous sections e.g. \texttt{dsi\_model}. The \texttt{relative\_peak\_threshold} parameter enforces that only peaks
-greater than \texttt{relative\_peak\_threshold}$*m$ will be returned, where $m$ is the value of the largest peak. \texttt{min\_separation\_angle} sets the threshold for the minimum angular distance in degrees between two peaks. If the peaks are closer than this threshold only the larger of the two is returned. This two parameters help to get robust fiber directions when the ODFs are noisy. \texttt{peaks\_from\_model} returns a \texttt{PeaksAndMetrics} object which holds all the different output arrays.
+greater than \texttt{relative\_peak\_threshold}$*m$ will be returned, where $m$ is the value of the largest peak. \texttt{min\_separation\_angle} sets the threshold for the minimum angular distance in degrees between two peaks. If the peaks are closer than this threshold only the larger of the two is returned. This two parameters help to get robust fiber directions when the ODFs are noisy. \texttt{peaks\_from\_model} returns a \texttt{PeaksAndMetrics} object which holds all the different output arrays, \texttt{peak\_values},
+\texttt{peak\_indices}, \texttt{gfa} \citep{tuch:04}, \texttt{qa} \citep{yeh-etal:10}, \texttt{odf} and \texttt{shm\_coeff}.
 
-If the parameter \texttt{return\_sh} is set to True then the ODFs will be represented by their SH expansion. This serves as a memory usage reduction strategy as the SH coefficients need much less memory than the ODF represented on the sphere. If we want to calculate the ODF back from the SH coefficients we can use the function \texttt{sh\_to\_sf}.
+If the parameter \texttt{return\_sh} is set to True then the ODFs will be represented by their SH expansion. This serves as a memory usage reduction strategy as the SH coefficients need much less memory than the ODF represented on the sphere. If we want to calculate the ODF back from the SH coefficients we can use the function \texttt{sh\_to\_sf}:
 \begin{python}
 odf_sh = pmd.shm_coeff
 from dipy.reconst.shm import sh_to_sf
-odf = sh_to_sf(odf_sh, sphere)
+odf = sh_to_sf(odf_sh, sphere, sh_order=8)
 \end{python}
+
 
 \section{Fiber tracking}
 \subsection{Deterministic}
@@ -512,8 +514,14 @@ The input parameter \texttt{seeds} can be given as an integer, this will generat
 \subsection{Probabilistic}
 
 \section{Post-tracking}
-
-\subsection{Segmentation}
+In this sections we describe some of the tools available for processing streamlines.
+\subsection{Streamline clustering}
+\begin{python}
+from dipy.segment import QuickBundles
+qb = QuickBundles(streamlines, dist_thr=20.,
+                  pts=18)
+qb.centroids
+\end{python}
 
 \subsection{ROIs - streamlines intersections}
 
@@ -525,7 +533,7 @@ Talk about lenghts and other metrics on streamlines
 
 \section{Discussion/Conclusion}
 
-We have described the Dipy library for analysis of diffusion MRI data. Dipy is a part of the Neuroimaging in Python community (http://nipy.org), a growing community of scientists and developers who are participating in the development of open source software for neuroimaging written in the Python language  . One major source of support for this community comes in the form of the Neurodebian distribution \citep{Halchenko2012}. Neurodebian is a platform for maintenance and deployment of software for the analysis of neuroscience data, based on free open source software (FOSS) practices.
+We have described the Dipy library for analysis of diffusion MRI data. Dipy is a part of the Neuroimaging in Python community (http://nipy.org), a growing community of scientists and developers who are participating in the development of open source software for neuroimaging written in the Python language. One major source of support for this community comes in the form of the Neurodebian distribution \citep{Halchenko2012}. Neurodebian is a platform for maintenance and deployment of software for the analysis of neuroscience data, based on free open source software (FOSS) practices.
 
 \begin{figure*}
 \centerline{\includegraphics[width=180mm]{Figures/ten_csa_csd.eps}}
