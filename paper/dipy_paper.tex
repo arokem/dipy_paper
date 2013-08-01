@@ -459,15 +459,15 @@ For the derivation and explanation of the formula see \citep{descoteaux-deriche-
 \begin{python}
 from dipy.reconst.csdeconv import
         ConstrainedSDTModel as SdtModel
-sdt_model = SdtModel(gtab, response)
+sdt_model = SdtModel(gtab, ratio)
 \end{python}
-Here the response function is given as a ratio ...
+Here the response function is given as the ratio of the smallest eigenvalue over the largest eigenvalue.
 
 \subsection{Peaks from models}
-In the previous sections we saw how the reconstruction models have a uniform API and can be called in similar ways. For example, they all have an odf() method. This design gives us the opportunity to create utility functions where the model is one of the parameters. \texttt{peaks\_from\_model} is a multipurpose function which can be used to a) find the maxima (peaks) of the ODFs, b) find the directions of the maxima in the ODFs, c) compress the ODFs as spherical harmonics and d) calculate many metrics simultaneously and on the fly, e.g. generalized fractional anisotropy, without the need of creating all ODFs at once.
+In the previous sections we showed that the reconstruction models have a uniform API and can be called in similar ways. For example, they all have an odf() method. This design gives us the opportunity to create utility functions where the model is one of the parameters. \texttt{peaks\_from\_model} is a multipurpose function which can be used to a) find the maxima (peaks) of the ODFs, b) find the directions of the maxima in the ODFs which can be useful for tracking, c) discretize those directions on the unit sphere for efficiency, d) compress the ODFs as spherical harmonics to reduce memory usage and e) calculate many metrics simultaneously, e.g. generalized fractional anisotropy (GFA), without the need of creating all ODFs at once. \texttt{peaks\_from\_model} can be called as:
 \begin{python}
 from dipy.reconst.odf import peaks_from_model
-pmd = peaks_from_model(model=odf_model,
+pmd = peaks_from_model(model=dsi_model,
                        data=data,
                        sphere=sphere,
                        relative_peak_threshold=.8,
@@ -475,10 +475,19 @@ pmd = peaks_from_model(model=odf_model,
                        mask=mask,
                        return_odf=False,
                        return_sh=True)
+GFa = pmd.gfa
+\end{python}
+The model parameter can be any of the models discussed in the previous sections e.g. \texttt{dsi\_model}. The \texttt{relative\_peak\_threshold} parameter enforces that only peaks
+greater than \texttt{relative\_peak\_threshold}$*m$ will be returned, where $m$ is the value of the largest peak. \texttt{min\_separation\_angle} sets the threshold for the minimum angular distance in degrees between two peaks. If the peaks are closer than this threshold only the larger of the two is returned. This two parameters help to get robust fiber directions when the ODFs are noisy. \texttt{peaks\_from\_model} returns a \texttt{PeaksAndMetrics} object which holds all the different output arrays.
+
+If the parameter \texttt{return\_sh} is set to True then the ODFs will be represented by their SH expansion. This serves as a memory usage reduction strategy as the SH coefficients need much less memory than the ODF represented on the sphere. If we want to calculate the ODF back from the SH coefficients we can use the function \texttt{sh\_to\_sf}.
+\begin{python}
+odf_sh = pmd.shm_coeff
+from dipy.reconst.shm import sh_to_sf
+odf = sh_to_sf(odf_sh, sphere)
 \end{python}
 
 \section{Fiber tracking}
-
 \subsection{Deterministic}
 
 \subsubsection{EuDX}
