@@ -122,16 +122,7 @@ Nimmo-Smith]{Eleftherios~Garyfallidis\,$^{1,2,*}$, Matthew~Brett\,$^{3}$,
 \begin{abstract}
 \noindent
 
-Diffusion Imaging in Python (Dipy) is a free and open source software
-project for the analysis of data from diffusion magnetic resonance
-imaging (dMRI) experiments. DMRI is an application of MRI that can be
-used to measure the micro-structure of the white matter in the human
-brain \emph{in vivo}. It utilizes pulsed directionally oriented
-magnetic gradients to estimate diffusion in different directions and
-locations in the brain non-invasively. Many methods have been developed
-to model the local configuration of nerve fibers in the white matter
-based on this information and to infer the trajectory of nerve fascicles
-connecting different parts of the brain.
+Diffusion Imaging in Python (Dipy) is a free and open source software project for the analysis of data from diffusion magnetic resonance imaging (dMRI) experiments. DMRI is an application of MRI that can be used to measure the micro-structure of the white matter in the human brain \emph{in vivo}. It utilizes pulsed directionally oriented magnetic gradients to estimate diffusion in different directions and locations in the brain non-invasively. Many methods have been developed to model the local configuration of nerve fibers in the white matter based on this information and to infer the trajectory of nerve fascicles connecting different parts of the brain.
 
 Dipy gathers implementations  of many different methods, where they can be easily understood and compared. Dipy aims to provide transparent implementations for all the different steps of dMRI analysis with a uniform API. We have implemented classical signal reconstruction techniques, such as the diffusion tensor model and deterministic fiber tractography. In addition, it implements cutting edge novel reconstruction techniques,
 such as constrained spherical deconvolution and diffusion spectrum imaging with deconvolution, as well as methods for probabilistic tracking and unique methods for tractography clustering. Many additional utility functions, to calculate various statistics of dMRI data, visualization functions, as well as file-handling routines exist to assist in the development and use of novel techniques.
@@ -322,10 +313,6 @@ S(\mathbf{q},t)=S_{0}\int P(\mathbf{r},t)e^{i\mathbf{q}\cdot\mathbf{r}}d\mathbf{
 In theory, if we apply the Fourier transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion propagator) for every voxel. In practice, unfeasibly long acquisition time is required and perfect experimental conditions. Therefore, a discrete method called Diffusion Spectrum Imaging(DSI) has been used (see section \ref{dsi}).
 Nonetheless DSI still needs long acquisitions. An alternative is to work on reconstructing only a spherical projection of the 3D PDF. This often called the diffusion orientation distribution function (dODF) or simply ODF. Another alternative is to make assumptions about the distribution of the PDF. In this later category belongs the most popular imaging method in dMRI: Diffusion Tensor Imaging (DTI).
 
-%For Ariel: I commented out this part talking about the fODF because I think it will create a confusion with our current terminology. I will only talk quickly about the fODF on the CSD section. Tournier introduced this term but I don't think that he actually solved any problem. The fODF is nothing more than a sharpened ODF with some constrains. But definitely it is not a representation of the actual fiber. I think we should try to use this term at the minimum.
-%In addition, the diffusion surface in every voxel is used to infer the spatial geometry of the underlying tissue. This is referred to as the fiber orientation distribution function (fODF, sometimes also referred to as the FOD). Different algorithms to reconstruct the dODF and fODF have different advantages in describing the data and Dipy contains implementations of several of these algorithms. In what follows, we will review the different reconstruction algorithms that are implemented in Dipy and demonstrate the use of these implementations with code examples.
-
-
 \subsection{Diffusion Tensor Imaging}\label{dti}
 
 Often people assume that DTI and dMRI are synonymous. This is not correct. In DTI there is a crucial assumption that the propagator is described only by a 3D Gaussian distribution. With this assumption from eq.~\ref{eq:fourier} we can write
@@ -334,9 +321,37 @@ P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{
 \end{equation}
 \noindent where $\mathbf{D}$ is known as the diffusion tensor. This tensor is a $3x3$ positive definite symmetric matrix that can be completely described by a centered ellipsoid with 3 principal axes and associated eigenvalues $\lambda_{1},\lambda_{2},\lambda_{3}$.
 
-DTI was first proposed by Basser and colleagues \citep{basser-mattiello-etal:94} and has since been very influential in demonstrating the utility of dMRI in characterizing the micro-structure of white matter tissue. The model relies on the assumption that diffusion is a Gaussian process. Using this assumption the dODF can be modeled with 6 parameters, describing the variance and covariance of the Gaussian diffusion along the three primary axes. From these parameters, several useful measures can be derived: the primary diffusion direction, which in some places in the brain (e.g. in the corpus callosum, the large fiber bundle in the center of the brain that connects the two hemispheres) corresponds to the direction of the white matter fibers in the voxel. Other useful measures quantify the diffusivity along this primary direction and along other directions, as well as the mean diffusivity. The variation in diffusivity along different directions can be. These measures (mean diffusivity, or MD and fractional anisotropy, or FA) are often used to describe the biophysical properties of the underlying tissue. Though many have resorted to describing FA as a measure of "tissue integrity", there is no real basis. Though the density of the tissue and in particular the density of the myelin wrapping the axons in the voxel may affect MD and FA, changes in other factors, such as the dispersion of fiber directions in the voxel crossing may also increase or decrease these measures \citep{wandell-yeatman:13}. Therefore, interpretation of group differences in FA, or longitudinal changes in FA over time should be carefully handled and compared to the results from other modeling techniques [REFERENCES e.g. DTI hitch hiker's guide].
+DTI was first proposed by Basser and colleagues \citep{basser-mattiello-etal:94} and has since been very influential in demonstrating the utility of dMRI in characterizing the micro-structure of white matter tissue. The model relies on the assumption that diffusion is a Gaussian process. Using this assumption the dODF can be modeled with 6 parameters, describing the variance and covariance of the Gaussian diffusion along the three primary axes. From these parameters, several useful measures can be derived: the primary diffusion direction is the primary eigen-value of the tensor, $\lambda_{1}$ and it is the direction in which variance in the diffusion distribution is largest. In some places in the brain (e.g. in the corpus callosum, the large fiber bundle in the center of the brain that connects the two hemispheres) this corresponds to the direction of the white matter fibers in the voxel and can be used for tracking \citep{conturo-lori-etal:99, Mori1999, Basser2000}. Other univariate measures are estimated from the parameters of the model to assess the biophysical properties of the underlying tissue. The diffusivity along the primary direction (referred to as axial diffusivity, or AD) and along
+other directions (radial diffusivity, or RD), as well as the mean diffusivity (MD) are thought to index proportions of extra-cellular and intra-cellular water within the voxel. For  xample, MD is commonly used in the diagnosis of acute ischemic stroke, because these types of brain injury are characterized by cell-body swelling. The reduction in extracellular water fraction results in a decrease in MD in the affected regions \citep{Maas2005}.
 
-That said, these measures are popular among users of dMRI and also quite useful in the sense that behavioral variance in a variety of measures can be predicted based on these measures [REF]. Fitting the tensor model and computing univariate statistics from it in Dipy is straightforward. In the following example, we show how the tensor model is fit to data and how univariate measures can be computed.
+The fractional anistropy (FA) is a normalized measure of the variation in
+diffusivity between different directions and was originally thought to index
+the organization of the tissue within the voxel \cite{Basser1996}. Later
+studies in animal models demonstrated that FA decreases when demyelination
+occurs \cite{Song2002}, because of increases in radial diffusivity. These
+studies showed that in the white matter degree of myelination is an important
+factor in limiting diffusion of water across cellular compartments. In
+addition, tissue density affects both the radial and the axial diffusivity, and
+loss of nerve fiber tissue also results in a decrease in FA \cite{Beaulieu1996,
+  Beaulieu2002}. As a consequence of these studies, researchers now routinely
+refer to FA as a measure of "tissue integrity". However, we strongly warn
+against this usage, because it is easy to show that though the density of the
+tissue and the density of the myelin wrapping the axons in the voxel may affect
+both MD and FA, changes in other factors, such as the distribution of
+directions of crossing of fiber populations throught the voxel may also affect
+these measures \citep{Basser1996,wandell-yeatman:13}. Therefore, interpretation
+of group differences in FA, or longitudinal changes in FA over time should be
+carefully handled and compared to the results from other modeling techniques,
+that better account for the distribution of fiber orientations in the voxel
+(see below).
+
+That said, the use of DT-based univariate statistics is very popular among
+users of dMRI and also quite useful. That is, variance in a variety of
+behavioral \citep{Ben-Shachar2007} and clinical \citep{Thomason2011} measures
+can be predicted based, suggesting that they are reporting on meaningful and
+impactful variability in brain structure.
+
+Fitting the tensor model and computing univariate statistics from it in Dipy is straightforward. In the following example, we show how the tensor model is fit to data and how univariate measures can be computed.
 
 First, \texttt{data}, \texttt{mask} and \texttt{gtab} are created as we saw in section \ref{loadsave}. Next, we can import the diffusion tensor model class and initialize a \texttt{TensorModel} class instance with the name \texttt{ten\_model}:
 \begin{python}
