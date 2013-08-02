@@ -324,32 +324,11 @@ P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{
 DTI was first proposed by Basser and colleagues \citep{basser-mattiello-etal:94} and has since been very influential in demonstrating the utility of dMRI in characterizing the micro-structure of white matter tissue. The model relies on the assumption that diffusion is a Gaussian process. Using this assumption the dODF can be modeled with 6 parameters, describing the variance and covariance of the Gaussian diffusion along the three primary axes. From these parameters, several useful measures can be derived: the primary diffusion direction is the primary eigen-value of the tensor, $\lambda_{1}$ and it is the direction in which variance in the diffusion distribution is largest. In some places in the brain (e.g. in the corpus callosum, the large fiber bundle in the center of the brain that connects the two hemispheres) this corresponds to the direction of the white matter fibers in the voxel and can be used for tracking \citep{conturo-lori-etal:99, Mori1999, Basser2000}. Other univariate measures are estimated from the parameters of the model to assess the biophysical properties of the underlying tissue. The diffusivity along the primary direction (referred to as axial diffusivity, or AD) and along
 other directions (radial diffusivity, or RD), as well as the mean diffusivity (MD) are thought to index proportions of extra-cellular and intra-cellular water within the voxel. For  xample, MD is commonly used in the diagnosis of acute ischemic stroke, because these types of brain injury are characterized by cell-body swelling. The reduction in extracellular water fraction results in a decrease in MD in the affected regions \citep{Maas2005}.
 
-The fractional anistropy (FA) is a normalized measure of the variation in
-diffusivity between different directions and was originally thought to index
-the organization of the tissue within the voxel \cite{Basser1996}. Later
-studies in animal models demonstrated that FA decreases when demyelination
-occurs \cite{Song2002}, because of increases in radial diffusivity. These
-studies showed that in the white matter degree of myelination is an important
-factor in limiting diffusion of water across cellular compartments. In
-addition, tissue density affects both the radial and the axial diffusivity, and
-loss of nerve fiber tissue also results in a decrease in FA \cite{Beaulieu1996,
-  Beaulieu2002}. As a consequence of these studies, researchers now routinely
-refer to FA as a measure of "tissue integrity". However, we strongly warn
-against this usage, because it is easy to show that though the density of the
-tissue and the density of the myelin wrapping the axons in the voxel may affect
-both MD and FA, changes in other factors, such as the distribution of
-directions of crossing of fiber populations throught the voxel may also affect
-these measures \citep{Basser1996,wandell-yeatman:13}. Therefore, interpretation
-of group differences in FA, or longitudinal changes in FA over time should be
-carefully handled and compared to the results from other modeling techniques,
-that better account for the distribution of fiber orientations in the voxel
+The fractional anistropy (FA) is a normalized measure of the variation in diffusivity between different directions and was originally thought to index the organization of the tissue within the voxel \cite{Basser1996}. Later studies in animal models demonstrated that FA decreases when demyelination occurs \cite{Song2002}, because of increases in radial diffusivity. These studies showed that in the white matter degree of myelination is an important factor in limiting diffusion of water across cellular compartments. In addition, tissue density affects both the radial and the axial diffusivity, and loss of nerve fiber tissue also results in a decrease in FA \cite{Beaulieu1996, Beaulieu2002}. As a consequence of these studies, researchers now routinely refer to FA as a measure of "tissue integrity". However, we strongly warn against this usage, because it is easy to show that though the density of the tissue and the density of the myelin wrapping the axons in the voxel may affect both MD and FA, changes in other factors, such as the distribution of directions of crossing of fiber populations throught the voxel may also affect these measures \citep{Basser1996,wandell-yeatman:13}. Therefore, interpretation
+of group differences in FA, or longitudinal changes in FA over time should be carefully handled and compared to the results from other modeling techniques, that better account for the distribution of fiber orientations in the voxel
 (see below).
 
-That said, the use of DT-based univariate statistics is very popular among
-users of dMRI and also quite useful. That is, variance in a variety of
-behavioral \citep{Ben-Shachar2007} and clinical \citep{Thomason2011} measures
-can be predicted based, suggesting that they are reporting on meaningful and
-impactful variability in brain structure.
+That said, the use of DT-based univariate statistics is very popular among users of dMRI and also quite useful. That is, variance in a variety of behavioral \citep{Ben-Shachar2007} and clinical \citep{Thomason2011} measures can be predicted based, suggesting that they are reporting on meaningful and impactful variability in brain structure.
 
 Fitting the tensor model and computing univariate statistics from it in Dipy is straightforward. In the following example, we show how the tensor model is fit to data and how univariate measures can be computed.
 
@@ -373,7 +352,7 @@ It is common to represent the primary diffusion direction using an RGB represent
 from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
 \end{python}
-Finally, a few more points about the implementation of DTI. The first is that there is still ongoing research on fitting methods for the tensor model \citep{Koay2006}. Several different methods have been implemented, including non-linear least-squares, ordinary least-squares and weighted least-squares fitting \citep{chung-lu-etal:06}. In addition, there is ongoing research on methods to robustly fit the tensor model, in the face of noisy data \citep{Chang2005, Chang2012}. %An implementation of a robust tensor fitting algorithm (RESTORE) is currently in development and should be in the distributed code in version 0.7 of the software.
+Finally, a few more points about the implementation of DTI. The first is that there is still ongoing research on fitting methods for the tensor model \citep{Koay2006}. Several different methods have been implemented, including non-linear least-squares, ordinary least-squares and weighted least-squares fitting \citep{chung-lu-etal:06}. In addition, there is ongoing research on methods to robustly fit the tensor model, in the face of noisy data \citep{Chang2005, Chang2012}. An implementation of a robust tensor fitting algorithm (RESTORE) will be in version 0.7 of the software.
 
 The second is that many more univariate measures have been implemented. Not only can users compute FA, MD, DEC, but also other statistics that have been proposed in the literature, such as the diffusion linearity, planarity and sphericity \citep{westin:97}, as well as the tensor mode, tensor norm \cite{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics are available under the \texttt{dipy.reconst.dti} module.
 
