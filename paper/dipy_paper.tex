@@ -355,10 +355,40 @@ approximate the underlying anatomy.
 
 \section{General design aspects}
 
-API (module diagram), Git/Github, continuous integration, sphinx for
-documentation, nosetests for testing
+Dipy is built on the SciPy tool stack, which includes packages such as
+\tt{numpy} (numerical arrays and array computation), \tt{scipy}
+(scientific libraries, e.g. optimization, triangulation, special functions,
+and more) and Cython (an optimized Python to C compiler, used to achieve
+native performance).  Furthermore, it integrates into the NiPy (neuroimaging
+in Python) eco-system of software.
 
-Need a diagram with the base (numpy, nibabel) and the rest of the modules on top.
+DiPy's API is designed with the aim to be intuitive, simple to use, and well
+documented.  This allows researchers to rapidly construct even complex
+computational experiments while retaining code readability.  In addition,
+since the code is entirely free and open, Dipy is ideally suited to facilitate
+reproducible research.
+
+Like many modern open source projects, Dipy is hosted on GitHub---an online
+version of the Git revision control system.  Changes are made via a Pull
+Request (PR) mechanism, whereby submissions can be proposed, discussed and
+iterated upon before being included finally.  The discussions also allow for
+line-by-line comments to be made by any interested developer.
+
+To assist developers, Dipy uses the Travis continuous integration system.  Any
+time a new PR is proposed, Travis commissions a new virtual machine, installs
+the necessary dependencies, builds a clean copy of DiPy, and runs Dipy's
+test suite against the new changes.  Only if no failures are reported will the
+new code be considered for inclusion.  Dipy also follows a test-driven
+development philosophy, whereby all code should be accompanied by a suite of
+tests to exercize all corner cases.
+
+For documentation, Dipy utilizes Sphinx, the same system employed by the main
+Python project.  Sphinx takes plain-text ReStructuredText as input and
+converts it to either HTML, LaTeX or PDF formats.  API documentation is
+extracted directly from the docstrings in the source code, so that it is never
+outdated.
+
+TODO: Need a diagram with the base (numpy, nibabel) and the rest of the modules on top.
 
 Dipy contains the following modules
 
