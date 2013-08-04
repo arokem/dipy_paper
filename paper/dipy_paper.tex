@@ -217,12 +217,12 @@ TractoR \citep{ clayden-TractoR:11}, Java: Camino \citep{Cook2006} and Matlab:
 ExploreDTI \citep{leemans-exploredti:09}, AFQ \citep{yeatman2012afq} and
 others.
 
-Dipy (\textit{Diffusion Imaging in Python}) is the first collective effort to
-create an open-source diffusion MRI analysis library using the Python
-language. Python is a general purpose, object-oriented programming language
-which was designed with an emphasis on code readability. This emphasis allows
-scientists who are not trained as software engineers to understand the
-computational steps taken in analysis and extend the software in a
+Dipy (\textit{Diffusion Imaging in Python}) \citep{garyfallidis2011dipy} is 
+the first collective effort to create an open-source diffusion MRI analysis 
+library using the Python language. Python is a general purpose, object-oriented 
+programming language which was designed with an emphasis on code readability. 
+This emphasis allows scientists who are not trained as software engineers to 
+understand the computational steps taken in analysis and extend the software in a
 straight-forward manner. Being an interpreted language, Python does not require
 additional compilation, linking, etc. and so installation of software written
 in Python is relatively easy. Taken together, these properties of the language
@@ -1031,14 +1031,32 @@ streamlines in memory.
 \subsection{Probabilistic}
 
 \section{Post-tracking}
-In this sections we describe some of the tools available for processing streamlines.
+In this sections we describe some of the tools available for processing 
+streamlines after these have been created.
 \subsection{Streamline clustering}
+Depending on the initial number of seeds and other tracking parameters 
+fiber tracking algorithms can generate a great number of densely packed
+streamlines (often more than one million) which is difficult to interact 
+and interpret. As a solution to this problem Dipy implements a recent and 
+efficient clustering algorithm for streamlines. This is called QuickBundles (QB)
+[REF] and it can be used to simplify large datasets in a couple of minutes.
+When using QuickBundles we need first to instantiate the object with 3 
+parameters. The first parameter is the set of initial streamlines to be 
+clustered, the second is the distance threshold that defines the cluster size
+and the third is the level of detail for each streamline. For example, in the
+the code snippet below we used \texttt{pts=18} which means that before QB 
+starts the clustering procedure the streamlines will be downsampled so that 
+each one has the same number of points (here 18) and equal segments. This 
+preprocessing step is a prerequisite for QB. 
 \begin{python}
 from dipy.segment import QuickBundles
 qb = QuickBundles(streamlines, dist_thr=20.,
                   pts=18)
-qb.centroids
 \end{python}
+After we have created the instance of the object, attributes like 
+\texttt{qb.centroids} provide the clusters' centroids and methods like 
+\texttt{qb.label2tracks()} can return the streamlines which belong to a 
+specific cluster. 
 
 \subsection{ROIs - streamlines intersections}
 
