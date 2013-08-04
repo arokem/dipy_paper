@@ -151,9 +151,9 @@ In contrast to many other scientific software projects, dipy is not being
 developed by a single research group. Rather, it is an open project that
 encourages contributions from any scientist/developer through the github Pull
 Request mechanism and open discussions on github and on the project mailing
-list. Consequently, dipy has today an international team of contributors,
-spanning 6 different academic institutions in 4 countries and 3 continents, and
-still growing (http://dipy.org).
+list. Consequently, dipy today has an international team of contributors,
+spanning 6 different academic institutions in 4 countries and 3 continents,
+which is still growing (http://dipy.org).
 
 \section{Keywords:} Python, Diffusion MRI, Diffusion Tensor,
 Spherical Deconvolution, Medical imaging, Free Open Source Software,
@@ -203,7 +203,7 @@ to the diffusivity of water along prescribed gradient directions
 Because of its unique capability to characterize the micro-structure of neural
 tissue, and the inferences that can be made using this information about
 structural connectivity dMRI has had increasing popularity, with more than five
-thousand papers published according to PubMed only for 2012. This popularity is
+thousand papers published in 2012 only according to PubMed. This popularity is
 also evident from the large number of software tools available for the analysis
 of diffusion-weighted images. Many of these tools are written in C/C++: 3D
 Slicer \citep{pieper:06}, AFNI \citep{cox-afni:12}, MITK
@@ -234,9 +234,8 @@ source (BSD license), simple and well documented. In addition, the recent
 explosion of Python users, the many Python tools for scientific computing
 \citep{perez_python:11}, \citep{mckinney_python:12}, \citep{perez_ipython:07}
 and the recent stack of neuroimaging\footnote{\url{http://nipy.org}} modules
-make Dipy a nice addition for those who prefer Python as their favorite
+make Dipy a useful addition for those who prefer Python as their favorite
 language.
-
 Dipy takes advantage of the growing ecosystem of tools written for scientific
 computing in Python. It is built on top of production-ready high-performance
 Python libraries. Primarily, Dipy depends on
@@ -274,17 +273,20 @@ imaging research. We aim to build software that is clearly written, clearly
 explained, well tested, a good fit for the underlying ideas and a natural home
 for collaboration.
 
-Dipy is a true international project where everyone from anywhere in the world
-is welcome to contribute as long as they agree with our mission statement. In
-order to be faithful to our mission we all have to follow specific
-policies. For example, lets assume that a scientist makes a nice new discovery
-and wants to share some code. Even if the discovery is of substantial
-importance the code will not be included in the main project without extended
-testing from the main author and code reviews from other members of the
-team. For the code reviews we make sure that at least two developers. In that
-way we make sure that quality assurance is kept at the highest level.
+Dipy is a true international project where anyone from anywhere in the world
+is welcome to contribute as long as they agree with the project's mission
+statement. In order to be faithful to this mission, all contributors are
+required to follow certain policies. For example, if a scientist makes a new
+discovery---even one of substantial importance---and wants to share the code,
+it will not be integrated in the main project without extended testing as well
+as code reviews from at least two members of the team.  Such principles
+aim to help the Dipy code-base preserve its quality while growing.
 
-Using this work ethic Dipy has managed to grow into an international and multi-departmental team of highly skilled contributors from different levels of education (Master students, PhD students, Post-Docs and Professors) spanning the fields of Computer Science, Medicine, Applied Mathematics, Biomedical Engineering and Psychology.
+Through this work ethic Dipy has attracted an international and
+multi-departmental team of highly skilled contributors from different levels
+of education (Master students, PhD students, Post-Docs and Professors)
+spanning the fields of Computer Science, Medicine, Applied Mathematics,
+Biomedical Engineering and Psychology.
 
 
 \section{Terminology}
@@ -352,13 +354,42 @@ spatial characteristics. These do not necessarily correspond to individual
 physical fiber bundles but are instead also computational constructs that
 approximate the underlying anatomy.
 
-
 \section{General design aspects}
 
-API (module diagram), Git/Github, continuous integration, sphinx for
-documentation, nosetests for testing
+Dipy is built on the SciPy tool stack, which includes packages such as
+numpy (numerical arrays and array computation), scipy
+(scientific libraries, e.g. optimization, triangulation, special functions,
+and more) and Cython (an optimized Python to C compiler, used to achieve
+native performance).  Furthermore, it integrates into the NiPy (neuroimaging
+in Python) eco-system of software.
 
-Need a diagram with the base (numpy, nibabel) and the rest of the modules on top.
+DiPy's API is designed with the aim to be intuitive, simple to use, and well
+documented.  This allows researchers to rapidly construct even complex
+computational experiments while retaining code readability.  In addition,
+since the code is entirely free and open, Dipy is ideally suited to facilitate
+reproducible research.
+
+Like many modern open source projects, Dipy is hosted on GitHub---an online
+version of the Git revision control system.  Changes are made via a Pull
+Request (PR) mechanism, whereby submissions can be proposed, discussed and
+iterated upon before being included finally.  The discussions also allow for
+line-by-line comments to be made by any interested developer.
+
+To assist developers, Dipy uses the Travis continuous integration system.  Any
+time a new PR is proposed, Travis commissions a new virtual machine, installs
+the necessary dependencies, builds a clean copy of DiPy, and runs Dipy's
+test suite against the new changes.  Only if no failures are reported will the
+new code be considered for inclusion.  Dipy also follows a test-driven
+development philosophy, whereby all code should be accompanied by a suite of
+tests to exercize all corner cases.
+
+For documentation, Dipy utilizes Sphinx, the same system employed by the main
+Python project.  Sphinx takes plain-text ReStructuredText as input and
+converts it to either HTML, LaTeX or PDF formats.  API documentation is
+extracted directly from the docstrings in the source code, so that it is never
+outdated.
+
+TODO: Need a diagram with the base (numpy, nibabel) and the rest of the modules on top.
 
 Dipy contains the following modules
 
