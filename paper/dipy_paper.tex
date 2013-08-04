@@ -1058,13 +1058,24 @@ After we have created the instance of the object, attributes like
 \texttt{qb.label2tracks()} can return the streamlines which belong to a 
 specific cluster. 
 
-\subsection{ROIs - streamlines intersections}
+\subsection{Counting streamlines in ROIs}
 
-Talk about track\_counts.
+It is often useful in dMRI to find from which ROIs a streamline is passing
+or even to count the number streamlines that go through an ROI. For this
+purpose we create a multipurpose function called \texttt{track\_counts}.
+\begin{python}
+from dipy.tracking.vox2track import track_counts
+tcs, tes = track_counts(streamlines,
+                        volume_shape,
+                        return_elements=True)
+\end{python}
 
 \subsection{Streamline statistics}
 
 Talk about lenghts and other metrics on streamlines
+
+\subsection{Visualization}
+
 
 \section{Discussion/Conclusion}
 
