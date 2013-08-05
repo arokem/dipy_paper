@@ -1076,7 +1076,7 @@ voxel more than once, we only record counts and elements for the first point in
 the streamline that enters the voxel. This information is returned in array
 \texttt{tcs} of the same shape as \texttt{volume\_shape}. The entry 
 \texttt{tcs[i, j, k]} is the number of tracks that passed through voxel at voxel 
-coordinate i, j, k. If \texttt{return_elements} is True we also return an object 
+coordinate i, j, k. If \texttt{return\_elements} is True we also return an object 
 array with one object per voxel. The objects at each voxel are a list of
 integers, where the integers are the indices of the streamline that passed through 
 the voxel.
@@ -1084,9 +1084,26 @@ the voxel.
 This function can be used to filter streamlines which go through specific masks,
 calculate track densities [REF] or used for connectivity analysis.
 
-\subsection{Streamline statistics}
+\subsection{Streamline metrics and statistics}
 
-Talk about lenghts and other metrics on streamlines
+In Dipy we have implemented a plurality of metrics for streamlines. For example,
+perhaps the simplest thing that someone may want to do is to calculate the
+average length and standard deviation of the streamlines generated after the
+fiber tracking procedure. This can happen very easily using the \texttt{lenght}
+function which takes as input a single streamline. We can then iterate through
+all the streamlines in the following way:
+\begin{python}
+import numpy as np
+from dipy.tracking.metrics import length
+lengths = [length(s) for s in streamlines]
+lengths = np.array(lenghts)
+average_length = lengths.mean()
+standard_deviation_lengths = lengths.std()
+\end{python}
+Many other metrics can be found in the metrics sub-module e.g. \texttt{spline} for 
+spline interpolation, \texttt{centre\_of\_mass}, \texttt{mean\_curvature}, 
+\texttt{mean\_orientation} and the \texttt{frenet\_serret} framework for curvature 
+and torsion calculations along a streamline.
 
 \subsection{Visualization}
 
@@ -1094,7 +1111,7 @@ Talk about lenghts and other metrics on streamlines
 \section{Discussion/Conclusion}
 
 We have described the Dipy library for analysis of diffusion MRI data. Dipy is
-a part of the Neuroimaging in Python community (http://nipy.org), a growing
+a part of the Neuroimaging in Python community (\url{nipy.org}), a growing
 community of scientists and developers who are participating in the development
 of open source software for neuroimaging written in the Python language. One
 major source of support for this community comes in the form of the Neurodebian
