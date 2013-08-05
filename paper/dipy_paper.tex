@@ -1061,14 +1061,28 @@ specific cluster.
 \subsection{Counting streamlines in ROIs}
 
 It is often useful in dMRI to find from which ROIs a streamline is passing
-or even to count the number streamlines that go through an ROI. For this
-purpose we create a multipurpose function called \texttt{track\_counts}.
+or even to count the number streamlines that go through an ROI [REF]. For this
+purpose we created a multipurpose function called \texttt{track\_counts}. 
 \begin{python}
 from dipy.tracking.vox2track import track_counts
 tcs, tes = track_counts(streamlines,
-                        volume_shape,
+                        volume_shape,                        
                         return_elements=True)
 \end{python}
+Given a set of streamlines and the shape of the 3D volume that the streamlines
+were created we find whether a point of a streamline passed through a voxel by 
+rounding the mm point values to voxels. For a streamline that passes through a 
+voxel more than once, we only record counts and elements for the first point in
+the streamline that enters the voxel. This information is returned in array
+\texttt{tcs} of the same shape as \texttt{volume\_shape}. The entry 
+\texttt{tcs[i, j, k]} is the number of tracks that passed through voxel at voxel 
+coordinate i, j, k. If \texttt{return_elements} is True we also return an object 
+array with one object per voxel. The objects at each voxel are a list of
+integers, where the integers are the indices of the streamline that passed through 
+the voxel.
+
+This function can be used to filter streamlines which go through specific masks,
+calculate track densities [REF] or used for connectivity analysis.
 
 \subsection{Streamline statistics}
 
