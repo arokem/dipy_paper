@@ -34,7 +34,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.0193386"
-     inkscape:cx="316.16557"
+     inkscape:cx="318.12763"
      inkscape:cy="483.87095"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -52,7 +52,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <dc:description>http://colorschemedesigner.com/#3-62iw0w0w0w0</dc:description>
       </cc:Work>
     </rdf:RDF>
@@ -379,7 +379,7 @@
              style="font-weight:normal;-inkscape-font-specification:Bitstream Charter"
              id="tspan3997"><tspan
    style="font-weight:bold"
-   id="tspan3999">reconst</tspan> Signal modeling and reconstruction (dti, dsi, csf, odf, shm, gqi)</tspan></tspan></tspan></text>
+   id="tspan3999">reconst</tspan> Signal modeling and reconstruction (dti, dsi, csd, odf, shm, gqi)</tspan></tspan></tspan></text>
     <text
        sodipodi:linespacing="100%"
        id="text3919"
@@ -475,7 +475,7 @@
          x="82.832512"
          sodipodi:role="line"><tspan
    style="font-weight:bold"
-   id="tspan4033">segment</tspan>  Clustering &amp; segmentation (quickbundles)</tspan></text>
+   id="tspan4033">segment</tspan>  Clustering &amp; segmentation (quickbundles, mask, threshold)</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"
