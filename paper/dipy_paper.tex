@@ -162,33 +162,6 @@ Visualization.
 
 \end{abstract}
 
-\section{Skeleton}
-Here is a possible outline for the paper:
-\begin{verbatim}
-Introduction
-Philosophy/Mission
-General Design Aspects
-How we work (git/github etc)
-File Formats
-Preprocessing
-   Load/Save data
-   Mask the background
-Reconstruction
-   DTI
-   DSI
-   QBall
-   Spherical Deconvolution
-Tracking
-   Deterministic
-   Probabilistic
-Post-tracking
-   Segmentation
-   Track\_counts
-   Track Lengths & other statistics
-   Connectivity matrix
-Discussion/Conclusions
-\end{verbatim}
-
 \section{Introduction}
 
 \emph{Diffusion MRI} (dMRI) \citep{stejskal-tanner:65,
@@ -399,27 +372,6 @@ Dipy contains the following modules
 \caption{Diagram showing the major Dipy modules and dependencies.\label{Fig:module_structure}}
 \end{figure}
 
-
-\tiny
-\begin{verbatim}
-| modules       | main usage                | sub-modules                        |
-| ------------- | ------------------------- | ---------------------------------- |
-| reconst       | reconstruction modules    | dti, dsi, csd, odf, shm, gqi       |
-| tracking      | tractography algorithms   | EuDX, Modular tracking (det, prob),|
-|               |                           | distances, metrics, utils          |
-| core          | general usage functions   | spheres, gradients, electrostatics,|
-|               |                           | geometry, ndindex                  |
-| viz           | 2D/3D visualization       | fvtk, 2D sphere plots, colormaps   |
-| io            | input/io utilities        | pickles, gradients, dpy(HDF5)      |
-| external      | other software            | fsl                                |
-| align         | alignment, reslicing      | aniso2iso                          |
-| sims          | voxel & volume simulations| voxel, phantom                     |
-| data          | small data & online data  | fetcher                            |
-| segment       | clustering & segmentation | quickbundles                       |
-
-There are also some command line scripts in dipy/bin and many tests.
-\end{verbatim}
-\normalsize
 
 \begin{python}
 import dipy
@@ -1142,20 +1094,21 @@ fvtk.show(renderer)
 The most commonly used visualization functions are given in \ref{fvtk_table}.
 
 \begin{table}[th] \processtable{List of visualization functions\label{fvtk_table}} 
-{\begin{tabular}{rr}
+{\begin{tabular}{rr} \hline
 Name & Usage \\ \hline
-ren & create renderer\\ \hline
-add & add actor to renderer\\ \hline
-rm  & remove actor from renderer \\ \hline
-rm\_all & remove all actors from renderer \\ \hline
-show & create window and show renderer \\ \hline
-record & save frame or frames \\ \hline
-line & actor of one or more streamlines \\ \hline
-pretty\_line & same as line but with streamtubes \\ \hline
-point & actor points as small spheres \\ \hline
-tensor & actor of tensor ellipsoids \\ \hline
-sphere\_funcs & actor for ODF visualization \\ \hline
-volume & 3D volume rendering with raycasting \\
+ren & create renderer\\ 
+add & add actor to renderer\\ 
+rm  & remove actor from renderer \\ 
+rm\_all & remove all actors from renderer \\ 
+show & create window and show renderer \\ 
+record & save frame or frames \\ 
+line & actor of one or more streamlines \\ 
+pretty\_line & same as line but with streamtubes \\ 
+point & actor points as small spheres \\ 
+tensor & actor of tensor ellipsoids \\ 
+sphere\_funcs & actor for ODF visualization \\ 
+volume & 3D volume rendering with raycasting \\ 
+\hline
 \end{tabular}}{}
 \end{table}
 
@@ -1177,65 +1130,65 @@ Ariel Rokem is funded by a National Research Service Award (NEI F32 EY022294).
 \section*{Disclosure/Conflict-of-Interest Statement}
 There are no conflicts of interest.
 
-\section{LaTex Formatting}
+% \section{LaTex Formatting}
 
-This is information for the coauthors of this paper. This section will be removed from the last version of this paper.
+% This is information for the coauthors of this paper. This section will be removed from the last version of this paper.
 
-This is to show how graphics (EPS) files are included. We use EPS for
-speed. The first one is spread across both columns, and the second one
-is just in a single column:
+% This is to show how graphics (EPS) files are included. We use EPS for
+% speed. The first one is spread across both columns, and the second one
+% is just in a single column:
 
-\begin{figure*}
-\centerline{\includegraphics[width=160mm]{Figures/Fig_4_cst_simplification_relabeled_triple.eps}}
-\caption{This is the figure caption - and a label to refer to it in the text \label{Fig:big_picture}}
-\end{figure*}
+% \begin{figure*}
+% \centerline{\includegraphics[width=160mm]{Figures/Fig_4_cst_simplification_relabeled_triple.eps}}
+% \caption{This is the figure caption - and a label to refer to it in the text \label{Fig:big_picture}}
+% \end{figure*}
 
-When we want to refer to this figure we use the label (see Fig.~\ref{Fig:big_picture}).
+% When we want to refer to this figure we use the label (see Fig.~\ref{Fig:big_picture}).
 
-\begin{figure}
-\includegraphics[scale=0.15]{Figures/Fig_11_MDF_arcuate}
-\centering{}
-\caption{Color coding shows MDF distances from QB centroid to every
-  other track in the bundle.\label{Fig:little_picture}}
-\end{figure}
+% \begin{figure}
+% \includegraphics[scale=0.15]{Figures/Fig_11_MDF_arcuate}
+% \centering{}
+% \caption{Color coding shows MDF distances from QB centroid to every
+%   other track in the bundle.\label{Fig:little_picture}}
+% \end{figure}
 
-Here are some displayed equations (see Eq.~\ref{eq:direct_flip_distance}):
-\begin{eqnarray}
-  d_{\textrm{direct}}(s, t) = d(s, t) & = & \frac{1}{K}\sum_{i=1}^{K}|s_{i}-t_{i}|,\nonumber\\
-  d_{\textrm{flipped}}(s, t) & = & d(s,t^F) = d(s^F,t),\nonumber\\
-  \textrm{MDF}(s, t) & = & \min(d_{\textrm{direct}}(s, t), d_{\textrm{flipped}}(s, t))\label{eq:direct_flip_distance}.
-\end{eqnarray}
+% Here are some displayed equations (see Eq.~\ref{eq:direct_flip_distance}):
+% \begin{eqnarray}
+%   d_{\textrm{direct}}(s, t) = d(s, t) & = & \frac{1}{K}\sum_{i=1}^{K}|s_{i}-t_{i}|,\nonumber\\
+%   d_{\textrm{flipped}}(s, t) & = & d(s,t^F) = d(s^F,t),\nonumber\\
+%   \textrm{MDF}(s, t) & = & \min(d_{\textrm{direct}}(s, t), d_{\textrm{flipped}}(s, t))\label{eq:direct_flip_distance}.
+% \end{eqnarray}
 
-Inline mathematics goes like this: $\frac{1}{K}\sum_{i=1}^{K}|s_{i}-t_{i}|$
+% Inline mathematics goes like this: $\frac{1}{K}\sum_{i=1}^{K}|s_{i}-t_{i}|$
 
-Here we have an example of a table (see Table~\ref{Table_1}).
+% Here we have an example of a table (see Table~\ref{Table_1}).
 
-\begin{table}[th] \processtable{QB centroids performance compared with
-random subsets\label{Table_1}} {\begin{tabular}{rrrr} %\hline Thresholds &
-Comparison & Coverage \% (s.d.) & Overlap (s.d.) \\ \hline
-\multirow{2}{*}{$10$~mm/$10$~mm} & QB Centroids & 99.96 (0.007) & 2.44
-(0.08)\\ & Random & 90.49 (0.41) & 6.16 (0.55)\\ \hline
-\multirow{2}{*}{$20$~mm/$20$~mm} & QB Centroids & 99.99 (0.004) & 3.54
-(0.18)\\ & Random & 95.86 (0.62) & 6.81 (0.93)\\ \hline
-\end{tabular}}{}
-\end{table}
+% \begin{table}[th] \processtable{QB centroids performance compared with
+% random subsets\label{Table_1}} {\begin{tabular}{rrrr} %\hline Thresholds &
+% Comparison & Coverage \% (s.d.) & Overlap (s.d.) \\ \hline
+% \multirow{2}{*}{$10$~mm/$10$~mm} & QB Centroids & 99.96 (0.007) & 2.44
+% (0.08)\\ & Random & 90.49 (0.41) & 6.16 (0.55)\\ \hline
+% \multirow{2}{*}{$20$~mm/$20$~mm} & QB Centroids & 99.99 (0.004) & 3.54
+% (0.18)\\ & Random & 95.86 (0.62) & 6.81 (0.93)\\ \hline
+% \end{tabular}}{}
+% \end{table}
 
-References go like this: in parentheses \citep{Garyfallidis_thesis, Mori1999}, and in running text \citet{Garyfallidis_thesis}.
+% References go like this: in parentheses \citep{Garyfallidis_thesis, Mori1999}, and in running text \citet{Garyfallidis_thesis}.
 
-And here is an example of how to add some code.
+% And here is an example of how to add some code.
 
-\begin{python}
-from dipy.viz import fvtk
-ren = fvtk.ren()
-class Test(object):
-  def __init__(self, a):
-    pass
-@parametric
-def f(x):
-  return x**2
-for i in range(10):
-  print f(i)
-\end{python}
+% \begin{python}
+% from dipy.viz import fvtk
+% ren = fvtk.ren()
+% class Test(object):
+%   def __init__(self, a):
+%     pass
+% @parametric
+% def f(x):
+%   return x**2
+% for i in range(10):
+%   print f(i)
+% \end{python}
 
 
 \selectlanguage{british}%
