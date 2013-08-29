@@ -190,11 +190,11 @@ TractoR \citep{ clayden-TractoR:11}, Java: Camino \citep{Cook2006} and Matlab:
 ExploreDTI \citep{leemans-exploredti:09}, AFQ \citep{yeatman2012afq} and
 others.
 
-Dipy (\textit{Diffusion Imaging in Python}) \citep{garyfallidis2011dipy} is 
-the first collective effort to create an open-source diffusion MRI analysis 
-library using the Python language. Python is a general purpose, object-oriented 
-programming language which was designed with an emphasis on code readability. 
-This emphasis allows scientists who are not trained as software engineers to 
+Dipy (\textit{Diffusion Imaging in Python}) \citep{garyfallidis2011dipy} is
+the first collective effort to create an open-source diffusion MRI analysis
+library using the Python language. Python is a general purpose, object-oriented
+programming language which was designed with an emphasis on code readability.
+This emphasis allows scientists who are not trained as software engineers to
 understand the computational steps taken in analysis and extend the software in a
 straight-forward manner. Being an interpreted language, Python does not require
 additional compilation, linking, etc. and so installation of software written
@@ -336,7 +336,7 @@ and more) and Cython (an optimized Python to C compiler, used to achieve
 native performance).  Furthermore, it integrates into the NiPy (neuroimaging
 in Python) eco-system of software.
 
-DiPy's API is designed with the aim to be intuitive, simple to use, and well
+Dipy's API is designed with the aim to be intuitive, simple to use, and well
 documented.  This allows researchers to rapidly construct even complex
 computational experiments while retaining code readability.  In addition,
 since the code is entirely free and open, Dipy is ideally suited to facilitate
@@ -350,7 +350,7 @@ line-by-line comments to be made by any interested developer.
 
 To assist developers, Dipy uses the Travis continuous integration system.  Any
 time a new PR is proposed, Travis commissions a new virtual machine, installs
-the necessary dependencies, builds a clean copy of DiPy, and runs Dipy's
+the necessary dependencies, builds a clean copy of Dipy, and runs Dipy's
 test suite against the new changes.  Only if no failures are reported will the
 new code be considered for inclusion.  Dipy also follows a test-driven
 development philosophy, whereby all code should be accompanied by a suite of
@@ -992,57 +992,63 @@ iterator. In every call of the iterator a new streamline is returned. This
 technique allows to save directly streamlines in the disk without loading all
 streamlines in memory.
 
+\begin{figure}
+\includegraphics[scale=0.75]{Figures/pretty_streamlines.eps}
+\centering{}
+\caption{EuDX \label{Fig:pretty_streamlines}}
+\end{figure}
+
 \subsection{Probabilistic}
 
 \section{Post-tracking}
-In this sections we describe some of the tools available for processing 
+In this sections we describe some of the tools available for processing
 streamlines after these have been created.
 \subsection{Streamline clustering}
-Depending on the initial number of seeds and other tracking parameters 
+Depending on the initial number of seeds and other tracking parameters
 fiber tracking algorithms can generate a great number of densely packed
-streamlines (often more than one million) which is difficult to interact 
-and interpret. As a solution to this problem Dipy implements a recent and 
+streamlines (often more than one million) which is difficult to interact
+and interpret. As a solution to this problem Dipy implements a recent and
 efficient clustering algorithm for streamlines. This is called QuickBundles (QB)
 [REF] and it can be used to simplify large datasets in a couple of minutes.
-When using QuickBundles we need first to instantiate the object with 3 
-parameters. The first parameter is the set of initial streamlines to be 
+When using QuickBundles we need first to instantiate the object with 3
+parameters. The first parameter is the set of initial streamlines to be
 clustered, the second is the distance threshold that defines the cluster size
 and the third is the level of detail for each streamline. For example, in the
-the code snippet below we used \texttt{pts=18} which means that before QB 
-starts the clustering procedure the streamlines will be downsampled so that 
-each one has the same number of points (here 18) and equal segments. This 
-preprocessing step is a prerequisite for QB. 
+the code snippet below we used \texttt{pts=18} which means that before QB
+starts the clustering procedure the streamlines will be downsampled so that
+each one has the same number of points (here 18) and equal segments. This
+preprocessing step is a prerequisite for QB.
 \begin{python}
 from dipy.segment import QuickBundles
 qb = QuickBundles(streamlines, dist_thr=20.,
                   pts=18)
 \end{python}
-After we have created the instance of the object, attributes like 
-\texttt{qb.centroids} provide the clusters' centroids and methods like 
-\texttt{qb.label2tracks()} can return the streamlines which belong to a 
-specific cluster. 
+After we have created the instance of the object, attributes like
+\texttt{qb.centroids} provide the clusters' centroids and methods like
+\texttt{qb.label2tracks()} can return the streamlines which belong to a
+specific cluster.
 
 \subsection{Counting streamlines in ROIs}
 
 It is often useful in dMRI to find from which ROIs a streamline is passing
 or even to count the number streamlines that go through an ROI [REF]. For this
-purpose we created a multipurpose function called \texttt{track\_counts}. 
+purpose we created a multipurpose function called \texttt{track\_counts}.
 \begin{python}
 from dipy.tracking.vox2track import track_counts
 tcs, tes = track_counts(streamlines,
-                        volume_shape,                        
+                        volume_shape,
                         return_elements=True)
 \end{python}
 Given a set of streamlines and the shape of the 3D volume that the streamlines
-were created we find whether a point of a streamline passed through a voxel by 
-rounding the mm point values to voxels. For a streamline that passes through a 
+were created we find whether a point of a streamline passed through a voxel by
+rounding the mm point values to voxels. For a streamline that passes through a
 voxel more than once, we only record counts and elements for the first point in
 the streamline that enters the voxel. This information is returned in array
-\texttt{tcs} of the same shape as \texttt{volume\_shape}. The entry 
-\texttt{tcs[i, j, k]} is the number of tracks that passed through voxel at voxel 
-coordinate i, j, k. If \texttt{return\_elements} is True we also return an object 
+\texttt{tcs} of the same shape as \texttt{volume\_shape}. The entry
+\texttt{tcs[i, j, k]} is the number of tracks that passed through voxel at voxel
+coordinate i, j, k. If \texttt{return\_elements} is True we also return an object
 array with one object per voxel. The objects at each voxel are a list of
-integers, where the integers are the indices of the streamline that passed through 
+integers, where the integers are the indices of the streamline that passed through
 the voxel.
 
 This function can be used to filter streamlines which go through specific masks,
@@ -1064,22 +1070,22 @@ lengths = np.array(lenghts)
 average_length = lengths.mean()
 standard_deviation_lengths = lengths.std()
 \end{python}
-Many other metrics can be found in the metrics sub-module e.g. \texttt{spline} for 
-spline interpolation, \texttt{centre\_of\_mass}, \texttt{mean\_curvature}, 
-\texttt{mean\_orientation} and the \texttt{frenet\_serret} framework for curvature 
+Many other metrics can be found in the metrics sub-module e.g. \texttt{spline} for
+spline interpolation, \texttt{centre\_of\_mass}, \texttt{mean\_curvature},
+\texttt{mean\_orientation} and the \texttt{frenet\_serret} framework for curvature
 and torsion calculations along a streamline.
 
 \subsection{Visualization}
-All figures created in this paper are generated by our own visualization tools 
-which can be used for most parts of the diffusion analysis pipeline. We have 
-developed a minimal, lightweight and up to the point module which is based 
-on the Visualization Toolkit (VTK)[REF] and we call \texttt{fvtk}. The main 
-idea is that window can have one or more renderers. A renderer can have none, 
-one or more actors. Examples of actors are a sphere, line, point or a complete 
-set of streamlines. You basically add actors in a renderer and in that way you 
+All figures created in this paper are generated by our own visualization tools
+which can be used for most parts of the diffusion analysis pipeline. We have
+developed a minimal, lightweight and up to the point module which is based
+on the Visualization Toolkit (VTK)[REF] and we call \texttt{fvtk}. The main
+idea is that window can have one or more renderers. A renderer can have none,
+one or more actors. Examples of actors are a sphere, line, point or a complete
+set of streamlines. You basically add actors in a renderer and in that way you
 can visualize the forementioned objects e.g. sphere, line etc. The windows can
 be created by either the \texttt{show} function which creates a visible window
-or the \texttt{record} function which creates a temporary window only for the 
+or the \texttt{record} function which creates a temporary window only for the
 purpose of using it to render the objects and save the frames on disk. The
 renderer holds all the actors i.e. the visible objects. Here is a simple example
 where we visualize some streamlines with different colors:
@@ -1089,25 +1095,25 @@ renderer = fvtk.ren()
 line_actor = fvtk.pretty_line(streamlines,
                               streamline_colors)
 fvtk.add(renderer, line_actor)
-fvtk.show(renderer) 
+fvtk.show(renderer)
 \end{python}
 The most commonly used visualization functions are given in \ref{fvtk_table}.
 
-\begin{table}[th] \processtable{List of visualization functions\label{fvtk_table}} 
+\begin{table}[th] \processtable{List of visualization functions\label{fvtk_table}}
 {\begin{tabular}{rr} \hline
 Name & Usage \\ \hline
-ren & create renderer\\ 
-add & add actor to renderer\\ 
-rm  & remove actor from renderer \\ 
-rm\_all & remove all actors from renderer \\ 
-show & create window and show renderer \\ 
-record & save frame or frames \\ 
-line & actor of one or more streamlines \\ 
-pretty\_line & same as line but with streamtubes \\ 
-point & actor points as small spheres \\ 
-tensor & actor of tensor ellipsoids \\ 
-sphere\_funcs & actor for ODF visualization \\ 
-volume & 3D volume rendering with raycasting \\ 
+ren & create renderer\\
+add & add actor to renderer\\
+rm  & remove actor from renderer \\
+rm\_all & remove all actors from renderer \\
+show & create window and show renderer \\
+record & save frame or frames \\
+line & actor of one or more streamlines \\
+pretty\_line & same as line but with streamtubes \\
+point & actor points as small spheres \\
+tensor & actor of tensor ellipsoids \\
+sphere\_funcs & actor for ODF visualization \\
+volume & 3D volume rendering with raycasting \\
 \hline
 \end{tabular}}{}
 \end{table}
