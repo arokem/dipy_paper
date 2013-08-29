@@ -83,6 +83,7 @@ emphstyle={\color{self}\slshape},
 \usepackage[pdfborder={0 0 0}]{hyperref}
 %\usepackage{units}
 
+
 \makeatletter
 \newfloat{algorithm}{H}{loa}[section]
 \floatname{algorithm}{Algorithm}
@@ -740,6 +741,13 @@ the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way to
 calculate a slightly different ODF using the Cosine transform. This is
 available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The
 advantage of GQI is that it is much faster to calculate than DSI or DSID.
+
+\begin{figure}
+\includegraphics[scale=0.55]{Figures/pdf.eps}
+\centering{}
+\caption{Volumetric rendering of the diffusion propagator of a $60\,^{\circ}$ crossing with standard DSI(left) and DSI with deconvolution(right). \label{Fig:pdf}}
+\end{figure}
+
 
 \subsection{Q-ball Imaging}
 
