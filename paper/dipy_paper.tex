@@ -368,11 +368,11 @@ new code be considered for inclusion.  Dipy also follows a test-driven
 development philosophy, whereby all code should be accompanied by a suite of
 tests to exercize all corner cases.
 
-For documentation, Dipy utilizes Sphinx, the same system employed by the main
-Python project.  Sphinx takes plain-text ReStructuredText as input and
-converts it to either HTML, LaTeX or PDF formats.  API documentation is
-extracted directly from the docstrings in the source code, so that it is never
-outdated.
+As mentioned above, for documentation Dipy utilizes Sphinx, the same system
+employed by the main Python project.  Sphinx takes plain-text ReStructuredText
+as input and converts it to either HTML, LaTeX or PDF formats.  API
+documentation is extracted directly from the docstrings in the source code, so
+that it is never outdated.
 
 Dipy's main sub-modules (see Fig.~\ref{Fig:module_structure}) are \emph{core}, 
 \emph{reconst, tracking, viz, io, align, data, sims} and \emph{segment}. 
@@ -441,7 +441,9 @@ coordinates. This matrix can be useful when registering, saving or visualizing
 images. The \texttt{voxel\_size} is a tuple with 3 values. In this example the
 \texttt{voxel\_size} is (2, 2, 2) i.e. $2~mm^3$.
 
-Supposing that we want to extract and save from the 4D data only the first volume which usually is the one without any diffusion gradients. This volume is also known as the \texttt{S0}. We can do that very easily using the following code.
+Supposing that we want to extract and save from the 4D data only the first
+volume (usually this is the volume containing the non diffusion-weighted data,
+also denoted as \texttt{S0}). We can do that very easily using the following code.
 \begin{python}
 S0 = data[:, :, :, 0]
 img2 = nib.Nifti1Image(S0, affine)
@@ -467,11 +469,11 @@ nib.save(sub_img, "sub_data.nii.gz")
 In order to remove the background and keep only the parts that are in the brain
 we can use a function called \texttt{median\_otsu}.
 \begin{python}
-from dipy.segment.mask import medotsu
-mask, S0_mask = medotsu(data[:, :, :, 0])
+from dipy.segment.mask import median_otsu
+mask, S0_mask = median_otsu(data[:, :, :, 0])
 \end{python}
 \texttt{median\_otsu} uses first a median filter to smooth the \texttt{S0} and 
-then otsu, an automated histogram method [REF] to separate the brain
+then otsu, an automated histogram method \cite{Otsu1979} to separate the brain
 (foreground) from its background. It returns two arrays, the \texttt{mask}, a
 3D array with 1s at the foreground and 0s in the background and the masked
 \texttt{S0}, \texttt{S0\_mask} a 3D array whith the actual \texttt{S0} values in
@@ -485,12 +487,13 @@ sequence, at the time of readout
 $b=\gamma^{2}G^{2}\delta^{2}\left(\Delta-\delta/3 \right)$, where $\gamma$ is
 the gyromagnetic ratio, $\delta$ denotes the pulse width, $G$ is the gradient
 amplitude and $\Delta$ the centre to centre spacing. $\gamma$ is a constant
-which depends on the nucleus, but we can change the other three parameters and
+which depends on the nucleus and on the strength of the static magnetic field
+of the MR instrument, but we can change the other three parameters and
 in that way control the b-value. By changing the b-value along different
-gradient directions the MR physists can alternate the quality and duration of
+gradient directions MR researches can alter the quality and duration of
 the dMRI experiment. The gradient unit directions are often referred as
 b-vectors. Both b-values and b-vectors are absolutely necessary knowledge for
-analysing diffusion data and can be usually read from one or two different
+analyzing diffusion data and can usually be read from one or two different
 files. Here is an example:
 \begin{python}
 fbval = "raw.bval"
@@ -573,12 +576,14 @@ $\lambda_{1},\lambda_{2},\lambda_{3}$.
 DTI was first proposed by Basser and colleagues
 \citep{basser-mattiello-etal:94} and has since been very influential in
 demonstrating the utility of dMRI in characterizing the micro-structure of
-white matter tissue. The model relies on the assumption that diffusion is a
-Gaussian process. Using this assumption the dODF can be modeled with 6
-parameters, describing the variance and covariance of the Gaussian diffusion
-along the three primary axes. From these parameters, several useful measures
-can be derived: the primary diffusion direction is the primary eigen-value of
-the tensor, $\lambda_{1}$ and it is the direction in which variance in the
+white matter tissue. Using the assumption that diffusion is a Gaussian process,
+and relying on the antipodal symmetry of the measurement (that is, the
+measurement cannot differentiate diffusion in any direction from diffusion in
+the exact opposite direction), the dODF can be modeled with 6 parameters,
+describing the variance and covariance of the Gaussian diffusion along the
+three primary axes. From these parameters, several useful measures can be
+derived: the primary diffusion direction is the primary eigen-value of the
+tensor, $\lambda_{1}$ and it is the direction in which variance in the
 diffusion distribution is largest. In some places in the brain (e.g. in the
 corpus callosum, the large fiber bundle in the center of the brain that
 connects the two hemispheres) this corresponds to the direction of the white
@@ -618,8 +623,8 @@ that better account for the distribution of fiber orientations in the voxel
 That said, the use of DT-based univariate statistics is very popular among
 users of dMRI and also quite useful. That is, variance in a variety of
 behavioral \citep{Ben-Shachar2007} and clinical \citep{Thomason2011} measures
-can be predicted based, suggesting that they are reporting on meaningful and
-impactful variability in brain structure.
+can be predicted basedcon these statistics, suggesting that they are reporting
+on meaningful and impactful variability in brain structure.
 
 Fitting the tensor model and computing univariate statistics from it in Dipy is
 straightforward. In the following example, we show how the tensor model is fit
@@ -647,7 +652,7 @@ ten_fit = ten.fit(data, mask)
 The advantage of this separation of the model and the fit is that we can fit
 many different data with the same initialization parameters without duplicating
 code. Once a fit has been conducted, we can compute a variety of derived
-univariate measures, such as the fractional anisotropy (FA) [REF]:
+univariate measures, such as the fractional anisotropy (FA) \cite{Basser1996}:
 \begin{python}
 from dipy.reconst.dti import fractional_anisotropy
 fa = fractional_anisotropy(ten_fit.evals)
@@ -675,15 +680,6 @@ are available under the \texttt{dipy.reconst.dti} module.
 
 \subsection{Diffusion Spectrum Imaging}\label{dsi}
 
-For those who have acquired DSI type of data, i.e. data with multiple b-values
-and gradients which span a Cartesian keyhole grid \citep{tuch:02,
-  wedeen-hagmann-etal:05, Garyfallidis_thesis}, Dipy provides currently three
-different models. The standard \texttt{DiffusionSpectrumModel} can be accessed
-using:
-\begin{python}
-from dipy.reconst.dsi import DiffusionSpectrumModel
-dsi_model = DiffusionSpectrumModel(gtab)
-\end{python}
 It was shown by Wedeen et al. \citep{wedeen-hagmann-etal:05} that the dMRI
 signal is positive for any type of spin motion without net flux (i.e.~spin
 displacements due to thermal molecular agitation) or other random fluxes such
@@ -693,7 +689,19 @@ Fourier transform:
 \begin{eqnarray}
 P(\mathbf{r}) & = & S_{0}^{-1}\int|S(\mathbf{q})|\exp(-i2\pi\mathbf{q}\cdot\mathbf{r})d\mathbf{q}\label{eq:P_modulus}
 \end{eqnarray}
-In DSI this triple-integral is approximated in a discrete way and the PDF P comes out for every single voxel as a 3D array. We can obtain $P$ using:
+For those who have acquired DSI type of data, i.e. data with multiple b-values
+and gradients which span a Cartesian keyhole grid \citep{tuch:02,
+  wedeen-hagmann-etal:05, Garyfallidis_thesis}, Dipy provides currently three
+different models. The standard \texttt{DiffusionSpectrumModel} can be accessed
+using:
+
+\begin{python}
+from dipy.reconst.dsi import DiffusionSpectrumModel
+dsi_model = DiffusionSpectrumModel(gtab)
+\end{python}
+In DSI this triple-integral in \ref{eq:P_modulus} is approximated in a discrete
+way and the PDF P is discretized in every voxel as a 3D array.  We can obtain
+$P$ using:
 \begin{python}
 dsi_fit = dsi_model.fit(data)
 dsi_pdf = dsi_fit.pdf()
@@ -712,15 +720,16 @@ for index in ndindex(data.shape[:-1]):
 \end{python}
 With this method we do not need to store all the PDFs at once. If it absolutely
 necessary to save all the PDFs then we advise to create a Numpy memory-map
-which will store the are as binary file on disk. Memory-mapped files are used
-for accessing small segments of large files on disk, without reading the entire
-file into memory.
+which will store the PDF in each voxel as binary file on disk. Memory-mapped
+files are used for accessing small segments of large files on disk, without
+reading the entire file into memory.
 
 Recently, an alternative method for DSI was proposed by
 \citep{canales-rodriguez-etal:10} which applies a Lucy-Richardson deconvolution
 in the 3D PDF and achieves a higher angular resolution for resolving crossing
 fibers. This can be used in exactly the same way as with the standard DSI
 method:
+
 \begin{python}
 from dipy.reconst.dsi import
                       DiffusionSpectrumDeconvModel
@@ -740,9 +749,9 @@ $P(\mathbf{r})$
 \end{equation}
 \noindent This defines the orientation density function (ODF) for DSI which
 measures the quantity of diffusion in the direction of the unit vector
-$\mathbf{\hat{u}}$ where $\mathbf{r=}r\hat{\mathbf{u}}$. $\psi_{DSI}$ as we
-know is a function on a sphere. Therefore, in order to calculate it or even
-visualize it we will need a sphere. Here is how we can obtain this ODF:
+$\mathbf{\hat{u}}$ where $\mathbf{r=}r\hat{\mathbf{u}}$. $\psi_{DSI}$ is a
+function on a sphere. Therefore, in order to calculate it or even visualize it
+we will need a set of spherical coordinate. Here is how we can obtain this ODF:
 \begin{python}
 from dipy.data import get_sphere
 sphere = get_sphere("symmetric724")
@@ -753,7 +762,7 @@ sphere. Here we used a symmetric sphere with 724 vertices. The
 \texttt{dsi\_odf} is an array of the 724 ODF values corresponding to the
 vertices of the sphere. Note at this point that in order to find the ODF we
 have to first create the diffusion propagator by applying the Fourier transform
-on the lattice. Nonetheless, Dipy for reasons explained before does not store
+on the lattice. Nonetheless, Dipy, for reasons explained before does not store
 the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way to
 calculate a slightly different ODF using the Cosine transform. This is
 available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The
@@ -825,7 +834,7 @@ csa_model = CsaOdfModel(gtab, order=4,
                         smooth=0.006)
 csa_odf = csamodel.fit(data).odf(sphere)
 \end{python}
-On a side note the term Constant Solid Angle derives from the fact that this
+As a side note: the term Constant Solid Angle derives from the fact that this
 method calculates the ODF with the radial distance in mind as we saw in
 eq.~\ref{eq:ODF_DSI}. The analytical Q-ball method does not integrate the $r^2$
 term and therefore it generates more rounded ODFs that require normalization.
@@ -866,13 +875,13 @@ from dipy.reconst.csdeconv import
 csd_model = CsdModel(gtab, response)
 \end{python}
 The main choice to be considered is the estimation of the single fiber response
-function.  We assume that $R$ is derived from a prolate tensor. The eigenvalues
-of this tensor are estimated from the voxels with FA $> 0.7$. The input
-parameter \texttt{response} is a tuple with two parameters: a) the eigen-values
-of the tensor and b) the estimated average S0 signal for those voxels. The
-response function is usually estimated from the corpus callosum areas. For
-further information on how to iniate the CSD please read our examples in
-\texttt{dipy.org}.
+function.  We assume that $R$ is derived from a prolate tensor [NEED TO EXPLAIN
+'PROLATE'!]. The eigenvalues of this tensor are estimated from the voxels with
+FA $> 0.7$. The input parameter \texttt{response} is a tuple with two
+parameters: a) the eigen-values of the tensor and b) the estimated average S0
+signal for those voxels. The response function is usually estimated from the
+corpus callosum area. For further information on how to initialize a CSD
+analysis, please read our examples in \texttt{dipy.org}.
 
 Dipy also implements a second constrained spherical deconvolution method: The
 Spherical Deconvolution Transform (SDT) is a sharpening operation which
@@ -921,7 +930,7 @@ ODFs, b) find the directions of the maxima in the ODFs which can be useful for
 tracking, c) discretize those directions on the unit sphere for efficiency, d)
 compress the ODFs as spherical harmonics to reduce memory usage and e)
 calculate many metrics simultaneously, e.g. generalized fractional anisotropy
-(GFA)[REF], without the need of creating all ODFs at
+(GFA)\cite{cohen-adad-etal:08}, without the need of creating all ODFs at
 once. \texttt{peaks\_from\_model} can be called as:
 \begin{python}
 from dipy.reconst.odf import peaks_from_model
@@ -935,22 +944,22 @@ pmd = peaks_from_model(model=dsi_model,
                        return_sh=True)
 gfa = pmd.gfa
 \end{python}
-The model parameter can be any of the models discussed in the previous sections
-e.g. \texttt{dsi\_model}. The \texttt{relative\_peak\_threshold} parameter
-enforces that only peaks greater than \texttt{relative\_peak\_threshold}$*m$
-will be returned, where $m$ is the value of the largest
-peak. \texttt{min\_separation\_angle} sets the threshold for the minimum
-angular distance in degrees between two peaks. If the peaks are closer than
-this threshold only the larger of the two is returned. This two parameters help
-to get robust fiber directions when the ODFs are
+The \texttt{model} parameter can be any of the models discussed in the previous
+sections e.g. \texttt{dsi\_model}. The \texttt{relative\_peak\_threshold}
+parameter enforces that only peaks greater than
+\texttt{relative\_peak\_threshold}$*m$ will be returned, where $m$ is the value
+of the largest peak. \texttt{min\_separation\_angle} sets the threshold for the
+minimum angular distance in degrees between two peaks. If the peaks are closer
+than this threshold only the larger of the two is returned. This two parameters
+help to get robust fiber directions when the ODFs are
 noisy. \texttt{peaks\_from\_model} returns a \texttt{PeaksAndMetrics} object
 which holds all the different output arrays, \texttt{peak\_values},
 \texttt{peak\_indices}, \texttt{gfa} \citep{tuch:04}, \texttt{qa}
 \citep{yeh-etal:10}, \texttt{odf} and \texttt{shm\_coeff}.
 
 If the parameter \texttt{return\_sh} is set to True then the ODFs will be
-represented by their SH expansion. This serves as a memory usage reduction
-strategy as the SH coefficients need much less memory than the ODF represented
+represented by their SH expansion. This serves as a strategy to decrease
+memory usage, as the SH coefficients need much less memory than the ODF represented
 on the sphere. If we want to calculate the ODF back from the SH coefficients we
 can use the function \texttt{sh\_to\_sf}:
 \begin{python}
