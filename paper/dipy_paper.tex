@@ -995,10 +995,10 @@ direction may not coincide with the direction of any of the local fiber
 populations. More modern algorithms (see below) take this into account.  
 
 The other class of algorithms is probabilistic, in that it considers the local
-information in each voxel to represent a distribution . In these algorithms, a
-trajectory of fibers in every location is sampled from this distribution. The
-algorithm may therefore give different sets of `fibers` on different realizations
-of the algorithm. 
+information in each voxel to represent a distribution of possible directions in
+that location. In these algorithms, a trajectory of fibers in every location is
+randomly sampled from the local distribution. The algorithm may therefore give
+different sets of `fibers` on different realizations of the algorithm.
 
 Dipy implements both deterministic and probabilistic tracking algorithms,
 described in detail below.
