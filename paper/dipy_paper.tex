@@ -165,13 +165,21 @@ Visualization.
 
 \section{Introduction}
 
-\emph{Diffusion MRI} (dMRI) \citep{stejskal-tanner:65, merboldt-hanicke-etal:85, lebihan-breton:85, taylor-bushell:85}
-is an MRI technique \citep{callaghan:91} that provides information about the structure of neuronal
-pathways found in the white matter and other body tissue with fiber-like
-structure. DMRI acquires one or more $T_{2}$ reference images, and a collection
-of diffusion-weighted images, in which $T_{2}$ signal is attenuated according
-to the diffusivity of water along prescribed gradient directions
-\citep{behrens-johansen-berg:09, jones:10}.
+\emph{Diffusion MRI} (dMRI) \citep{stejskal-tanner:65,
+  merboldt-hanicke-etal:85, lebihan-breton:85, taylor-bushell:85, callaghan:91}
+is an MRI technique \citep{} that provides information about the structure of
+neuronal pathways found in the white matter and other body tissue with
+fiber-like structure. DMRI acquires one or more $T_{2}$ reference images, and a
+collection of diffusion-weighted images, in which $T_{2}$ signal is attenuated
+according to the diffusivity of water along prescribed gradient directions
+\citep{behrens-johansen-berg:09, jones:10}. Because diffusion is hindered
+across nerve fiber membranes and less along the length of nerve fibers, the
+signal is relatively more attenuated when diffusion-weighting is applied along
+the length of the fiber. Hence, the local structure of the neural tissue can be
+inferred from the measurement. This has led to many applications of the method,
+including diagnostic tools to assess the disruption of the microstructure and
+methods of tractography, which estimate the trajectories of nerve fibers that
+are communicating information between different parts of the brain.
 
 Because of its unique capability to characterize the micro-structure of neural
 tissue, and the inferences that can be made using this information about
@@ -209,6 +217,7 @@ explosion of Python users, the many Python tools for scientific computing
 and the recent stack of neuroimaging\footnote{\url{http://nipy.org}} modules
 make Dipy a useful addition for those who prefer Python as their favorite
 language.
+
 Dipy takes advantage of the growing ecosystem of tools written for scientific
 computing in Python. It is built on top of production-ready high-performance
 Python libraries. Primarily, Dipy depends on
@@ -230,14 +239,17 @@ Optional dependencies, that are not required for analysis, are used for
 visualization of diffusion data and the results of
 analysis. Matplotlib\footnote{\url{http://matplotlib.org}} is used for 2D and
 3D plotting. In addition, Python-VTK\footnote{\url{http://vtk.org}} is used for
-more advanced 3D interactive visualization. Furthermore, we recommend using
+more advanced 3D interactive visualization. Furthermore, nose
+\footnote{\url{/http://nose.readthedocs.org/en/latest/}} is used for unit
+testing and sphinx \footnote{\url{http://sphinx-doc.org/}} for automatic
+documentation . Finally, we recommend using
 IPython\footnote{\url{http://ipython.org}} the interactive Python shell for
-calling and debugging our scripts.
+calling and debugging scripts.
 
 In the following sections, we will explain the philosophy and main design
 concepts behind Dipy. We will also give examples which cover different parts of
-the diffusion MR analysis pipeline from the local voxel reconstruction of
-orientation distribution functions to streamline generation and visualization.
+the dMRI analysis pipeline from the local voxel reconstruction of orientation
+distribution functions to streamline generation and visualization.
 
 \section{Philosophy and Mission}
 
