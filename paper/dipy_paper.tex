@@ -116,7 +116,6 @@ emphstyle={\color{self}\slshape},
   \,$^{7}$Stellenbosch University, Stellenbosch, South Africa\\
   \,$^{8}$\texttt{http://dipy.org/developers.html}
   }
-
 \history{}
 
 \editor{}
@@ -128,16 +127,21 @@ emphstyle={\color{self}\slshape},
 
 Diffusion Imaging in Python (Dipy) is a free and open source software project
 for the analysis of data from diffusion magnetic resonance imaging (dMRI)
-experiments. DMRI is an application of MRI that can be used to measure the
-micro-structure of the white matter in the human brain \emph{in vivo}. It
-utilizes pulsed directionally oriented magnetic gradients to estimate diffusion
-in different directions and locations in the brain non-invasively. Many methods
-have been developed to model the local configuration of nerve fibers in the
-white matter based on this information and to infer the trajectory of nerve
+experiments. DMRI is an application of MRI that can be used to measure 
+microstructural features as well as the white matter wiring of the
+human brain \emph{in vivo}. It  
+utilizes pulsed directionally oriented magnetic gradients to
+non-invasively measure the diffusion signal in different directions
+and locations in the brain. Many methods 
+have been developed to model the local configuration of white matter
+bundles based on this information and to infer the trajectory of  
 fascicles connecting different parts of the brain.
 
-Dipy gathers implementations of many different methods, where they can be
-easily understood and compared. Dipy aims to provide transparent
+Dipy gathers implementations of many different methods, from diffusion
+signal pre-processing, to local reconstruction techniques, to fiber
+tractography and fiber post-processing, analysis and visualization. 
+All the Dipy methods can be easily understood and compared as Dipy aims to
+provide transparent 
 implementations for all the different steps of dMRI analysis with a uniform
 API. We have implemented classical signal reconstruction techniques, such as
 the diffusion tensor model and deterministic fiber tractography. In addition,
@@ -148,35 +152,38 @@ clustering. Many additional utility functions, to calculate various statistics
 of dMRI data, visualization functions, as well as file-handling routines exist
 to assist in the development and use of novel techniques.
 
-In contrast to many other scientific software projects, dipy is not being
+In contrast to many other scientific software projects, Dipy is not being
 developed by a single research group. Rather, it is an open project that
-encourages contributions from any scientist/developer through the github Pull
-Request mechanism and open discussions on github and on the project mailing
+encourages contributions from any scientist/developer through the
+\emph{github Pull 
+Request} mechanism and open discussions on github and on the project mailing
 list. Consequently, dipy today has an international team of contributors,
 spanning 6 different academic institutions in 4 countries and 3 continents,
 which is still growing (http://dipy.org).
 
-\section{Keywords:} Python, Diffusion MRI, Diffusion Tensor,
-Spherical Deconvolution, Medical imaging, Free Open Source Software,
-Deterministic tractography, Probabilistic tractography, Fiber tracking, Medical
-Visualization.
+\section{Keywords:} Python, Free Open Source Software, Medical
+Imaging, Medical Visualization, Diffusion MRI, Diffusion Tensor,
+Spherical Deconvolution, Fiber Tracking, Deterministic Tractography, 
+Probabilistic Tractography, Clustering.
 
 \end{abstract}
 
 \section{Introduction}
 
-\emph{Diffusion MRI} (dMRI) \citep{stejskal-tanner:65, merboldt-hanicke-etal:85, lebihan-breton:85, taylor-bushell:85}
-is an MRI technique \citep{callaghan:91} that provides information about the structure of neuronal
-pathways found in the white matter and other body tissue with fiber-like
-structure. DMRI acquires one or more $T_{2}$ reference images, and a collection
+\emph{Diffusion MRI} (dMRI) \citep{merboldt-hanicke-etal:85,
+  lebihan-breton:85, taylor-bushell:85}  
+is a MRI technique \citep{callaghan:91} that provides information
+about the structure of neuronal pathways found in the white matter and
+other body tissue with fiber-like structure. DMRI acquires one or more
+$T_{2}$ reference images, and a collection 
 of diffusion-weighted images, in which $T_{2}$ signal is attenuated according
 to the diffusivity of water along prescribed gradient directions
 \citep{behrens-johansen-berg:09, jones:10}.
 
-Because of its unique capability to characterize the micro-structure of neural
+Because of its unique capability to characterize the microstructure of neural
 tissue, and the inferences that can be made using this information about
-structural connectivity dMRI has had increasing popularity, with more than five
-thousand papers published in 2012 only according to PubMed. This popularity is
+structural connectivity, dMRI has had increasing popularity, with more than five
+thousand papers published in 2012 (according to PubMed). This popularity is
 also evident from the large number of software tools available for the analysis
 of diffusion-weighted images. Many of these tools are written in C/C++: 3D
 Slicer \citep{pieper:06}, AFNI \citep{cox-afni:12}, MITK
@@ -197,10 +204,10 @@ programming language which was designed with an emphasis on code readability.
 This emphasis allows scientists who are not trained as software engineers to
 understand the computational steps taken in analysis and extend the software in a
 straight-forward manner. Being an interpreted language, Python does not require
-additional compilation, linking, etc. and so installation of software written
+additional compilation, linking, etc., and so installation of software written
 in Python is relatively easy. Taken together, these properties of the language
 are powerful assets for the design of the next generation of medical imaging
-analysis tools. In the past we found that many researchers were using available
+analysis tools. In the past, we found that many researchers were using available
 tools without understanding the underlying details, often because the details
 were hidden from the users. Dipy tackles this problem by being free, open
 source (BSD license), simple and well documented. In addition, the recent
@@ -237,7 +244,8 @@ calling and debugging our scripts.
 In the following sections, we will explain the philosophy and main design
 concepts behind Dipy. We will also give examples which cover different parts of
 the diffusion MR analysis pipeline from the local voxel reconstruction of
-orientation distribution functions to streamline generation and visualization.
+orientation distribution functions (ODFs) to streamline generation by
+tractograph algorithms and visualization of these streamlines. 
 
 \section{Philosophy and Mission}
 
