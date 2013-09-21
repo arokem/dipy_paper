@@ -263,7 +263,7 @@ it will not be integrated in the main project without extended testing as well
 as code reviews from at least two members of the team.  Such principles
 aim to help the Dipy code-base preserve its quality while growing.
 
-Through this work ethic Dipy has attracted an international and
+Through this work ethic, Dipy has attracted an international and
 multi-departmental team of highly skilled contributors from different levels
 of education (Master students, PhD students, Post-Docs and Professors)
 spanning the fields of Computer Science, Medicine, Applied Mathematics,
@@ -285,7 +285,7 @@ The measurement of dMRI data relies on the application of a pulsed magnetic
 gradient and the degree of sensitization to diffusion depends on a number of
 parameters, including the duration of the gradient, time that elapses between
 pulses of the gradient and the gradient amplitude. These parameters are
-together summarized in what is referred to as the "b-value".  As described
+together summarized in what is referred to as the \emph{"b-value"}.  As described
 above, the measurement is conducted in several different directions and these
 are encoded in so-called "b-vectors". These are unit vectors that describe the
 direction relative to the scanner coordinate frame in which the gradients are
@@ -294,17 +294,19 @@ vectors (e.g. \citep{jones-etal:99}).
 
 While we are ultimately interested in the identification of the trajectories of
 bundles of axons, which are the long fiber-like part of a nerve cell along
-which electrical impulses are conducted from cell to cell (and whose size is on
-the $\mu$m scale), the measurement is conducted on a much larger
-scale. Typically, the measurement is conducted in a grid of "voxels" of
+which electrical impulses are conducted from cell to cell (and whose
+size is on the $\mu$m scale), the measurement is conducted on a much larger
+scale. Typically, the measurement is conducted in a grid of \emph{"voxels"} of
 approximately 2x2x2 mm. We are therefore limited to describe the trajectories
-of "fascicles" of nerves. One of the major achievements of this field is that
-it is now possible to reliably and accurately identify major fascicles in
+of \emph{"fascicles"} of nerves. One of the major achievements of this
+field is that it is now possible to reliably and accurately identify
+major fascicles in 
 individual experimental participants or patients. These major fascicles are
-also known as "tracts". This is a term taken from neuroanatomy and describes a
-group of neuronal axons within the central nervous system (mm scale).
+also known as \emph{"tracts"}. This is a term taken from neuroanatomy
+and describes a group of neuronal axons within the central nervous
+system (mm scale). 
 
-For the purpose of interpretation of these data, a "fiber" can be any long and
+For the purpose of interpretation of these data, a \emph{"fiber"} can be any long and
 thin structure. Hence, fiber tracking is a general term that can be used in any
 field that reconstructs fibrous structures, such as hair fibers, celery fibers,
 muscle fibers, prostate fibers, brain fibers, etc. "Fiber bundles" denote
@@ -325,7 +327,7 @@ axon, than across the membranes of the axon. Tractography is therefore usually
 done by finding the directions of diffusion in each voxel (see
 \ref{reconstruction}) and stepping through the brain volume along the
 directions of large diffusion estimated in each location. This process
-generates so-called streamlines, which imaginary lines that approximate the
+generates so-called \emph{streamlines}, which are imaginary lines that approximate the
 underlying fiber. Streamlines are also sometimes referred to as "tracks". These
 are not to be confused with tracts: While a tract is a physical object, a track
 is a computational construct that only approximates the underlying fascicle or
@@ -398,10 +400,10 @@ dipy.__version__
 '0.7.0.dev'
 \end{python}
 
-\section{Preprocessing}\label{preprocessing}
+\section{Pre-processing}\label{preprocessing}
 
 \subsection{Load/Save data}\label{loadsave}
-The most basic operation that we do in Neuroimaging is to load some data from
+The most basic operation that we do in neuroimaging is to load some data from
 the disk which are generated from an MRI scanner. Surprisingly this is often a
 difficult task as different scanners and software read/write the data in
 different ways. Nibabel, a library for reading medical imaging formats, is
@@ -428,7 +430,7 @@ voxel_size = header.get_zooms()[:3]
 \end{python}
 Here \texttt{data} is a Numpy array which contains the actual 4D image (a
 collection of 3D volumes). Using \texttt{data.shape} we can obtain the
-dimensions of the image. In this example the dimensions are (81, 106, 76,
+dimensions of the image. In this example, the dimensions are (81, 106, 76,
 160). The first three dimensions contain the size of the volume and the last
 dimension has the information for the different diffusion gradients. The
 variable \texttt{affine} provides a $4\times4$ matrix which contains the
@@ -527,8 +529,8 @@ exactly where it will be after time $t$, we can only model a distribution of
 possible locations i.e. a probability displacement distribution. This is also
 known as the diffusion propagator $P$. This motion is described by the
 propagator $P(\mathbf{x};\mathbf{x}_{0},t)$ which defines the probability of
-being in $\mathbf{x}$ after a time $t$, starting at $\mathbf{x}_{0}$.  Stejskal
-and Tanner \citep{stejskal-tanner:65} showed that the spin echo magnitude
+being in $\mathbf{x}$ after a time $t$, starting at $\mathbf{x}_{0}$. Callaghan 
+\citep{callaghan:91} showed that the spin echo magnitude
 $S(\mathbf{q},t)$ from a pulsed gradient spin echo (PGSE) experiment is
 directly related to the diffusion propagator by the following (inverse) Fourier
 relation
@@ -540,24 +542,33 @@ diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement
 $\mathbf{x}-\mathbf{x}_{0}$ at diffusion time $t$ and $\mathbf{q}$ is the spin
 displacement wave vector. $\mathbf{q}$ is parallel with the applied magnetic
 gradient $\mathbf{g}$ which in turn are directly related with the b-vectors
-discussed in section \ref{gtab}.  In theory, if we apply the Fourier
+and b-values as discussed in section \ref{gtab}.  In theory, if we apply the Fourier
 transform in eq.~\ref{eq:fourier} we can get back a 3D PDF (the diffusion
 propagator) for every voxel. In practice, unfeasibly long acquisition time is
 required and perfect experimental conditions. Therefore, a discrete method
-called Diffusion Spectrum Imaging(DSI) has been used (see section \ref{dsi}).
-Nonetheless DSI still needs long acquisitions. An alternative is to work on
-reconstructing only a spherical projection of the 3D PDF. This often called the
-diffusion orientation distribution function (dODF) or simply ODF. Another
-alternative is to make assumptions about the distribution of the PDF. In this
-later category belongs the most popular imaging method in dMRI: Diffusion
-Tensor Imaging (DTI).
+called q-space imaging (QSI) in 1D~\citep{callaghan-eccles-etal:1988}
+and Diffusion  Spectrum Imaging (DSI)~\citep{wedeen2005mapping} has been used (see section
+\ref{dsi}).  
+DSI needs long acquisition time although recent techniques based on
+Compressed Sensing
+ideas~\citep{menzel-tan-etal:11,bilgic2012accelerated,gramfort-etal-media:13},
+and multi-slice imaging~\citep{Setsompop2012569} have 
+considerably accelerated the DSI acquisition. An alternative is to
+work on reconstructing only an angular projection of the 3D PDF. This
+often called the orientation distribution function (ODF). Another
+alternative is to make assumptions about the distribution of the PDF
+such as a Gaussian assumption, which lead to  
+the popular Diffusion Tensor Imaging (DTI)
+technique~\citep{basser-mattiello-etal:94}.  
 
-\subsection{Diffusion Tensor Imaging}\label{dti}
 
-Often people assume that DTI and dMRI are synonymous. This is not correct. In
-DTI there is a crucial assumption that the propagator is described only by a 3D
-Gaussian distribution. With this assumption from eq.~\ref{eq:fourier} we can
-write
+\subsection{Diffusion Tensor Imaging in Dipy}\label{dti}
+
+Often people assume that DTI and dMRI are synonyms. This is not correct. In
+DTI, there is a crucial assumption that the diffusion propagator is
+described only by a single 3D Gaussian distribution. From
+eq.~\ref{eq:fourier}, we can thus write
+
 \begin{equation}
 P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{r}^{T}\mathbf{D}^{-1}\mathbf{r}}{4t})
 \end{equation}
