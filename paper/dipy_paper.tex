@@ -571,7 +571,7 @@ eq.~\ref{eq:fourier}, we can thus write
 
 \begin{equation}
 P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{r}^{T}\mathbf{D}^{-1}\mathbf{r}}{4t})
-\end{equation}
+end{equation}
 \noindent where $\mathbf{D}$ is known as the diffusion tensor. This tensor is a
 $3x3$ positive definite symmetric matrix that can be completely described by a
 centered ellipsoid with 3 principal axes and associated eigenvalues
@@ -579,17 +579,19 @@ $\lambda_{1},\lambda_{2},\lambda_{3}$.
 
 DTI was first proposed by Basser and colleagues
 \citep{basser-mattiello-etal:94} and has since been very influential in
-demonstrating the utility of dMRI in characterizing the micro-structure of
+demonstrating the utility of dMRI in characterizing properties  of
 white matter tissue. The model relies on the assumption that diffusion is a
-Gaussian process. Using this assumption the dODF can be modeled with 6
-parameters, describing the variance and covariance of the Gaussian diffusion
-along the three primary axes. From these parameters, several useful measures
+Gaussian process, which can be captured by 6 parameters, describing
+the variance and covariance of 
+the Gaussian diffusion along the three primary axes. From these
+parameters, several useful measures 
 can be derived: the primary diffusion direction is the primary eigen-value of
 the tensor, $\lambda_{1}$ and it is the direction in which variance in the
 diffusion distribution is largest. In some places in the brain (e.g. in the
-corpus callosum, the large fiber bundle in the center of the brain that
-connects the two hemispheres) this corresponds to the direction of the white
-matter fibers in the voxel and can be used for tracking
+corpus callosum, the large commissural fiber bundle connecting left
+and right hemispheres), this corresponds to the
+direction of the white 
+matter fibers in the voxel and can be used for streamline tracking
 \citep{conturo-lori-etal:99, Mori1999, Basser2000}. Other univariate measures
 are estimated from the parameters of the model to assess the biophysical
 properties of the underlying tissue. The diffusivity along the primary
@@ -611,16 +613,19 @@ factor in limiting diffusion of water across cellular compartments. In
 addition, tissue density affects both the radial and the axial diffusivity, and
 loss of nerve fiber tissue also results in a decrease in FA \citep{Beaulieu1996,
   Beaulieu2002}. As a consequence of these studies, researchers now routinely
-refer to FA as a measure of "tissue integrity". However, we strongly warn
-against this usage, because it is easy to show that though the density of the
+refer to FA as a measure of \emph{"tissue integrity"}. However, we
+strongly warn against this usage, because it is easy to show that
+although the density of the 
 tissue and the density of the myelin wrapping the axons in the voxel may affect
 both MD and FA, changes in other factors, such as the distribution of
-directions of crossing of fiber populations throught the voxel may also affect
-these measures \citep{Basser1996,wandell-yeatman:13}. Therefore, interpretation
+directions of crossing of fiber populations through the voxel may also affect
+these measures
+\citep{Basser1996,wandell-yeatman:13,jones-etal:13}. Therefore,
+interpretation 
 of group differences in FA, or longitudinal changes in FA over time should be
 carefully handled and compared to the results from other modeling techniques,
 that better account for the distribution of fiber orientations in the voxel
-(see below).
+(see below). 
 
 That said, the use of DT-based univariate statistics is very popular among
 users of dMRI and also quite useful. That is, variance in a variety of
@@ -629,8 +634,8 @@ can be predicted based, suggesting that they are reporting on meaningful and
 impactful variability in brain structure.
 
 Fitting the tensor model and computing univariate statistics from it in Dipy is
-straightforward. In the following example, we show how the tensor model is fit
-to data and how univariate measures can be computed.
+straightforward. In the following example, we show how the tensor
+model is fitted to data and how univariate measures can be computed.
 
 First, \texttt{data}, \texttt{mask} and \texttt{gtab} are created as we saw in
 section \ref{preprocessing}. Next, we can import the diffusion tensor model class
@@ -640,7 +645,7 @@ and initialize a \texttt{TensorModel} class instance with the name
 from dipy.reconst.dti import TensorModel
 ten_model = TensorModel(gtab)
 \end{python}
-Note that at this point in the code no data analysis has occurred yet. Since
+Note that at this point in the code, no data analysis has occurred yet. Since
 the analysis of every voxel in the brain will rely on similar infra-structure,
 the \texttt{TensorModel} class instance only sets up the skeleton for the
 analysis. This same skeleton will be reused for each one of the voxels in the
@@ -654,12 +659,14 @@ ten_fit = ten.fit(data, mask)
 The advantage of this separation of the model and the fit is that we can fit
 many different data with the same initialization parameters without duplicating
 code. Once a fit has been conducted, we can compute a variety of derived
-univariate measures, such as the fractional anisotropy (FA) [REF]:
+univariate measures, such as the fractional anisotropy (FA) \citep{Basser1996}:
 \begin{python}
 from dipy.reconst.dti import fractional_anisotropy
 fa = fractional_anisotropy(ten_fit.evals)
 \end{python}
-It is common to represent the primary diffusion direction using an RGB representation and create a DEC map[REF] (see Fig.~\ref{Fig:ten_csa_csd}):
+It is common to represent the primary diffusion direction using an RGB
+representation and create a DEC map \citep{pierpaoli-jezzard-etal:96}
+(see Fig.~\ref{Fig:ten_csa_csd}): 
 \begin{python}
 from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
@@ -668,10 +675,13 @@ Finally, a couple more points about the implementation of DTI. The first is that
 there is still ongoing research on fitting methods for the tensor model
 \citep{Koay2006}. Several different methods have been implemented, including
 non-linear least-squares, ordinary least-squares and weighted least-squares
-fitting \citep{chung-lu-etal:06}. In addition, there is ongoing research on
+fitting \citep{chung-lu-etal:06} as well as Riemanian modeling-based
+techniques that assure that the estimated tensor is positive definite
+\citep{lenglet-rousson-etal:jmiv,arsigny-fillard-etal:06}. In
+addition, there is ongoing research on  
 methods to robustly fit the tensor model, in the face of noisy data
 \citep{Chang2005, Chang2012}. For this purpose, an implementation of a robust 
-tensor fitting algorithm (RESTORE) is also available.
+tensor fitting algorithm (RESTORE) is also available in Dipy.
 
 The second is that many more univariate measures have been implemented. Not
 only can users compute FA, MD, DEC, but also other statistics that have been
@@ -682,11 +692,11 @@ are available under the \texttt{dipy.reconst.dti} module.
 
 \subsection{Diffusion Spectrum Imaging}\label{dsi}
 
-For those who have acquired DSI type of data, i.e. data with multiple b-values
-and gradients which span a Cartesian keyhole grid \citep{tuch:02,
+For those who have acquired DSI data, i.e. data with multiple b-values
+and gradients that span a Cartesian keyhole grid \citep{tuch:02,
   wedeen-hagmann-etal:05, Garyfallidis_thesis}, Dipy provides currently three
-different models. The standard \texttt{DiffusionSpectrumModel} can be accessed
-using:
+different models. The standard \texttt{DiffusionSpectrumModel} can be
+accessed using:
 \begin{python}
 from dipy.reconst.dsi import DiffusionSpectrumModel
 dsi_model = DiffusionSpectrumModel(gtab)
@@ -695,12 +705,15 @@ It was shown by Wedeen et al. \citep{wedeen-hagmann-etal:05} that the dMRI
 signal is positive for any type of spin motion without net flux (i.e.~spin
 displacements due to thermal molecular agitation) or other random fluxes such
 as intravoxel incoherent motion. Under this assumption we can replace the
-complex signal $S$ with its modulus $|S|$ in Eq.~\ref{eq:fourier} and apply the
+complex signal $S$ with its module $|S|$ in Eq.~\ref{eq:fourier} and apply the
 Fourier transform:
 \begin{eqnarray}
-P(\mathbf{r}) & = & S_{0}^{-1}\int|S(\mathbf{q})|\exp(-i2\pi\mathbf{q}\cdot\mathbf{r})d\mathbf{q}\label{eq:P_modulus}
+P(\mathbf{r}) & = &
+S_{0}^{-1}\int|S(\mathbf{q})|\exp(-i2\pi\mathbf{q}\cdot\mathbf{r})d\mathbf{q}\label{eq:P_modulus}  
 \end{eqnarray}
-In DSI this triple-integral is approximated in a discrete way and the PDF P comes out for every single voxel as a 3D array. We can obtain $P$ using:
+In DSI this triple-integral is approximated in a discrete way and the
+PDF P comes out for every single voxel as a 3D array. We can obtain
+$P$ using: 
 \begin{python}
 dsi_fit = dsi_model.fit(data)
 dsi_pdf = dsi_fit.pdf()
@@ -719,15 +732,17 @@ for index in ndindex(data.shape[:-1]):
 \end{python}
 With this method we do not need to store all the PDFs at once. If it absolutely
 necessary to save all the PDFs then we advise to create a Numpy memory-map
-which will store the are as binary file on disk. Memory-mapped files are used
+which will store the PDFs as binary file on disk. Memory-mapped files are used
 for accessing small segments of large files on disk, without reading the entire
 file into memory.
 
 Recently, an alternative method for DSI was proposed by
-\citep{canales-rodriguez-etal:10} which applies a Lucy-Richardson deconvolution
-in the 3D PDF and achieves a higher angular resolution for resolving crossing
-fibers. This can be used in exactly the same way as with the standard DSI
-method:
+\citep{canales-rodriguez-etal:10} using a deconvolution technique
+based on a Lucy-Richardson (LR) algorithm of the 3D PDF. The
+deconvolution technique accounts for the truncation of q-space by
+standard DSI and can thus achieve a higher angular resolution for
+resolving crossing fibers. This can be used in exactly the same way as
+with the standard DSI method:
 \begin{python}
 from dipy.reconst.dsi import
                       DiffusionSpectrumDeconvModel
@@ -737,7 +752,8 @@ dsid_fit = dsid_model.fit(data)
 
 In Fig.~\ref{Fig:pdf} we show noiseless volumetric renderings of the PDFs of 
 a simulation of a $60\,^{\circ}$ crossing with the two different methods. It 
-is evident that the LR deconvolution modules represents better the underlying structure.
+is evident that the LR deconvolution reconstruction better represents the
+underlying structure. 
 
 Since we are mainly interested in the angular structure of the underlying
 tissue, we further simplify the data by taking the weighted radial summation of
@@ -774,17 +790,23 @@ advantage of GQI is that it is much faster to calculate than DSI or DSID.
 
 
 \subsection{Q-ball Imaging}
-
+To reduce the acquisition requirements of DSI, several techniques
+have been proposed to compute the ODF from Eq. \label{eq:ODF_DSI}
+using only a single b-value dMRI acquisition, often called
+\emph{single-shell} high angular resolution diffusion imaging (HARDI)
+\citep{tuch-reese-etal:02,descoteaux-deriche-etal:11}. 
 Spherical harmonics (SH) are mathematical functions that can be used to
 construct an orthonormal basis for a function on the sphere. In practice, these
 can be used to approximate any spherical function (such as the ODF) up to a
 highest frequency (SH order). Due to their practical mathematical properties,
-there have been several cases of using spherical harmonics to describe dMRI
-data, starting from the work of \citet{Frank2001, Frank2002} and
-\citet{tuch-reese-etal:02}. In fact, Tuch showed that the Funk Radon Transform
-(FRT), used in a method he called q-ball imaging (QBI), reconstructs a smoothed
-version the ODF directly from a \emph{single spherical shell} dMRI
-acquisition. This q-ball ODF $\psi_{QBI}$ can be obtained analytically from a
+there have been several cases of using spherical harmonics to describe
+the apparent diffusion coefficient (ADC) computed from HARDI, starting from the
+work of \citet{Frank2001, Frank2002, alexander-barker-etal:02} and 
+\citet{tuch-reese-etal:02}. Then, Tuch showed that the Funk Radon Transform
+(FRT), used in a method he called \emph{q-ball imaging} (QBI),
+reconstructs a smoothed version the ODF directly from a
+\emph{single-shell} dMRI acquisition. This q-ball ODF $\psi_{QBI}$ can 
+be obtained analytically from a 
 SH estimation of the diffusion signal \citep{descoteaux-angelino-etal:07,
   hess-mukherjee-etal:06, anderson:05}:
 \begin{equation}\label{eq.qball}
