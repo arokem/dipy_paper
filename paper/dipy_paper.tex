@@ -816,7 +816,13 @@ where $P_{l(j)}$ is the Legendre polynomial of order $l$ corresponding to
 coefficient $j$ and the coefficients have been normalized by the S0
 image. Hence, the q-ball ODF is a linear transformation of the SH coefficient,
 $c_j$. This technique is called analytical QBI (aQBI), in contrast to the
-original QBI solution, which performs the FRT numerically.  The SH of order $l$
+original QBI solution, which performs the FRT numerically. It is
+important to note that these solutions are based on
+Eq. \label{eq:ODF_DSI}, without the $r^2$ term. Hence, these ODFs are
+not properly normalized by the solid angle term. Hence, Dipy proposes
+Constant Solid Angle analytical solution more recently proposed by 
+\citep{aganj-lenglet-etal:10,tristan-vega-westin-etal:09} 
+The SH of order $l$
 and phase $m$, $Y_{l}^{m}(\theta, \phi)$, arise from the angular solution to
 Laplace's equation in spherical coordinates and they form an orthonormal basis
 for complex functions defined on the unit sphere. However, in single-shell
@@ -828,8 +834,9 @@ $R = (l_{max} +1)( l_{max} +2)/2$ terms. For example, for $l_{max} = 4, 6, 8$,
 and $16$ SH series have $R = 15, 28, 45$, and $153$ coefficients respectively.
 
 In Dipy we have implemented 3 different Q-ball methods in module
-\texttt{dipy.reconst.shm}: a) \citep{descoteaux-angelino-etal:07}, b)
-\citep{aganj-lenglet-etal:10} and c) \citep{tristan-vega-westin-etal:09}. For
+module \texttt{dipy.reconst.shm}: a)
+\citep{descoteaux-angelino-etal:07}, b) \citep{aganj-lenglet-etal:10}
+and c) \citep{tristan-vega-westin-etal:09}. For 
 example (a) can be used in the following way:
 \begin{python}
 from dipy.reconst.shm import QballModel
@@ -839,9 +846,11 @@ qb_odf = qb_fit.odf(sphere)
 from dipy.reconst.odf import minmax_normalize
 qb_nodf = minmax_normalize(qb_odf)
 \end{python}
-Important points here are that SH order needs to be $6$ and the regularization
-parameter $0.006$. Furthermore, because the analytical ODF method produces more
-rounded ODFs it is useful for visualization purposes to use min-max
+Important points here are that SH order is set to $6$ and the regularization
+parameter $0.006$, as suggested and optimized in
+\citep{descoteaux-angelino-etal:06c}. Furthermore, because the
+analytical ODF method produces more  
+rounded ODFs it is useful for visualization purposes to use \emph{min-max}
 normalization. The SH coefficients are accessible using the attribute
 \texttt{qb\_fit.shm\_coeff}. Methods (b) and (c) can be used in a very similar
 way. For example, for the Constant Solid Angle (CSA)
@@ -861,31 +870,35 @@ term and therefore it generates more rounded ODFs that require normalization.
 
 \subsection{Constrained Spherical Deconvolution}
 
-The method of spherical deconvolution \citep{tournier-calamante-etal:04} can be
-used to estimate the distribution of fibre orientations present within each
-voxel. With this method, the signal measured on single spherical shell
+QBI-based techniques reconstruct the \emph{diffusion
+  ODF} (dODF). To improve the angular resolution of the reconstruction, spherical
+deconvolution (SD) techniques have been introduced and reconstruct what is
+called the \emph{fiber ODF} (fODF). 
+SD was first introduced by \citep{tournier-calamante-etal:04}. With
+this method, the signal measured on single spherical shell 
 acquisitions can be expressed as the convolution over spherical coordinates of
-the response function with the fiber orientation distribution. The response
+the response function with the fODF. The response
 function describes the signal intensity that would be measured as a function of
 orientation for a single fiber aligned along the z-axis. In the spherical
 harmonics (SH) framework, the convolution operation is performed as
 follows. For each harmonic order $l$, the SH coefficients of the signal profile
-$S(\theta, \phi)$ and the FOD $F(\theta, \phi)$ are written as vectors
+$S(\theta, \phi)$ and the fODF $F(\theta, \phi)$ are written as vectors
 $\mathbf{s}_l$ and $\mathbf{f}_l$ of length $2l+1$, whereas the rotational
 harmonic coefficients of the convolution kernel R (the response function) are
 written as a matrix $\mathbf{R}_l$ of size $(2l+ 1)\times(2l+ 1)$. The
 convolution operation then simply consists of one matrix multiplication per
 harmonic order l: $\mathbf{s}_l=\mathbf{R}\cdot\mathbf{f}_l$. The spherical
 deconvolution operation can be performed by simple matrix inversion. However,
-the spherical deconvolution problem is ill-posed and thus susceptible to noise.
+the spherical deconvolution problem is ill-posed and thus susceptible
+to noise \citep{tournier-calamante-etal:04}. 
 
 Constrained super-resolved spherical deconvolution (CSD)
 \citep{tournier-calamante-etal:07} gives a robust solution to this problem by
 applying two major constraints on the fitting of the fODF. The first is that it
 applies a non-negativity constraint: fODF values that are smaller than 0 are
-non-physical and are precluded. The other is that CSD applies a sparseness
+non-physical and are precluded. The other is that CSD applies a sparsity
 constraint on the fODF - it assumes that only a few of the fODF values will be
-larger than 0. Applying these two constraints allows fitting the SH basis
+large. Applying these two constraints allows fitting the SH basis
 up to very high orders - in essence fitting more parameters than data allow. 
 This is known as \emph{super-resolution}. This super-resolved method
 can be accessed in Dipy using:
@@ -895,20 +908,23 @@ from dipy.reconst.csdeconv import
 csd_model = CsdModel(gtab, response)
 \end{python}
 The main choice to be considered is the estimation of the single fiber response
-function.  We assume that $R$ is derived from a prolate tensor. The eigenvalues
+function.  We assume that $R$ is derived from a prolate tensor, where
+the single-tensor model is accurate. The eigenvalues
 of this tensor are estimated from the voxels with FA $> 0.7$. The input
 parameter \texttt{response} is a tuple with two parameters: a) the eigen-values
 of the tensor and b) the estimated average S0 signal for those voxels. The
 response function is usually estimated from the corpus callosum areas. For
 further information on how to iniate the CSD please read our examples in
-\texttt{dipy.org}.
+\texttt{dipy.org}. 
 
 Dipy also implements a second constrained spherical deconvolution method: The
-Spherical Deconvolution Transform (SDT) is a sharpening operation which
-transforms the smooth diffusion ODF into a sharper fiber ODF. The method is
+Spherical Deconvolution Transform (SDT)
+\citep{descoteaux-deriche-etal:09}, which is a sharpening 
+operation that can transform the smooth diffusion ODF into a sharper
+fiber ODF. The method is 
 inspired by CSD \cite{tournier-calamante-etal:07} with, the main difference
 that the CSD is applied directly to the initial signal and the SDT directly to
-the ODF \citep{descoteaux:08}.
+the ODF \citep{descoteaux:08,descoteaux-deriche-etal:09}.
 
 The idea here is that an ODF, for example the analytical Q-ball ODF
 $\psi_{QBI}$, can be formed by the convolution between the single fiber
@@ -930,15 +946,23 @@ sdt_model = SdtModel(gtab, ratio)
 \end{python}
 Here the response function is provided as a scalar parameter, the ratio of the
 smallest eigenvalue over the largest eigenvalue. Both spherical deconvolution
-methods perform similarly \citep{GaryfallidisISBI2013a}.
+methods perform similarly as shown in
+\citep{descoteaux-deriche-etal:09,GaryfallidisISBI2013a}. 
 
-In Fig.~\ref{Fig:ten_csa_csd} the ODFs of the \texttt{TensorModel}, \texttt{CsaOdfModel} and \texttt{CsdModel} in of a region in the centrum semiovale crossed by the splenium of the corpus callosum are shown. 
-
-\begin{figure*}
+\begin{figure*}[!htb]
 \centerline{\includegraphics[width=180mm]{Figures/ten_csa_csd2.eps}}
-\caption{a) Tensor ellipsoids color-coded with a DEC map, b) Tensor ODFs, c) Constant solid angle ODFs and d)super-resolved constrained spherical deconvolution ODFs\label{Fig:ten_csa_csd}}
+\caption{a) Tensor ellipsoids color-coded with a DEC map, b) Tensor
+  ODFs, c) Constant solid angle ODFs and d) constrained
+  spherical deconvolution ODFs in of a region in the
+centrum semiovale showing crossings between the corpus callosum,
+corticospinal tract and the superior longitudinal
+fasciculus.\label{Fig:ten_csa_csd}}  
 \end{figure*}
 
+In Fig.~\ref{Fig:ten_csa_csd} the ODFs of the \texttt{TensorModel},
+\texttt{CsaOdfModel} and \texttt{CsdModel} of a region in the
+centrum semiovale show crossings between the corpus callosum,
+corticospinal tract and the superior longitudinal fasciculus.
 
 \subsection{Peaks from models}
 In the previous sections we showed that the reconstruction models have a
@@ -950,7 +974,7 @@ ODFs, b) find the directions of the maxima in the ODFs which can be useful for
 tracking, c) discretize those directions on the unit sphere for efficiency, d)
 compress the ODFs as spherical harmonics to reduce memory usage and e)
 calculate many metrics simultaneously, e.g. generalized fractional anisotropy
-(GFA)[REF], without the need of creating all ODFs at
+(GFA) \citep{tuch:04}, without the need of creating all ODFs at 
 once. \texttt{peaks\_from\_model} can be called as:
 \begin{python}
 from dipy.reconst.odf import peaks_from_model
@@ -974,7 +998,7 @@ this threshold only the larger of the two is returned. This two parameters help
 to get robust fiber directions when the ODFs are
 noisy. \texttt{peaks\_from\_model} returns a \texttt{PeaksAndMetrics} object
 which holds all the different output arrays, \texttt{peak\_values},
-\texttt{peak\_indices}, \texttt{gfa} \citep{tuch:04}, \texttt{qa}
+\texttt{peak\_indices}, \texttt{gfa} , \texttt{qa}
 \citep{yeh-etal:10}, \texttt{odf} and \texttt{shm\_coeff}.
 
 If the parameter \texttt{return\_sh} is set to True then the ODFs will be
@@ -1006,8 +1030,9 @@ dimensions are equal in all three dimensions. If the provided data do not have
 isotropic voxel size then a reslicing preprocessing step to isotropic is
 required.
 
-In order to create streamlines we need to provide initially one or more seed
+In order to create streamlines, we initially need to provide one or more seed
 points $s$. The points from where the streamlines will start growing. These can
+The points from where the streamlines will start growing. These can
 be chosen randomly or we can specify them explicitly. However, these seed
 points need to be constrained by the volume's dimensions. Every seed point
 $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the
@@ -1053,12 +1078,13 @@ from EuDX.
 \begin{figure}
 \includegraphics[scale=0.75]{Figures/pretty_streamlines.eps}
 \centering{}
-\caption{An example of EuDX-based fiber tracking applied on a real human brain dataset\label{Fig:pretty_streamlines}}
+\caption{An example of EuDX-based fiber tracking applied on a real
+  human brain dataset\label{Fig:pretty_streamlines}} 
 \end{figure}
 
 \subsection{Probabilistic}
 
-\section{Post-tracking}\label{post_tracking}
+\section{Fiber analysis and post-processing}\label{post_tracking}
 
 In the following sections we describe some of the tools available for processing
 streamlines after these have been created.
@@ -1068,7 +1094,8 @@ fiber tracking algorithms can generate a great number of densely packed
 streamlines (often more than one million) which is difficult to interact
 and interpret. As a solution to this problem Dipy implements a recent and
 efficient clustering algorithm for streamlines. This is called QuickBundles (QB)
-[REF] and it can be used to simplify large datasets in a couple of minutes.
+\citep{Garyfallidis_thesis,garyfallidis-etal:12} and it can be used to
+simplify large datasets in a couple of minutes. 
 When using QuickBundles we need first to instantiate the object with 3
 parameters. The first parameter is the set of initial streamlines to be
 clustered, the second is the distance threshold that defines the cluster size
@@ -1090,7 +1117,9 @@ specific cluster.
 \subsection{Counting streamlines in ROIs}
 
 It is often useful in dMRI to find from which ROIs a streamline is passing
-or even to count the number streamlines that go through an ROI [REF]. For this
+or even to count the number streamlines that go through another ROI,
+as recently done in brain \emph{connectomics}
+\citep{hagmann-leila-etal:08}. For this 
 purpose we created a multipurpose function called \texttt{track\_counts}.
 \begin{python}
 from dipy.tracking.vox2track import track_counts
@@ -1111,7 +1140,8 @@ integers, where the integers are the indices of the streamline that passed throu
 the voxel.
 
 This function can be used to filter streamlines which go through specific masks,
-calculate track densities [REF] or used for connectivity analysis.
+calculate track densities \citep{Calamante20101233} or used for
+connectivity analysis. 
 
 \subsection{Streamline metrics and statistics}
 
@@ -1135,7 +1165,8 @@ spline interpolation, \texttt{centre\_of\_mass}, \texttt{mean\_curvature},
 and torsion calculations along a streamline.
 
 \subsection{Visualization}
-Fig.~\ref{Fig:pdf},~\ref{Fig:ten_csa_csd},~\ref{Fig:pretty_streamlines} are generated by 
+Fig.~\ref{Fig:pdf},~\ref{Fig:ten_csa_csd},~\ref{Fig:pretty_streamlines}
+are generated by  
 our own visualization tools which can be used for most parts of the diffusion 
 analysis pipeline. We have developed a minimal, lightweight and up to the point 
 module which is based on the Visualization Toolkit (VTK)[REF] and we call 
@@ -1193,7 +1224,8 @@ and deployment of software for the analysis of neuroscience data, based on free
 open source software (FOSS) practices.
 
 Ariel Rokem is funded by a National Research Service Award (NEI F32 EY022294).
-Eleftherios Garyfallidis if funded by ...
+Eleftherios Garyfallidis if funded by NSERC-CREATE program in Medical
+Image Analysis and the Quebec Funds in Nature and Techologie (FQRNT). 
 
 \section*{Disclosure/Conflict-of-Interest Statement}
 There are no conflicts of interest.
