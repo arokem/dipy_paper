@@ -127,12 +127,12 @@ emphstyle={\color{self}\slshape},
 
 Diffusion Imaging in Python (Dipy) is a free and open source software project
 for the analysis of data from diffusion magnetic resonance imaging (dMRI)
-experiments. DMRI is an application of MRI that can be used to measure
+experiments. {dMRI} is an application of MRI that can be used to measure
 microstructural features as well as the white matter wiring of the
 human brain \emph{in vivo}. It
 utilizes pulsed directionally oriented magnetic gradients to
-non-invasively measure the diffusion signal in different directions
-and locations in the brain. Many methods
+measure the diffusion signal in different directions
+and locations in the brain non-invasively. Many methods
 have been developed to model the local configuration of white matter
 bundles based on this information and to infer the trajectory of
 fascicles connecting different parts of the brain.
@@ -143,13 +143,13 @@ tractography and fiber post-processing, analysis and visualization.
 All the Dipy methods can be easily understood and compared as Dipy aims to
 provide transparent
 implementations for all the different steps of dMRI analysis with a uniform
-API. We have implemented classical signal reconstruction techniques, such as
+programming interface (API). We have implemented classical signal reconstruction techniques, such as
 the diffusion tensor model and deterministic fiber tractography. In addition,
 it implements cutting edge novel reconstruction techniques, such as constrained
 spherical deconvolution and diffusion spectrum imaging with deconvolution, as
-well as methods for probabilistic tracking and unique methods for tractography
-clustering. Many additional utility functions, to calculate various statistics
-of dMRI data, visualization functions, as well as file-handling routines exist
+well as methods for probabilistic tracking and original methods for tractography
+clustering. Many additional utility functions are provided to calculate various statistics
+of dMRI data, visualization functions, as well as file-handling routines
 to assist in the development and use of novel techniques.
 
 In contrast to many other scientific software projects, Dipy is not being
@@ -158,7 +158,7 @@ encourages contributions from any scientist/developer through the
 \emph{github Pull
 Request} mechanism and open discussions on github and on the project mailing
 list. Consequently, dipy today has an international team of contributors,
-spanning 6 different academic institutions in 4 countries and 3 continents,
+spanning six different academic institutions in four countries and three continents,
 which is still growing (http://dipy.org).
 
 \section{Keywords:} Python, Free Open Source Software, Medical
@@ -181,7 +181,7 @@ to the diffusivity of water along prescribed gradient directions
 across nerve fiber membranes and less hindered along the length of nerve fibers, the
 signal is relatively more attenuated when diffusion-weighting is applied along
 the length of the fiber. Hence, the local structure of the neural tissue can be
-inferred from the measurement. This has led to many applications of the method,
+inferred from the measurements. This has led to many applications of the method,
 including diagnostic tools to assess the disruption of the microstructure and
 methods of tractography, which estimate the trajectories of nerve fibers that
 are communicating information between different parts of the brain.
@@ -198,7 +198,7 @@ DTI-Query/Quench \citep{sherbondy:05}, FreeSurfer \citep{fischl-freesurfer:12},
 FSL-FDT \citep{smith-fdt:04}, MedInria \citep{toussaint-souplet-etal:07},
 MRtrix \citep{Tournier2012}, Diffusion Toolkit/Trackvis
 \citep{wang-diffusion-toolkit:07}, FiberNavigator \citep{vaillancourt:11,
-  chamberland:13}. Only a few are written in other languages, such as R:
+  chamberland:13}. A few are written in other languages, such as R:
 TractoR \citep{ clayden-TractoR:11}, Java: Camino \citep{Cook2006} and Matlab:
 ExploreDTI \citep{leemans-exploredti:09}, AFQ \citep{yeatman2012afq} and
 others.
@@ -213,15 +213,20 @@ straight-forward manner. Being an interpreted language, Python does not require
 additional compilation, linking, etc., and so installation of software written
 in Python is relatively easy. Taken together, these properties of the language
 are powerful assets for the design of the next generation of medical imaging
-analysis tools. In the past, we found that many researchers were using available
-tools without understanding the underlying details, often because the details
+analysis tools. 
+
+% I've divided up this very long paragraph into three paragraphs.
+
+In the past, we have found that many researchers used the available
+tools without necessarily understanding the underlying details, often because these
 were hidden from the users. Dipy tackles this problem by being free, open
 source (BSD license), simple and well documented. In addition, the recent
 explosion of Python users, the many Python tools for scientific computing
 \citep{perez_python:11}, \citep{mckinney_python:12}, \citep{perez_ipython:07}
 and the recent stack of neuroimaging\footnote{\url{http://nipy.org}} modules
-make Dipy a useful addition for those who prefer Python as their favorite
-language.
+make Dipy a useful addition for those for whom Python is the
+language-of-choice.
+
 Dipy takes advantage of the growing ecosystem of tools written for scientific
 computing in Python. It is built on top of production-ready high-performance
 Python libraries. Primarily, Dipy depends on
@@ -239,13 +244,16 @@ adding static type declarations. The last absolute dependency for Dipy is
 Nibabel\footnote{\url{http://nipy.org/nibabel}} which is used for loading and
 saving medical imaging file formats.
 
+% I think this may be rather to detailed and repetitive given what is in
+% the 'General Design Aspects' section
+
 Optional dependencies, that are not required for analysis, are used for
-visualization of diffusion data and the results of
+visualization of diffusion data and of the results of
 analysis. Matplotlib\footnote{\url{http://matplotlib.org}} is used for 2D and
 3D plotting. In addition, Python-VTK\footnote{\url{http://vtk.org}} is used for
 more advanced 3D interactive visualization. Furthermore, nose
 \footnote{\url{http://nose.readthedocs.org/}} is used for unit
-testing and sphinx \footnote{\url{http://sphinx-doc.org/}} for automated
+testing and Sphinx \footnote{\url{http://sphinx-doc.org/}} for automated
 documentation. Finally, we recommend using
 IPython\footnote{\url{http://ipython.org}} the interactive Python shell for
 calling and debugging scripts.
@@ -263,11 +271,11 @@ imaging research. We aim to build software that is clearly written, clearly
 explained, well tested, a good fit for the underlying ideas and a natural home
 for collaboration.
 
-Dipy is a true international project where anyone from anywhere in the world
+Dipy is a truely international project where anyone from anywhere in the world
 is welcome to contribute as long as they agree with the project's mission
 statement. In order to be faithful to this mission, all contributors are
 required to follow certain policies. For example, if a scientist makes a new
-discovery---even one of substantial importance---and wants to share the code,
+discovery --- even one of substantial importance --- and wants to share the code,
 it will not be integrated in the main project without extended testing as well
 as code reviews from at least two members of the team.  Such principles
 aim to help the Dipy code-base preserve its quality while growing.
@@ -283,10 +291,10 @@ Biomedical Engineering and Psychology.
 
 As in many other fields of science, dMRI is a field that uses specific
 terminology to describe the constructs of the measurement, as well as to
-describe the interpretation of the results of the analysis. We rely on a recent
+present the interpretation of the results of the analysis. We rely on a recent
 paper \citep{Cote2013tractometer}, that has proposed specific terminology for
 describing different constructs of the dMRI field. In this section we will
-describe constructs of the measurement, as well as constructs used to interpret
+describe constructs of the measurement, as well as terms used to interpret
 the results of the analysis. We will use this terminology to explain the
 analysis code and interpretation of data in subsequent sections.
 
@@ -361,7 +369,7 @@ computational experiments while retaining code readability.  In addition,
 since the code is entirely free and open, Dipy is ideally suited to facilitate
 reproducible research.
 
-Like many modern open source projects, Dipy is hosted on GitHub---an online
+Like many modern open source projects, Dipy is hosted on GitHub --- an online
 version of the Git revision control system. Changes are made via a Pull
 Request (PR) mechanism, whereby submissions can be proposed, discussed and
 iterated upon before being included finally. The discussions also allow for
@@ -412,11 +420,11 @@ dipy.__version__
 \section{Pre-processing}\label{preprocessing}
 
 \subsection{Load/Save data}\label{loadsave}
-The most basic operation that we do in neuroimaging is to load some data from
-the disk which are generated from an MRI scanner. Surprisingly this is often a
+The most basic operation that we perform in neuroimaging is to load some data from
+the disk which have been generated from an MRI scanner. Surprisingly this is often a
 difficult task as different scanners and software read/write the data in
-different ways. Nibabel, a library for reading medical imaging formats, is
-coming here to the rescue supporting ANALYZE (plain, SPM99, SPM2), GIFTI,
+different ways. Fortunately Nibabel, a library for reading medical imaging formats,
+comes to the rescue by supporting ANALYZE (plain, SPM99, SPM2), GIFTI,
 NIfTI1, MINC, MGH, ECAT, PAR/REC, Freesurfer (geometry, morphometry files) and
 with a growing support for DICOM.
 
@@ -458,16 +466,19 @@ nib.save(img2, "S0.nii.gz")
 \end{python}
 As we said previously \texttt{data} is a Numpy array. Numpy arrays provide
 simple ways to extract information from N-dimensional datasets, an operation
-known as slicing. For example, \texttt{data[10:20, 10:20, 10:20, 30:50]}
-returns a new sub-array with \texttt{shape} (10, 10, 10, 20). When a single
-column (:) is used that means that all points in this dimension are used. The
+known as slicing. For example, \texttt{data[10:20, 15:25, 20:30, 30:50]}
+returns a new sub-array with \texttt{shape} (10, 10, 10, 20) starting at (10, 15, 20). When a
+colon on its own (:) is used that means that all points in this dimension are used. The
 only delicate point here is that in order to save this new array we will need
-to update the affine. This is possible in the following way:
+to update the affine by adding the sub-arrays starting vector to the original offset vector. This is possible in the following way:
+% I've changed this example so that the starting point for the subarray 
+% does not have all the same coordinate values, and these are different 
+% from the array dimensions!
 \begin{python}
 import numpy as np
-sub_data = data[10:20, 10:20, 10:20, 30:50]
+sub_data = data[10:20, 15:25, 20:30, 30:50]
 sub_affine = affine.copy()
-sub_affine[:3, 3] += np.array([10, 10, 10])
+sub_affine[:3, 3] += np.array([10, 15, 20])
 sub_img = Nifti1Image(sub_data, sub_affine)
 nib.save(sub_img, "sub_data.nii.gz")
 \end{python}
@@ -475,15 +486,18 @@ nib.save(sub_img, "sub_data.nii.gz")
 \subsection{Background removal}
 In order to remove the background and keep only the parts that are in the brain
 we can use a function called \texttt{median\_otsu} (see Fig.~\ref{Fig:brain_segmentation}).
+% This EPS figure is missing in my repo
 \begin{python}
 from dipy.segment.mask import median_otsu
 mask, S0_mask = median_otsu(data[:, :, :, 0])
 \end{python}
 \texttt{median\_otsu} uses first a median filter to smooth the \texttt{S0} and
-then otsu, an automated histogram method \cite{Otsu1979} to separate the brain
+then otsu, an automated histogram method \cite{Otsu1979} 
+% This reference is missing
+to separate the brain
 (foreground) from its background. It returns two arrays, the \texttt{mask}, a
-3D array with 1s at the foreground and 0s in the background and the masked
-\texttt{S0}, \texttt{S0\_mask} a 3D array whith the actual \texttt{S0} values in
+3D array with 1s for the foreground and 0s for the background and the masked
+\texttt{S0}, \texttt{S0\_mask} a 3D array with the actual \texttt{S0} values in
 the foreground and 0s in the background.
 
 \begin{figure}
