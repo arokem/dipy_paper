@@ -33,8 +33,8 @@ ren = fvtk.ren()
 
 ren.SetBackground(1., 1., 1)
 
-fvtk.add(ren, fvtk.streamtube(T1, fvtk.colors.banana))
-fvtk.add(ren, fvtk.streamtube(T2, fvtk.colors.grey))
+fvtk.add(ren, fvtk.streamtube(T1, fvtk.colors.red))
+fvtk.add(ren, fvtk.streamtube(T2, fvtk.colors.blue))
 # fvtk.add(ren, fvtk.streamtube(T3, fvtk.colors.red))
 # fvtk.add(ren, fvtk.streamtube(T4, fvtk.colors.green))
 # fvtk.add(ren, fvtk.streamtube(T5, fvtk.colors.blue_light))
