@@ -174,7 +174,7 @@ Probabilistic Tractography, Clustering.
   lebihan-breton:85, taylor-bushell:85}
 is a MRI technique \citep{callaghan:91} that provides information
 about the structure of neuronal pathways found in the white matter and
-other body tissue with fiber-like structure. DMRI acquires one or more
+other body tissue with fiber-like structure (see Fig.~\ref{Fig:fornix}). DMRI acquires one or more
 $T_{2}$ reference images, and a collection of diffusion-weighted images, in which $T_{2}$ signal is attenuated according
 to the diffusivity of water along prescribed gradient directions
 \citep{behrens-johansen-berg:09, jones:10}. Because diffusion is hindered
@@ -185,6 +185,12 @@ inferred from the measurements. This has led to many applications of the method,
 including diagnostic tools to assess the disruption of the microstructure and
 methods of tractography, which estimate the trajectories of nerve fibers that
 are communicating information between different parts of the brain.
+
+\begin{figure}
+\includegraphics[scale=0.55]{Figures/fornix.eps}
+\centering{}
+\caption{The fornix is a C-shaped bundle connecting the hippocampus with the hypothalamus. The body of the fornix devides into two legs knows as the crus of the fornix. We can see here a detailed recreation of the fornix using dMRI data processed with Dipy. \label{Fig:fornix}}
+\end{figure}
 
 Because of its unique capability to characterize the microstructure of neural
 tissue, and the inferences that can be made using this information about
@@ -720,7 +726,13 @@ only can users compute FA, MD, DEC, but also other statistics that have been
 proposed in the literature, such as the diffusion linearity, planarity and
 sphericity \citep{westin:97}, as well as the tensor mode, tensor norm
 \cite{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics
-are available under the \texttt{dipy.reconst.dti} module.
+are available under the \texttt{dipy.reconst.dti} module. In Fig.~\ref{Fig:dti_metrics} a 6 of the many available metrics are shown.
+
+\begin{figure}
+\includegraphics[scale=0.45]{Figures/dti_metrics.eps}
+\centering{}
+\caption{Diffusion Tensor based metrics created with Dipy. \label{Fig:dti_metrics}}
+\end{figure}
 
 \subsection{Diffusion Spectrum Imaging}\label{dsi}
 
