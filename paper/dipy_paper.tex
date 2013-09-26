@@ -219,7 +219,7 @@ straight-forward manner. Being an interpreted language, Python does not require
 additional compilation, linking, etc., and so installation of software written
 in Python is relatively easy. Taken together, these properties of the language
 are powerful assets for the design of the next generation of medical imaging
-analysis tools. 
+analysis tools.
 
 % I've divided up this very long paragraph into three paragraphs.
 
@@ -477,8 +477,8 @@ returns a new sub-array with \texttt{shape} (10, 10, 10, 20) starting at (10, 15
 colon on its own (:) is used that means that all points in this dimension are used. The
 only delicate point here is that in order to save this new array we will need
 to update the affine by adding the sub-arrays starting vector to the original offset vector. This is possible in the following way:
-% I've changed this example so that the starting point for the subarray 
-% does not have all the same coordinate values, and these are different 
+% I've changed this example so that the starting point for the subarray
+% does not have all the same coordinate values, and these are different
 % from the array dimensions!
 \begin{python}
 import numpy as np
@@ -498,7 +498,7 @@ from dipy.segment.mask import median_otsu
 mask, S0_mask = median_otsu(data[:, :, :, 0])
 \end{python}
 \texttt{median\_otsu} uses first a median filter to smooth the \texttt{S0} and
-then otsu, an automated histogram method \cite{Otsu1979} 
+then otsu, an automated histogram method \cite{Otsu1979}
 % This reference is missing
 to separate the brain
 (foreground) from its background. It returns two arrays, the \texttt{mask}, a
@@ -1295,7 +1295,7 @@ umbrella of one github organization (\url{github.com/nipy}) and the central
 Dipy github repository is managed under this organization
 (\url{github.com/nipy/dipy}).  The community provides support for the use and
 development of these software tools through a mailing list
-(\url{http://mail.scipy.org/mailman/listinfo/nipy-devel}), and this mailing
+(\url{dipy.org/subscribe.html}), and this mailing
 list is also a good place to discuss other Python-/neuroimaging-related issues.
 
 Github is widely recognized as a factor in lowering the barriers on
