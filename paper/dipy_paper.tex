@@ -813,9 +813,9 @@ available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The
 advantage of GQI is that it is much faster to calculate than DSI or DSID.
 
 \begin{figure}
-\includegraphics[scale=0.55]{Figures/pdf.eps}
+\includegraphics[scale=0.60]{Figures/pdf_odf_60.eps}
 \centering{}
-\caption{Volumetric rendering of the diffusion propagator of a $60\,^{\circ}$ crossing with standard DSI(left) and DSI with deconvolution(right). \label{Fig:pdf}}
+\caption{Volumetric rendering of the 3D diffusion propagator of a $60\,^{\circ}$ crossing with standard DSI (top-left) and DSI with deconvolution (top-right) with their corresponding ODFs (bottom).\label{Fig:pdf}}
 \end{figure}
 
 \subsection{Q-ball Imaging}
@@ -847,7 +847,7 @@ image. Hence, the q-ball ODF is a linear transformation of the SH coefficient,
 $c_j$. This technique is called analytical QBI (aQBI), in contrast to the
 original QBI solution, which performs the FRT numerically. It is
 important to note that these solutions are based on
-Eq. \label{eq:ODF_DSI}, without the $r^2$ term. Hence, these ODFs are
+Eq.~\ref{eq:ODF_DSI}, without the $r^2$ term. Hence, these ODFs are
 not properly normalized by the solid angle term. Hence, Dipy proposes
 Constant Solid Angle analytical solution more recently proposed by
 \citep{aganj-lenglet-etal:10,tristan-vega-westin-etal:09}
