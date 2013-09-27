@@ -1055,20 +1055,20 @@ odf = sh_to_sf(odf_sh, sphere, sh_order=8)
 \end{python}
 
 \section{Fiber tracking}\label{fiber_tracking}
-One of the tantalizing prospects of DWI is the promise that combining
-information about the local microstructure across different voxels may provide
+One of the tantalizing prospects of dMRI is that combining
+information about local microstructure across different voxels may provide
 information about large-scale organization of the brain. In particular,
-researchers have been trying to use various algorithms to track along the
+researchers have been using various algorithms in attempts to track along the
 presumed fiber populations to make inferences about axonal connections between
 different parts of the gray matter. The connection matrix that results from an
 exhaustive connectivity analysis of all parts of the cerebral cortex is
 sometimes referred to as a ``connectome`` \cite{sporns2005} and understanding
-the structure and function of the connectome is a central goal of modern
+the structure and function of the connectome is a central goal of contemporary
 neuroscience. This premise has led to major investment in data-collection
-projects aimed at characterizing the connectome, based on DWI, as well as
+projects aimed at characterizing the connectome, based on dMRI, as well as
 functional MRI (fMRI) measurements \cite{VanEssen2013}.
 
-Tracking algorithms, used to infer these connections divide into to major
+Tracking algorithms, used to infer these connections divide into two major
 classes. The first class is deterministic. It uses the information about the
 directions of diffusion. Some of the early deterministic algorithms used the
 primary diffusion direction of the DTI model as an indication of the direction
@@ -1079,7 +1079,7 @@ now widely recognized that in regions of crossing fibers, the primary diffusion
 direction may not coincide with the direction of any of the local fiber
 populations. More modern algorithms (see below) take this into account.
 
-The other class of algorithms is probabilistic, in that it considers the local
+The other class of algorithms is probabilistic, in that they consider the local
 information in each voxel to represent a distribution of possible directions in
 that location. In these algorithms, a trajectory of fibers in every location is
 randomly sampled from the local distribution. The algorithm may therefore give
@@ -1087,6 +1087,7 @@ different sets of `fibers` on different realizations of the algorithm.
 
 Dipy implements both deterministic and probabilistic tracking algorithms,
 described in detail below.
+
 \subsection{Deterministic}
 
 \subsubsection{EuDX}
@@ -1094,8 +1095,8 @@ Euler Delta Crossings~\citep{Garyfallidis_thesis} is the first tracking
 method that was implemented in Dipy. We created an algorithm that has many
 similarities with the classical deterministic methods~\citep{Mori1999,
   conturo-lori-etal:99, basser-pajevic-etal:00} and with more recent ones as
-those described in Descoteaux et al.~\citep{descoteaux-deriche-etal:09} and Yeh
-et al.~\citep{yeh-etal:10}. Our concentration was to create a simple
+those described in \citet{descoteaux-deriche-etal:09} and 
+\citet{yeh-etal:10}. Our concentration was to create a simple
 deterministic algorithm which can be used with very different families of
 reconstruction models, work well in crossing areas and be efficient so that it
 can be used to quickly inspect the reconstruction results. EuDX is applied
