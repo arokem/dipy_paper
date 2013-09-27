@@ -968,22 +968,10 @@ inspired by CSD \cite{tournier-calamante-etal:07} with, the main difference
 that the CSD is applied directly to the initial signal and the SDT directly to
 the ODF \citep{descoteaux:08,descoteaux-deriche-etal:09}.
 
-The idea here is that an ODF, for example the analytical Q-ball ODF
-$\psi_{QBI}$, can be formed by the convolution between the single fiber
-diffusion ODF kernel $R$ and the true fiber ODF $\psi_{SDT}$.
-\begin{equation}
-\psi_{QBI}(\mathbf{u})=\displaystyle\int_{|w|=1} R(\mathbf{u} \cdot \mathbf{w}) \psi_{SDT}(\mathbf{w}) dw\label{eq:Conv}
-\end{equation}
-Therefore, the deconvolution of $\psi_{QBI}$ can recover a sharper
-$\psi_{SDT}$. We can derive the formula for the $\psi_{SDT}$ using symmetrized
-spherical harmonics.
-\begin{equation}
-\psi_{SDT}(\mathbf{u})=\displaystyle\sum_{j=1}^{R}2\pi P_{l_{j}}(0) \frac{c_j}{f_j}Y_{j}(\mathbf{u})\label{eq:ODF_SDT}
-\end{equation}
-For the derivation and explanation of the formula see \cite{descoteaux-deriche-etal:09}.
+For the derivation and explanation of the formula see \cite{descoteaux-deriche-etal:09}. You can use the SDT in the following way:
 \begin{python}
 from dipy.reconst.csdeconv import
-        ConstrainedSDTModel as SdtModel
+                  ConstrainedSDTModel as SdtModel
 sdt_model = SdtModel(gtab, ratio)
 \end{python}
 Here the response function is provided as a scalar parameter, the ratio of the
@@ -1233,11 +1221,12 @@ all the following examples \texttt{streamlines} is a sequence of streamlines and
 point space. In all cases \texttt{affine} can be omitted if the streamlines
 are defined in voxel coordinate space.
 \begin{python}
+from dipy.tracking.utils import density_map
 track_density = density_map(streamlines, shape,
                             affine=affine)
 \end{python}
-In this example \texttt{shape} is the shape of the 3d image to be returned, and
-\texttt{track\_density} is a 3d volume where the intensity of each voxel is the
+In this example \texttt{shape} is the shape of the 3D image to be returned, and
+\texttt{track\_density} is a 3D volume where the intensity of each voxel is the
 number of streamlines that pass though that voxel. Note that
 each streamline is counted once per voxel even if multiple points in the
 streamline lie in that voxel.
@@ -1245,6 +1234,7 @@ streamline lie in that voxel.
 Another useful function is \texttt{target}. This function filters a sequence of
 streamlines and keeps only those that pass through an ROI.
 \begin{python}
+from dipy.tracking.utils import target
 bundle = target(streamlines, roi, affine=affine)
 \end{python}
 Here \texttt{roi} is a binary array, and \texttt{bundle} is generator of
@@ -1255,6 +1245,7 @@ A function related to \texttt{target} is \texttt{streamline\_mapping}. This
 function produces a mapping from voxel indices to streamlines, much like targeting
 on every individual voxel, and returns a dictionary of those mappings.
 \begin{python}
+from dipy.tracking.utils import streamline_mapping
 mapping = streamline_mapping(track, affine=affine)
 \end{python}
 Here the \texttt{mapping} is a dictionary where the keys are voxel indices and
@@ -1269,6 +1260,8 @@ label volume should be an image where the intensities of the image map to
 anatomical structures. For example.
 
 \begin{python}
+from dipy.tracking.utils import
+                              connectivity_matrix
 M, M_sl = connectivity_matrix(streamlines, labels,
                               affine=affine,
                               symmetric=True,
@@ -1326,7 +1319,7 @@ where we visualize some streamlines with different colors:
 \begin{python}
 from dipy.viz import fvtk
 renderer = fvtk.ren()
-line_actor = fvtk.pretty_line(streamlines,
+line_actor = fvtk.streamtube(streamlines,
                               streamline_colors)
 fvtk.add(renderer, line_actor)
 fvtk.show(renderer)
@@ -1342,12 +1335,13 @@ rm  & remove actor from renderer \\
 rm\_all & remove all actors from renderer \\
 show & create window and show renderer \\
 record & save frame or frames \\
-line & actor of one or more streamlines \\
-pretty\_line & same as line but with streamtubes \\
-point & actor points as small spheres \\
-tensor & actor of tensor ellipsoids \\
+line & creates an actor of one or more streamlines \\
+streamtube & same as line but with streamtubes \\
+point & creates actor of points as small spheres \\
+tensor & actor for tensor ellipsoids vizualization\\
 sphere\_funcs & actor for ODF visualization \\
 volume & 3D volume rendering with raycasting \\
+slicer & actor for showing volumetric slices \\
 \hline
 \end{tabular}}{}
 \end{table}
