@@ -492,15 +492,12 @@ nib.save(sub_img, "sub_data.nii.gz")
 \subsection{Background removal}
 In order to remove the background and keep only the parts that are in the brain
 we can use a function called \texttt{median\_otsu} (see Fig.~\ref{Fig:brain_segmentation}).
-% This EPS figure is missing in my repo
 \begin{python}
 from dipy.segment.mask import median_otsu
 mask, S0_mask = median_otsu(data[:, :, :, 0])
 \end{python}
 \texttt{median\_otsu} uses first a median filter to smooth the \texttt{S0} and
-then otsu, an automated histogram method \cite{Otsu1979}
-% This reference is missing
-to separate the brain
+then otsu, an automated histogram method \cite{Otsu1979} to separate the brain
 (foreground) from its background. It returns two arrays, the \texttt{mask}, a
 3D array with 1s for the foreground and 0s for the background and the masked
 \texttt{S0}, \texttt{S0\_mask} a 3D array with the actual \texttt{S0} values in
@@ -608,12 +605,12 @@ described only by a single 3D Gaussian distribution. From
 eq.~\ref{eq:fourier}, we can thus write
 
 \begin{equation}
-P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}exp(-\frac{\mathbf{r}^{T}\mathbf{D}^{-1}\mathbf{r}}{4t})
+P(\mathbf{r},t)=\frac{1}{\sqrt{4\pi t^{3}\mid\mathbf{D}\mid}}\exp(-\frac{\mathbf{r}^{T}\mathbf{D}^{-1}\mathbf{r}}{4t})
 \end{equation}
 \noindent where $\mathbf{D}$ is known as the diffusion tensor. This tensor is a
-$3x3$ positive definite symmetric matrix that can be completely described by a
+$3\times3$ positive definite symmetric matrix that can be completely described by a
 centered ellipsoid with 3 principal axes and associated eigenvalues
-$\lambda_{1},\lambda_{2},\lambda_{3}$.
+$\lambda_{1}\ge\lambda_{2}\ge\lambda_{3}$.
 
 DTI was first proposed by Basser and colleagues
 \citep{basser-mattiello-etal:94} and has since been very influential in
@@ -623,8 +620,8 @@ Gaussian process, which can be captured by 6 parameters, describing
 the variance and covariance of
 the Gaussian diffusion along the three primary axes. From these
 parameters, several useful measures
-can be derived: the primary diffusion direction is the primary eigen-value of
-the tensor, $\lambda_{1}$ and it is the direction in which variance in the
+can be derived: the primary diffusion direction is the principal eigenvector of
+the tensor, with eigenvalue $\lambda_{1}$ and it is the direction in which variance in the
 diffusion distribution is largest. In some places in the brain (e.g. in the
 corpus callosum, the large commissural fiber bundle connecting left
 and right hemispheres), this corresponds to the
@@ -650,8 +647,8 @@ studies showed that in the white matter degree of myelination is an important
 factor in limiting diffusion of water across cellular compartments. In
 addition, tissue density affects both the radial and the axial diffusivity, and
 loss of nerve fiber tissue also results in a decrease in FA \citep{Beaulieu1996,
-  Beaulieu2002}. As a consequence of these studies, researchers now routinely
-refer to FA as a measure of \emph{"tissue integrity"}. However, we
+Beaulieu2002}. As a consequence of these studies, researchers now routinely
+refer to FA as a measure of \emph{tissue integrity}. However, we
 strongly warn against this usage, because it is easy to show that
 although the density of the
 tissue and the density of the myelin wrapping the axons in the voxel may affect
@@ -713,7 +710,7 @@ Finally, a couple more points about the implementation of DTI. The first is that
 there is still ongoing research on fitting methods for the tensor model
 \citep{Koay2006}. Several different methods have been implemented, including
 non-linear least-squares, ordinary least-squares and weighted least-squares
-fitting \citep{chung-lu-etal:06} as well as Riemanian modeling-based
+fitting \citep{chung-lu-etal:06} as well as Riemannian modeling-based
 techniques that assure that the estimated tensor is positive definite
 \citep{lenglet-rousson-etal:jmiv,arsigny-fillard-etal:06}. In
 addition, there is ongoing research on
@@ -749,14 +746,14 @@ It was shown by Wedeen et al. \citep{wedeen-hagmann-etal:05} that the dMRI
 signal is positive for any type of spin motion without net flux (i.e.~spin
 displacements due to thermal molecular agitation) or other random fluxes such
 as intravoxel incoherent motion. Under this assumption we can replace the
-complex signal $S$ with its module $|S|$ in Eq.~\ref{eq:fourier} and apply the
+complex signal $S$ with its modulus $|S|$ in Eq.~\ref{eq:fourier} and apply the
 Fourier transform:
 \begin{eqnarray}
 P(\mathbf{r}) & = &
 S_{0}^{-1}\int|S(\mathbf{q})|\exp(-i2\pi\mathbf{q}\cdot\mathbf{r})d\mathbf{q}\label{eq:P_modulus}
 \end{eqnarray}
-In DSI this triple-integral is approximated in a discrete way and the
-PDF P comes out for every single voxel as a 3D array. We can obtain
+In DSI this 3D-integral is approximated in a discrete way and the
+PDF P for every single voxel is returned as a 3D array. We can obtain
 $P$ using:
 \begin{python}
 dsi_fit = dsi_model.fit(data)
@@ -765,7 +762,7 @@ dsi_pdf = dsi_fit.pdf()
 However, this method is recommended only when the dimensions of data are very
 small. This is because the \texttt{dsi\_pdf} is a 6D array with 3 dimensions
 for the voxel positions and 3 for the $\mathbf{q}$ positions. Therefore, for a
-moderate data set of $150\times150\times90\times$ where every PDF is
+moderate data set of $150\times150\times90\times$number of gradients where every PDF is
 $35\times35\times35$ we would need about 600GBytes of RAM. As a solution to
 this problem Dipy provides a method which can facilitate traversing through
 each voxel and calculating each voxel independently:
@@ -774,14 +771,15 @@ from dipy.core.ndindex import ndindex
 for index in ndindex(data.shape[:-1]):
     vox_pdf = dsi_model.fit(dataslice[index]).pdf()
 \end{python}
+% 'dataslice' not defined - perhaps doesn't matter
 With this method we do not need to store all the PDFs at once. If it absolutely
-necessary to save all the PDFs then we advise to create a Numpy memory-map
-which will store the PDF in each voxel as binary file on disk. Memory-mapped
+necessary to save all the PDFs then our advice is to create a Numpy memory-map
+which will store the PDF for each voxel as binary file on disk. Memory-mapped
 files are used for accessing small segments of large files on disk, without
 reading the entire file into memory.
 
 Recently, an alternative method for DSI was proposed by
-\citep{canales-rodriguez-etal:10} using a deconvolution technique
+\citet{canales-rodriguez-etal:10} using a deconvolution technique
 based on a Lucy-Richardson (LR) algorithm of the 3D PDF. The
 deconvolution technique accounts for the truncation of q-space by
 standard DSI and can thus achieve a higher angular resolution for
@@ -821,8 +819,8 @@ sphere. Here we used a symmetric sphere with 724 vertices. The
 vertices of the sphere. Note at this point that in order to find the ODF we
 have to first create the diffusion propagator by applying the Fourier transform
 on the lattice. Nonetheless, Dipy, for reasons explained before does not store
-the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way to
-calculate a slightly different ODF using the Cosine transform. This is
+the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way (GQI) to
+calculate a slightly different ODF using the Cosine transform. GQI is
 available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The
 advantage of GQI is that it is much faster to calculate than DSI or DSID.
 
@@ -838,11 +836,11 @@ have been proposed to compute the ODF from Eq. \label{eq:ODF_DSI}
 using only a single b-value dMRI acquisition, often called
 \emph{single-shell} high angular resolution diffusion imaging (HARDI)
 \citep{tuch-reese-etal:02,descoteaux-deriche-etal:11}.
-Spherical harmonics (SH) are mathematical functions that can be used to
-construct an orthonormal basis for a function on the sphere. In practice, these
+Spherical harmonics (SH) are mathematical functions that provide 
+a complete orthonormal basis for functions on the sphere. In practice, these
 can be used to approximate any spherical function (such as the ODF) up to a
 highest frequency (SH order). Due to their practical mathematical properties,
-there have been several cases of using spherical harmonics to describe
+there have been several proposals using spherical harmonics to describe
 the apparent diffusion coefficient (ADC) computed from HARDI, starting from the
 work of \citet{Frank2001, Frank2002, alexander-barker-etal:02} and
 \citet{tuch-reese-etal:02}. Then, Tuch showed that the Funk Radon Transform
@@ -861,12 +859,13 @@ image. Hence, the q-ball ODF is a linear transformation of the SH coefficient,
 $c_j$. This technique is called analytical QBI (aQBI), in contrast to the
 original QBI solution, which performs the FRT numerically. It is
 important to note that these solutions are based on
-Eq.~\ref{eq:ODF_DSI}, without the $r^2$ term. Hence, these ODFs are
-not properly normalized by the solid angle term. Hence, Dipy proposes
-Constant Solid Angle analytical solution more recently proposed by
-\citep{aganj-lenglet-etal:10,tristan-vega-westin-etal:09}
+Eq.~\ref{eq:ODF_DSI}, without the $r^2$ term. So these ODFs are
+not properly normalized by the solid angle term. Hence Dipy also implements
+the Constant Solid Angle analytical solution more recently proposed by
+\citep{aganj-lenglet-etal:10,tristan-vega-westin-etal:09}.
+
 The SH of order $l$
-and phase $m$, $Y_{l}^{m}(\theta, \phi)$, arise from the angular solution to
+and phase $m$, $Y_{l}^{m}(\theta, \phi)$, arises from the angular solution to
 Laplace's equation in spherical coordinates and they form an orthonormal basis
 for complex functions defined on the unit sphere. However, in single-shell
 acquisitions, S is real and symmetric. Hence, it is common to define a real and
@@ -876,10 +875,10 @@ signal S is estimated with a truncated SH series of order $l_{max}$, which has
 $R = (l_{max} +1)( l_{max} +2)/2$ terms. For example, for $l_{max} = 4, 6, 8$,
 and $16$ SH series have $R = 15, 28, 45$, and $153$ coefficients respectively.
 
-In Dipy we have implemented 3 different Q-ball methods in module
-module \texttt{dipy.reconst.shm}: a)
-\citep{descoteaux-angelino-etal:07}, b) \citep{aganj-lenglet-etal:10}
-and c) \citep{tristan-vega-westin-etal:09}. For
+In Dipy we have implemented three different Q-ball methods in module
+module \texttt{dipy.reconst.shm}: (a)
+\citet{descoteaux-angelino-etal:07}, (b) \citet{aganj-lenglet-etal:10}
+and (c) \citet{tristan-vega-westin-etal:09}. For
 example (a) can be used in the following way:
 \begin{python}
 from dipy.reconst.shm import QballModel
@@ -889,9 +888,9 @@ qb_odf = qb_fit.odf(sphere)
 from dipy.reconst.odf import minmax_normalize
 qb_nodf = minmax_normalize(qb_odf)
 \end{python}
-Important points here are that SH order is set to $6$ and the regularization
-parameter $0.006$, as suggested and optimized in
-\citep{descoteaux-angelino-etal:06c}. Furthermore, because the
+Important points to note are that SH order is set at $6$ and the regularization
+parameter at $0.006$, following the optimization recommendations of
+\citet{descoteaux-angelino-etal:06c}. Furthermore, because the
 analytical ODF method produces more
 rounded ODFs it is useful for visualization purposes to use \emph{min-max}
 normalization. The SH coefficients are accessible using the attribute
@@ -907,9 +906,9 @@ csa_model = CsaOdfModel(gtab, order=4,
 csa_odf = csamodel.fit(data).odf(sphere)
 \end{python}
 As a side note: the term Constant Solid Angle derives from the fact that this
-method calculates the ODF with the radial distance in mind as we saw in
+method calculates the ODF taking account of radial distance as we see in
 eq.~\ref{eq:ODF_DSI}. The analytical Q-ball method does not integrate the $r^2$
-term and therefore it generates more rounded ODFs that require normalization.
+term and therefore it generates more rounded ODFs and require normalization.
 
 \subsection{Constrained Spherical Deconvolution}
 
@@ -917,7 +916,7 @@ QBI-based techniques reconstruct the \emph{diffusion
   ODF} (dODF). To improve the angular resolution of the reconstruction, spherical
 deconvolution (SD) techniques have been introduced and reconstruct what is
 called the \emph{fiber ODF} (fODF).
-SD was first introduced by \citep{tournier-calamante-etal:04}. With
+SD was first introduced by \citet{tournier-calamante-etal:04}. With
 this method, the signal measured on single spherical shell
 acquisitions can be expressed as the convolution over spherical coordinates of
 the response function with the fODF. The response
@@ -936,13 +935,13 @@ the spherical deconvolution problem is ill-posed and thus susceptible
 to noise \citep{tournier-calamante-etal:04}.
 
 Constrained super-resolved spherical deconvolution (CSD)
-\citep{tournier-calamante-etal:07} gives a robust solution to this problem by
+\citet{tournier-calamante-etal:07} give a robust solution to this problem by
 applying two major constraints on the fitting of the fODF. The first is that it
 applies a non-negativity constraint: fODF values that are smaller than 0 are
 non-physical and are precluded. The other is that CSD applies a sparsity
-constraint on the fODF - it assumes that only a few of the fODF values will be
+constraint on the fODF -- it assumes that only a few of the fODF values will be
 large. Applying these two constraints allows fitting the SH basis
-up to very high orders - in essence fitting more parameters than data allow.
+up to very high orders -- in essence fitting more parameters than data allow.
 This is known as \emph{super-resolution}. This super-resolved method
 can be accessed in Dipy using:
 \begin{python}
@@ -1008,14 +1007,14 @@ centrum semiovale show crossings between the corpus callosum,
 corticospinal tract and the superior longitudinal fasciculus.
 
 \subsection{Peaks from models}
-In the previous sections we showed that the reconstruction models have a
+In the previous sub-sections we showed that the reconstruction models have a
 uniform API and can be called in similar ways. For example, they all have an
 odf() method. This design gives us the opportunity to create utility functions
 where the model is one of the parameters. \texttt{peaks\_from\_model} is a
-multipurpose function which can be used to a) find the maxima (peaks) of the
-ODFs, b) find the directions of the maxima in the ODFs which can be useful for
-tracking, c) discretize those directions on the unit sphere for efficiency, d)
-compress the ODFs as spherical harmonics to reduce memory usage and e)
+multipurpose function which can be used to (a) find the maxima (peaks) of the
+ODFs, (b) find the directions of the maxima in the ODFs which can be useful for
+tracking, (c) discretize those directions on the unit sphere for efficiency, (d)
+compress the ODFs as spherical harmonics to reduce memory usage and (e)
 calculate many metrics simultaneously, e.g. generalized fractional anisotropy
 (GFA) \citep{tuch:04}, without the need of creating all ODFs at
 once. \texttt{peaks\_from\_model} can be called as:
@@ -1031,7 +1030,7 @@ pmd = peaks_from_model(model=dsi_model,
                        return_sh=True)
 gfa = pmd.gfa
 \end{python}
-The model parameter can be any of the models discussed in the previous sections
+The model parameter can be set to any of the models discussed in the previous sections
 e.g. \texttt{dsi\_model}. The \texttt{relative\_peak\_threshold} parameter
 enforces that only peaks greater than \texttt{relative\_peak\_threshold}$*m$
 will be returned, where $m$ is the value of the largest
