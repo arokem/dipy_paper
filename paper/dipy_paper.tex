@@ -1179,8 +1179,7 @@ possible tracking directions. For example the FOD (fiber orientation distributio
 obtained by fitting the CSD (constrained spherical deconvolution) model to diffusion
 data can be used as an estimate of the PDF, because it represents a fiber distribution
 associated with the measured diffusion signal \citep{jeurissen2011probabilistic}. The user must
-also provide a set of seeds to track from and stoping criteria. Currently a white matter
-mask and maximum turn angle are used as stopping criteria.
+also provide a set of seeds to track from and set the stoping criteria. Currently a white matter mask and maximum turning angle are used as stopping criteria.
 
 The second interface for probabilistic tracking is meant to accommodate	tracking
 methods where the PDF cannot be easily computed. It is often much easier and less
@@ -1190,8 +1189,7 @@ In this case we combine a sampling method with the diffusion data and a diffusio
 and pass this to the Markov tracking framework. Streamlines can now be generated
 as before without explicitly evaluating the PDF at each
 point in the diffusion data. This framework is designed to be flexible and easily
-customizable so that a wide variety of Markov tracking methods can be expressed
-using this framework.
+customizable so that a wide variety of Markov tracking methods can be expressed.
 
 \section{Fiber analysis and post-processing}\label{post_tracking}
 
@@ -1230,28 +1228,28 @@ interactions with one or several ROIs. There are a few functions in
 \texttt{dipy.tracking.utils} to make these kinds of operations easier. The
 first of these functions, \texttt{density\_map}, counts the number of
 streamlines that pass though each voxel and returns the result as an image. In
-all the following examples \texttt{track} is a sequence of streamlines and
+all the following examples \texttt{streamlines} is a sequence of streamlines and
 \texttt{affine} is a mapping from voxel coordinate space to the streamline
 point space. In all cases \texttt{affine} can be omitted if the streamlines
 are defined in voxel coordinate space.
 \begin{python}
-track_density = density_map(track, shape,
+track_density = density_map(streamlines, shape,
                             affine=affine)
 \end{python}
 In this example \texttt{shape} is the shape of the 3d image to be returned, and
 \texttt{track\_density} is a 3d volume where the intensity of each voxel is the
-number of streamlines in \texttt{track} that pass though that voxel. Note that
+number of streamlines that pass though that voxel. Note that
 each streamline is counted once per voxel even if multiple points in the
 streamline lie in that voxel.
 
 Another useful function is \texttt{target}. This function filters a sequence of
 streamlines and keeps only those that pass through an ROI.
 \begin{python}
-bundle = target(track, roi, affine=affine)
+bundle = target(streamlines, roi, affine=affine)
 \end{python}
 Here \texttt{roi} is a binary array, and \texttt{bundle} is generator of
-streamlines.  Only the streamlines in \texttt{track} that pass though at least
-one voxel in \texttt{roi} which is \texttt{1} will be in \texttt{bundle}.
+streamlines.  Only the streamlines that pass though at least
+one voxel in \texttt{roi} with value 1 will be in \texttt{bundle}.
 
 A function related to \texttt{target} is \texttt{streamline\_mapping}. This
 function produces a mapping from voxel indices to streamlines, much like targeting
@@ -1260,36 +1258,33 @@ on every individual voxel, and returns a dictionary of those mappings.
 mapping = streamline_mapping(track, affine=affine)
 \end{python}
 Here the \texttt{mapping} is a dictionary where the keys are voxel indices and
-the value associated with each key is a list of all the streamlines in
-\texttt{track} that pass though that voxel. For example to get all the
+the value associated with each key is a list of all the streamlines that pass though that voxel. For example to get all the
 streamlines that pass though voxel \texttt{(i, j, k)}, we would lookup
 \texttt{mapping[i, j, k]}.
 
 The last function we want to mention in this section in
 \texttt{connectivity\_matrix}. This function groups and counts streamlines
-based on their endpoints and a label volume we'll call \texttt{labels}. This
+based on their endpoints and a label volume which we call \texttt{labels}. This
 label volume should be an image where the intensities of the image map to
 anatomical structures. For example.
 
 \begin{python}
-M, M_sl = connectivity_matrix(track, labels,
+M, M_sl = connectivity_matrix(streamlines, labels,
                               affine=affine,
                               symmetric=True,
                               return_mapping=True)
 \end{python}
 
-Here because we've made the matrix symmetric, \texttt{M[i, j] == M[j, i]} is the number
-of streamlines in \texttt{track} that connect region \texttt{i} to \texttt{j}
+Here because we've made the matrix symmetric, \texttt{M[i, j] == M[j, i]} is the number of streamlines that connect region \texttt{i} to \texttt{j}
 or \texttt{j} to \texttt{i}. Similarly because we've set
 \texttt{return\_mapping=True}, we can get a list of all those streamlines by
 looking up \texttt{M\_sl[i, j]}.
 
-While it is common to apply these kinds of operations in voxel space of
+While it is common to apply these kinds of operations in native voxel space of
 the diffusion MRI images used to create the streamlines, this is not a
 required. It is often useful to interact with streamlines in the voxel space of
 a high resolution structural image of the same patient. This is possible as
-long as one can compute a linear transformation between the voxel coordinates and
-the streamline point coordinates.
+long as one can compute a linear transformation (\texttt{affine}) between the voxel coordinates and the streamline point coordinates.
 
 \subsection{Streamline metrics and statistics}
 
