@@ -836,7 +836,7 @@ have been proposed to compute the ODF from Eq. \label{eq:ODF_DSI}
 using only a single b-value dMRI acquisition, often called
 \emph{single-shell} high angular resolution diffusion imaging (HARDI)
 \citep{tuch-reese-etal:02,descoteaux-deriche-etal:11}.
-Spherical harmonics (SH) are mathematical functions that provide 
+Spherical harmonics (SH) are mathematical functions that provide
 a complete orthonormal basis for functions on the sphere. In practice, these
 can be used to approximate any spherical function (such as the ODF) up to a
 highest frequency (SH order). Due to their practical mathematical properties,
@@ -1095,7 +1095,7 @@ Euler Delta Crossings~\citep{Garyfallidis_thesis} is the first tracking
 method that was implemented in Dipy. We created an algorithm that has many
 similarities with the classical deterministic methods~\citep{Mori1999,
   conturo-lori-etal:99, basser-pajevic-etal:00} and with more recent ones as
-those described in \citet{descoteaux-deriche-etal:09} and 
+those described in \citet{descoteaux-deriche-etal:09} and
 \citet{yeh-etal:10}. Our concentration was to create a simple
 deterministic algorithm which can be used with very different families of
 reconstruction models, work well in crossing areas and be efficient so that it
@@ -1167,15 +1167,15 @@ function) and this PDF can be used along with a Monte Carlo sampling to
 generate streamlines \citep{morris2008probabilistic}. Streamlines are generated using a
 Markov process which is similar to deterministic fiber tracking. Streamlines begin
 at a seed point and continue along a propagation direction which is randomly
-chosen from a PDF. THe propagation direction is continually adjusted by
-sampling from the PDF at each new location along the path. This continues
-some stopping criteria is met. Notice that this framework is equivalent to
+chosen from a PDF. The propagation direction is continually adjusted by
+sampling from the PDF at each new location along the path. This continues until
+some stopping criteria are met. Notice that this framework is equivalent to
 deterministic fiber tracking if the PDF at each point is a delta function on
 one fiber direction.
 
 Dipy has implemented two interfaces for probabilistic Markov fiber tracking. The
 first method allows the user to provide the PDF evaluated on a discrete set of
-possible tracking directions. For example the FOD (fiber orientation distribution) 
+possible tracking directions. For example the FOD (fiber orientation distribution)
 obtained by fitting the CSD (constrained spherical deconvolution) model to diffusion
 data can be used as an estimate of the PDF, because it represents a fiber distribution
 associated with the measured diffusion signal \citep{jeurissen2011probabilistic}. The user must
@@ -1188,7 +1188,7 @@ computationally expensive to sample from a PDF than it is to evaluate the PDF. F
 example, residual bootstrap fiber tracking methods fall into this category \citep{berman2008probabilistic}.
 In this case we combine a sampling method with the diffusion data and a diffusion Model,
 and pass this to the Markov tracking framework. Streamlines can now be generated
-can now be generated much as before whiteout explicitly evaluating the PDF at each
+as before without explicitly evaluating the PDF at each
 point in the diffusion data. This framework is designed to be flexible and easily
 customizable so that a wide variety of Markov tracking methods can be expressed
 using this framework.
@@ -1245,7 +1245,7 @@ each streamline is counted once per voxel even if multiple points in the
 streamline lie in that voxel.
 
 Another useful function is \texttt{target}. This function filters a sequence of
-streamlines and keeps only those that pass through an ROI. 
+streamlines and keeps only those that pass through an ROI.
 \begin{python}
 bundle = target(track, roi, affine=affine)
 \end{python}
