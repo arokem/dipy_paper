@@ -167,7 +167,7 @@ Probabilistic Tractography, Clustering.
 
 \emph{Diffusion MRI} (dMRI) \citep{merboldt-hanicke-etal:85,
   lebihan-breton:85, taylor-bushell:85}
-is a MRI technique \citep{callaghan:91} that provides information
+is an MRI technique \citep{callaghan:91} that provides information
 about the structure of neuronal pathways found in the white matter and
 other body tissue with fiber-like structure (see Fig.~\ref{Fig:fornix}). DMRI acquires one or more
 $T_{2}$ reference images, and a collection of diffusion-weighted images, in which $T_{2}$ signal is attenuated according
@@ -209,7 +209,7 @@ the first collective effort to create an open-source diffusion MRI analysis
 library using the Python language. Python is a general purpose, object-oriented
 programming language which was designed with an emphasis on code readability.
 This emphasis allows scientists who are not trained as software engineers to
-understand the computational steps taken in analysis and extend the software in a
+understand the computational steps taken during the analysis and extend the software in a
 straight-forward manner. Being an interpreted language, Python does not require
 additional compilation, linking, etc., and so installation of software written
 in Python is relatively easy. Taken together, these properties of the language
@@ -252,9 +252,9 @@ Optional dependencies, that are not required for analysis, are used for
 visualization of diffusion data and of the results of
 analysis. Matplotlib\footnote{\url{http://matplotlib.org}} is used for 2D and
 3D plotting. In addition, Python-VTK\footnote{\url{http://vtk.org}} is used for
-more advanced 3D interactive visualization. Furthermore, nose
-\footnote{\url{http://nose.readthedocs.org/}} is used for unit
-testing and Sphinx \footnote{\url{http://sphinx-doc.org/}} for automated
+more advanced 3D interactive visualization. Furthermore, nose\footnote{\url{http://nose.readthedocs.org/}} 
+is used for unit
+testing and Sphinx\footnote{\url{http://sphinx-doc.org/}} for automated
 documentation. Finally, we recommend using
 IPython\footnote{\url{http://ipython.org}} the interactive Python shell for
 calling and debugging scripts.
@@ -272,7 +272,7 @@ imaging research. We aim to build software that is clearly written, clearly
 explained, well tested, a good fit for the underlying ideas and a natural home
 for collaboration.
 
-Dipy is a truely international project where anyone from anywhere in the world
+Dipy is a true international project where anyone from anywhere in the world
 is welcome to contribute as long as they agree with the project's mission
 statement. In order to be faithful to this mission, all contributors are
 required to follow certain policies. For example, if a scientist makes a new
@@ -299,7 +299,7 @@ describe constructs of the measurement, as well as terms used to interpret
 the results of the analysis. We will use this terminology to explain the
 analysis code and interpretation of data in subsequent sections.
 
-The measurement of dMRI data relies on the application of a pulsed magnetic
+The measurement in dMRI relies on the application of a pulsed magnetic
 gradient and the degree of sensitization to diffusion depends on a number of
 parameters, including the duration of the gradient, time that elapses between
 pulses of the gradient and the gradient amplitude. These parameters are
@@ -307,8 +307,8 @@ together summarized in what is referred to as the \emph{"b-value"}.  As describe
 above, the measurement is conducted in several different directions and these
 are encoded in so-called "b-vectors". These are unit vectors that describe the
 direction relative to the scanner coordinate frame in which the gradients are
-applied. Different algorithms are used to determine the placement of these b-
-vectors (e.g. \citep{jones-etal:99}).
+applied. Different algorithms are used to determine the placement of these b-vectors
+ (e.g. \citep{jones-etal:99}).
 
 While we are ultimately interested in the identification of the trajectories of
 bundles of axons, which are the long fiber-like part of a nerve cell along
@@ -330,7 +330,7 @@ field that reconstructs fibrous structures, such as hair fibers, celery fibers,
 muscle fibers, prostate fibers, brain fibers, etc. "Fiber bundles" denote
 groups of fibers usually with an anatomical or functional meaning. These can be
 major tracts in the brain, such as the arcuate fasciculus, which connects parts
-of the posterior temporal lobe with the frontal lobe, the fornix, which
+of the posterior temporal lobe with the frontal lobe, the fornix (see Fig.~\ref{Fig:fornix}) , which
 connects the medial temporal lobe with sub-cortical structures, such as the
 hypothalamus and amygdala, etc. A fiber bundle for the area of brain anatomy is
 synonymous to a tract, also often called fiber tract. The term tract can be
@@ -338,7 +338,7 @@ misleading when talking for example about the corticospinal tract, because the
 corticospinal tract is in fact not a single tract but a group of tracts
 (including corticobulbar projections, the pyramidal tract, etc.).
 
-Tractography is the computational process through which the fibers are detected
+"Tractography" is the computational process through which the fibers are detected
 and delineated. Tractography relies on the assumption that diffusion of water,
 as reflected in the dMRI measurement, occurs more freely along the axis of an
 axon, than across the membranes of the axon. Tractography is therefore usually
@@ -455,7 +455,7 @@ variable \texttt{affine} provides a $4\times4$ matrix which contains the
 transformation matrix which maps voxel image coordinates to world mm
 coordinates. This matrix can be useful when registering, saving or visualizing
 images. The \texttt{voxel\_size} is a tuple with 3 values. In this example the
-\texttt{voxel\_size} is (2, 2, 2) i.e. $2~mm^3$.
+\texttt{voxel\_size} is (2, 2, 2) i.e. $8~mm^3$.
 
 Supposing that we want to extract and save from the 4D data only the first
 volume (usually this is the volume containing the non diffusion-weighted data,
@@ -492,7 +492,7 @@ from dipy.segment.mask import median_otsu
 mask, S0_mask = median_otsu(data[:, :, :, 0])
 \end{python}
 \texttt{median\_otsu} uses first a median filter to smooth the \texttt{S0} and
-then otsu, an automated histogram method \cite{Otsu1979} to separate the brain
+then otsu, an automated histogram method \citep{Otsu1979} to separate the brain
 (foreground) from its background. It returns two arrays, the \texttt{mask}, a
 3D array with 1s for the foreground and 0s for the background and the masked
 \texttt{S0}, \texttt{S0\_mask} a 3D array with the actual \texttt{S0} values in
@@ -501,7 +501,7 @@ the foreground and 0s in the background.
 \begin{figure}
 \includegraphics[scale=0.55]{Figures/brain_segmentation.eps}
 \centering{}
-\caption{Showing the middle slice of \texttt{S0} before (left) and after brain extraction (right) using \texttt{median\_otsu}. \label{Fig:brain_segmentation}}
+\caption{Showing the middle axial slice of \texttt{S0} before (left) and after brain extraction (right) using \texttt{median\_otsu}. \label{Fig:brain_segmentation}}
 \end{figure}
 
 \subsection{Gradient Table}\label{gtab}
@@ -565,7 +565,7 @@ $S(\mathbf{q},t)$ from a pulsed gradient spin echo (PGSE) experiment is
 directly related to the diffusion propagator by the following (inverse) Fourier
 relation
 \begin{equation}
-S(\mathbf{q},t)=S_{0}\int P(\mathbf{r},t)e^{i\mathbf{q}\cdot\mathbf{r}}d\mathbf{r}\label{eq:fourier}
+S(\mathbf{q},t)=S_{0}\int P(\mathbf{r},t)e^{i2\pi\mathbf{q}\cdot\mathbf{r}}d\mathbf{r}\label{eq:fourier}
 \end{equation}
 \noindent where $S_{0}$ is the signal in the absence of the applied magnetic
 diffusion gradient $\mathbf{g}$, $\mathbf{r}$ is the relative spin displacement
@@ -696,7 +696,7 @@ fa = fractional_anisotropy(ten_fit.evals)
 \end{python}
 It is common to represent the primary diffusion direction using an RGB
 representation and create a DEC map \citep{pierpaoli-jezzard-etal:96}
-(see Fig.~\ref{Fig:ten_csa_csd}):
+(see Fig.~\ref{Fig:dti_metrics}):
 \begin{python}
 from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
@@ -717,13 +717,13 @@ The second is that many more univariate measures have been implemented. Not
 only can users compute FA, MD, DEC, but also other statistics that have been
 proposed in the literature, such as the diffusion linearity, planarity and
 sphericity \citep{westin:97}, as well as the tensor mode, tensor norm
-\cite{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics
-are available under the \texttt{dipy.reconst.dti} module. In Fig.~\ref{Fig:dti_metrics} a 6 of the many available metrics are shown.
+\citep{Ennis2006}, radial and axial diffusivity. All these tensor-based metrics
+are available under the \texttt{dipy.reconst.dti} module. In Fig.~\ref{Fig:dti_metrics} a few of the many available measures are shown.
 
 \begin{figure}
 \includegraphics[scale=0.45]{Figures/dti_metrics.eps}
 \centering{}
-\caption{Diffusion Tensor based metrics created with Dipy. \label{Fig:dti_metrics}}
+\caption{Diffusion Tensor based scalar maps created with Dipy. \label{Fig:dti_metrics}}
 \end{figure}
 
 \subsection{Diffusion Spectrum Imaging}\label{dsi}
@@ -741,14 +741,14 @@ It was shown by Wedeen et al. \citep{wedeen-hagmann-etal:05} that the dMRI
 signal is positive for any type of spin motion without net flux (i.e.~spin
 displacements due to thermal molecular agitation) or other random fluxes such
 as intravoxel incoherent motion. Under this assumption we can replace the
-complex signal $S$ with its modulus $|S|$ in Eq.~\ref{eq:fourier} and apply the
+complex signal $S$ with its modulus $|S|$ in eq.~\ref{eq:fourier} and apply the
 Fourier transform:
 \begin{eqnarray}
 P(\mathbf{r}) & = &
 S_{0}^{-1}\int|S(\mathbf{q})|\exp(-i2\pi\mathbf{q}\cdot\mathbf{r})d\mathbf{q}\label{eq:P_modulus}
 \end{eqnarray}
 In DSI this 3D-integral is approximated in a discrete way and the
-PDF P for every single voxel is returned as a 3D array. We can obtain
+PDF $P$ for every single voxel is returned as a 3D array. We can obtain
 $P$ using:
 \begin{python}
 dsi_fit = dsi_model.fit(data)
@@ -757,7 +757,7 @@ dsi_pdf = dsi_fit.pdf()
 However, this method is recommended only when the dimensions of data are very
 small. This is because the \texttt{dsi\_pdf} is a 6D array with 3 dimensions
 for the voxel positions and 3 for the $\mathbf{q}$ positions. Therefore, for a
-moderate data set of $150\times150\times90\times$number of gradients where every PDF is
+moderate data set of $150\times150\times90$ where every PDF is
 $35\times35\times35$ we would need about 600GBytes of RAM. As a solution to
 this problem Dipy provides a method which can facilitate traversing through
 each voxel and calculating each voxel independently:
@@ -813,7 +813,7 @@ sphere. Here we used a symmetric sphere with 724 vertices. The
 \texttt{dsi\_odf} is an array of the 724 ODF values corresponding to the
 vertices of the sphere. Note at this point that in order to find the ODF we
 have to first create the diffusion propagator by applying the Fourier transform
-on the lattice. Nonetheless, Dipy, for reasons explained before does not store
+on the lattice (see Fig.~\ref{Fig:pdf}). Nonetheless, Dipy, for reasons explained before does not store
 the PDFs as it computes the ODF. \cite{yeh-etal:10} proposed a direct way (GQI) to
 calculate a slightly different ODF using the Cosine transform. GQI is
 available from \texttt{dipy.reconst.gqi.GeneralizedQSamplingModel}. The
@@ -827,7 +827,7 @@ advantage of GQI is that it is much faster to calculate than DSI or DSID.
 
 \subsection{Q-ball Imaging}
 To reduce the acquisition requirements of DSI, several techniques
-have been proposed to compute the ODF from Eq. \label{eq:ODF_DSI}
+have been proposed to compute the ODF from eq.~\ref{eq:ODF_DSI}
 using only a single b-value dMRI acquisition, often called
 \emph{single-shell} high angular resolution diffusion imaging (HARDI)
 \citep{tuch-reese-etal:02,descoteaux-deriche-etal:11}.
@@ -854,7 +854,7 @@ image. Hence, the q-ball ODF is a linear transformation of the SH coefficient,
 $c_j$. This technique is called analytical QBI (aQBI), in contrast to the
 original QBI solution, which performs the FRT numerically. It is
 important to note that these solutions are based on
-Eq.~\ref{eq:ODF_DSI}, without the $r^2$ term. So these ODFs are
+eq.~\ref{eq:ODF_DSI}, without the $r^2$ term. So these ODFs are
 not properly normalized by the solid angle term. Hence Dipy also implements
 the Constant Solid Angle analytical solution more recently proposed by
 \citep{aganj-lenglet-etal:10,tristan-vega-westin-etal:09}.
@@ -880,15 +880,18 @@ from dipy.reconst.shm import QballModel
 qb_model = QballModel(gtab, order=6, smooth=0.006)
 qb_fit = qb_model.fit(data)
 qb_odf = qb_fit.odf(sphere)
-from dipy.reconst.odf import minmax_normalize
-qb_nodf = minmax_normalize(qb_odf)
 \end{python}
 Important points to note are that SH order is set at $6$ and the regularization
 parameter at $0.006$, following the optimization recommendations of
 \citet{descoteaux-angelino-etal:06c}. Furthermore, because the
 analytical ODF method produces more
 rounded ODFs it is useful for visualization purposes to use \emph{min-max}
-normalization. The SH coefficients are accessible using the attribute
+normalization.
+\begin{python}
+from dipy.reconst.odf import minmax_normalize
+qb_nodf = minmax_normalize(qb_odf)
+\end{python}
+The SH coefficients are accessible using the attribute
 \texttt{qb\_fit.shm\_coeff}. Methods (b) and (c) can be used in a very similar
 way. For example, for the Constant Solid Angle (CSA)
 \citep{aganj-lenglet-etal:10} method (b) we only need to remove the
@@ -937,8 +940,7 @@ non-physical and are precluded. The other is that CSD applies a sparsity
 constraint on the fODF -- it assumes that only a few of the fODF values will be
 large. Applying these two constraints allows fitting the SH basis
 up to very high orders -- in essence fitting more parameters than data allow.
-This is known as \emph{super-resolution}. This super-resolved method
-can be accessed in Dipy using:
+This super-resolved method can be accessed in Dipy using:
 \begin{python}
 from dipy.reconst.csdeconv import
         ConstrainedSphericalDeconvModel as CsdModel
@@ -951,7 +953,7 @@ of this tensor are estimated from the voxels with FA $> 0.7$. The input
 parameter \texttt{response} is a tuple with two parameters: a) the eigen-values
 of the tensor and b) the estimated average S0 signal for those voxels. The
 response function is usually estimated from the corpus callosum areas. For
-further information on how to iniate the CSD please read our examples in
+further information on how to initialize the CSD please read our examples in
 \texttt{dipy.org}.
 
 Dipy also implements a second constrained spherical deconvolution method: The
@@ -990,7 +992,7 @@ centrum semiovale show crossings between the corpus callosum,
 corticospinal tract and the superior longitudinal fasciculus.
 
 \subsection{Peaks from models}
-In the previous sub-sections we showed that the reconstruction models have a
+In the previous sections we showed that the reconstruction models have a
 uniform API and can be called in similar ways. For example, they all have an
 odf() method. This design gives us the opportunity to create utility functions
 where the model is one of the parameters. \texttt{peaks\_from\_model} is a
@@ -1019,7 +1021,7 @@ enforces that only peaks greater than \texttt{relative\_peak\_threshold}$*m$
 will be returned, where $m$ is the value of the largest
 peak. \texttt{min\_separation\_angle} sets the threshold for the minimum
 angular distance in degrees between two peaks. If the peaks are closer than
-this threshold only the larger of the two is returned. This two parameters help
+this threshold only the larger of the two is returned. These two parameters help
 to get robust fiber directions when the ODFs are
 noisy. \texttt{peaks\_from\_model} returns a \texttt{PeaksAndMetrics} object
 which holds all the different output arrays, \texttt{peak\_values},
@@ -1043,13 +1045,13 @@ information about local microstructure across different voxels may provide
 information about large-scale organization of the brain. In particular,
 researchers have been using various algorithms in attempts to track along the
 presumed fiber populations to make inferences about axonal connections between
-different parts of the gray matter. The connection matrix that results from an
+different parts of the gray matter (see Fig.~\ref{Fig:fornix}). The connection matrix that results from an
 exhaustive connectivity analysis of all parts of the cerebral cortex is
-sometimes referred to as a ``connectome`` \cite{sporns2005} and understanding
+sometimes referred to as a ``connectome`` \citep{sporns2005} and understanding
 the structure and function of the connectome is a central goal of contemporary
 neuroscience. This premise has led to major investment in data-collection
 projects aimed at characterizing the connectome, based on dMRI, as well as
-functional MRI (fMRI) measurements \cite{VanEssen2013}.
+functional MRI (fMRI) measurements \citep{VanEssen2013}.
 
 Tracking algorithms, used to infer these connections divide into two major
 classes. The first class is deterministic. It uses the information about the
@@ -1066,14 +1068,14 @@ The other class of algorithms is probabilistic, in that they consider the local
 information in each voxel to represent a distribution of possible directions in
 that location. In these algorithms, a trajectory of fibers in every location is
 randomly sampled from the local distribution. The algorithm may therefore give
-different sets of `fibers` on different realizations of the algorithm.
+different sets of streamlines on different realizations.
 
 Dipy implements both deterministic and probabilistic tracking algorithms,
 described in detail below.
 
 \subsection{Deterministic}
 
-\subsubsection{EuDX}
+\subsubsection{EuDX.}
 Euler Delta Crossings~\citep{Garyfallidis_thesis} is the first tracking
 method that was implemented in Dipy. We created an algorithm that has many
 similarities with the classical deterministic methods~\citep{Mori1999,
@@ -1090,7 +1092,6 @@ required.
 
 In order to create streamlines, we initially need to provide one or more seed
 points $s$. The points from where the streamlines will start growing. These can
-The points from where the streamlines will start growing. These can
 be chosen randomly or we can specify them explicitly. However, these seed
 points need to be constrained by the volume's dimensions. Every seed point
 $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the
@@ -1114,12 +1115,13 @@ propagation if the value in the current voxel is lower than
 sphere. For this purpose, the second parameter is another array of dimensions
 $X\times Y\times Z$ or $X\times Y\times Z\times W$ but this time these are the
 indices of the directions approximated on the sphere. An example is given here
-for tensor based streamlines:
+where we have used the \texttt{peak\_indices} from CSD using \texttt{peaks\_from\_models}
+and the tensor FA for stopping criteria (with threshold 0.1):
 \begin{python}
 from dipy.tracking.eudx import EuDX
 eu = EuDX(a=FA, ind=peak_indices, seeds=10**4,
-          sphere=sphere, a_low=0.2)
-tensor_streamlines = [line for line in eu]
+          sphere=sphere, a_low=0.1)
+csd_streamlines = [line for line in eu]
 \end{python}
 The input parameter \texttt{seeds} can be given as an integer, this will
 generate random seeds in the entire volume, or it can be given as $N\times 3$
@@ -1129,9 +1131,10 @@ advantage that it allows us to seed from specific ROIs or from the gray matter
 results \citep{Cote2013tractometer}. The instance of EuDX returns back an
 iterator. In every call of the iterator a new streamline is returned. This
 technique allows to save directly streamlines in the disk without loading all
-streamlines in memory. In Fig.~\ref{Fig:pretty_streamlines} we show a human
-brain streamlines, approximating the brain's white matter connections, generated
-from EuDX.
+streamlines in memory. In Fig.~\ref{Fig:pretty_streamlines} a few thousand
+human brain streamlines are shown, approximating the brain's white matter connections, 
+generated from EuDX. In contrast, in Fig.~\ref{Fig:fornix} only a specific anatomical bundle is
+approximated not the full brain.
 
 \begin{figure}
 \includegraphics[scale=0.75]{Figures/pretty_streamlines.eps}
