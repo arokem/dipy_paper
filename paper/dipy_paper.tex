@@ -1076,7 +1076,7 @@ described in detail below.
 \subsection{Deterministic}
 
 \subsubsection{EuDX.}
-Euler Delta Crossings~\citep{Garyfallidis_thesis} is the first tracking
+Also known as Euler Delta Crossings~\citep{Garyfallidis_thesis} is the first tracking
 method that was implemented in Dipy. We created an algorithm that has many
 similarities with the classical deterministic methods~\citep{Mori1999,
   conturo-lori-etal:99, basser-pajevic-etal:00} and with more recent ones as
@@ -1091,7 +1091,7 @@ isotropic voxel size then a reslicing preprocessing step to isotropic is
 required.
 
 In order to create streamlines, we initially need to provide one or more seed
-points $s$. The points from where the streamlines will start growing. These can
+points $\mathbf{s}$. The points from where the streamlines will start growing. These can
 be chosen randomly or we can specify them explicitly. However, these seed
 points need to be constrained by the volume's dimensions. Every seed point
 $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the
@@ -1139,7 +1139,7 @@ approximated not the full brain.
 \begin{figure}
 \includegraphics[scale=0.75]{Figures/pretty_streamlines.eps}
 \centering{}
-\caption{An example of EuDX-based fiber tracking applied on a real
+\caption{An example of EuDX based fiber tracking applied on a real
   human brain dataset\label{Fig:pretty_streamlines}}
 \end{figure}
 
@@ -1156,12 +1156,12 @@ at a seed point and continue along a propagation direction which is randomly
 chosen from a PDF. The propagation direction is continually adjusted by
 sampling from the PDF at each new location along the path. This continues until
 some stopping criteria are met. Notice that this framework is equivalent to
-deterministic fiber tracking if the PDF at each point is a delta function on
+deterministic fiber tracking if the PDF at each point is a delta function of
 one fiber direction.
 
 Dipy has implemented two interfaces for probabilistic Markov fiber tracking. The
 first method allows the user to provide the PDF evaluated on a discrete set of
-possible tracking directions. For example the FOD (fiber orientation distribution)
+possible tracking directions. For example the fODF (fiber orientation distribution)
 obtained by fitting the CSD (constrained spherical deconvolution) model to diffusion
 data can be used as an estimate of the PDF, because it represents a fiber distribution
 associated with the measured diffusion signal \citep{jeurissen2011probabilistic}. The user must
@@ -1175,12 +1175,12 @@ In this case we combine a sampling method with the diffusion data and a diffusio
 and pass this to the Markov tracking framework. Streamlines can now be generated
 as before without explicitly evaluating the PDF at each
 point in the diffusion data. This framework is designed to be flexible and easily
-customizable so that a wide variety of Markov tracking methods can be expressed.
+customizable so that a wide variety of tracking methods can be expressed.
 
 \section{Fiber analysis and post-processing}\label{post_tracking}
 
 In the following sections we describe some of the tools available for processing
-streamlines after these have been created.
+streamlines after they have been created.
 \subsection{Streamline clustering}\label{quickbundles}
 Depending on the initial number of seeds and other tracking parameters
 fiber tracking algorithms can generate a great number of densely packed
@@ -1198,7 +1198,7 @@ starts the clustering procedure the streamlines will be downsampled so that
 each one has the same number of points (here 18) and equal segments. This
 preprocessing step is a prerequisite for QB.
 \begin{python}
-from dipy.segment import QuickBundles
+from dipy.segment.quickbundles import QuickBundles
 qb = QuickBundles(streamlines, dist_thr=20.,
                   pts=18)
 \end{python}
@@ -1215,8 +1215,8 @@ interactions with one or several ROIs. There are a few functions in
 first of these functions, \texttt{density\_map}, counts the number of
 streamlines that pass though each voxel and returns the result as an image. In
 all the following examples \texttt{streamlines} is a sequence of streamlines and
-\texttt{affine} is a mapping from voxel coordinate space to the streamline
-point space. In all cases \texttt{affine} can be omitted if the streamlines
+\texttt{affine} is a mapping from voxel coordinates to world coordinates. In all 
+cases \texttt{affine} can be omitted if the streamlines
 are defined in voxel coordinate space.
 \begin{python}
 from dipy.tracking.utils import density_map
@@ -1244,9 +1244,10 @@ function produces a mapping from voxel indices to streamlines, much like targeti
 on every individual voxel, and returns a dictionary of those mappings.
 \begin{python}
 from dipy.tracking.utils import streamline_mapping
-mapping = streamline_mapping(track, affine=affine)
+mapping = streamline_mapping(streamlines, 
+                             affine=affine)
 \end{python}
-Here the \texttt{mapping} is a dictionary where the keys are voxel indices and
+Here \texttt{mapping} is a dictionary where the keys are voxel indices and
 the value associated with each key is a list of all the streamlines that pass though that voxel. For example to get all the
 streamlines that pass though voxel \texttt{(i, j, k)}, we would lookup
 \texttt{mapping[i, j, k]}.
@@ -1279,7 +1280,7 @@ long as one can compute a linear transformation (\texttt{affine}) between the vo
 
 \subsection{Streamline metrics and statistics}
 
-In Dipy we have implemented a plurality of metrics for streamlines. For example,
+In Dipy, we have implemented a plurality of metrics for streamlines. For example,
 perhaps the simplest thing that someone may want to do is to calculate the
 average length and standard deviation of the streamlines generated after the
 fiber tracking procedure. This can happen very easily using the \texttt{length}
