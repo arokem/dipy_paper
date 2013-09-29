@@ -169,7 +169,7 @@ Probabilistic Tractography, Clustering.
   lebihan-breton:85, taylor-bushell:85}
 is an MRI technique \citep{callaghan:91} that provides information
 about the structure of neuronal pathways found in the white matter and
-other body tissue with fiber-like structure (see Fig.~\ref{Fig:fornix}). DMRI acquires one or more
+other body tissue with fiber-like structure (see Fig.~\ref{Fig:fornix}). dMRI acquires one or more
 $T_{2}$ reference images, and a collection of diffusion-weighted images, in which $T_{2}$ signal is attenuated according
 to the diffusivity of water along prescribed gradient directions
 \citep{behrens-johansen-berg:09, jones:10}. Because diffusion is hindered
@@ -906,7 +906,8 @@ csa_odf = csamodel.fit(data).odf(sphere)
 As a side note: the term Constant Solid Angle derives from the fact that this
 method calculates the ODF taking account of radial distance as we see in
 eq.~\ref{eq:ODF_DSI}. The analytical Q-ball method does not integrate the $r^2$
-term and therefore it generates more rounded ODFs and require normalization.
+term and therefore it generates much smoother ODFs which require prior normalization 
+for visualization.
 
 \subsection{Constrained Spherical Deconvolution}
 
@@ -1085,14 +1086,14 @@ those described in \citet{descoteaux-deriche-etal:09} and
 deterministic algorithm which can be used with very different families of
 reconstruction models, work well in crossing areas and be efficient so that it
 can be used to quickly inspect the reconstruction results. EuDX is applied
-usually in native space image coordinates and it assumes that the voxel
-dimensions are equal in all three dimensions. If the provided data do not have
-isotropic voxel size then a reslicing preprocessing step to isotropic is
-required.
+usually in native space image coordinates and it assumes that all three voxel
+dimensions are equal. If the provided data do not have
+isotropic voxel size then a reslicing preprocessing step is
+required to make the data isotropic.
 
 In order to create streamlines, we initially need to provide one or more seed
 points $\mathbf{s}$. The points from where the streamlines will start growing. These can
-be chosen randomly or we can specify them explicitly. However, these seed
+be chosen randomly or they can be specified explicitly. However, these seed
 points need to be constrained by the volume's dimensions. Every seed point
 $\mathbf{p}_{0}$ becomes the starting point for the track propagation. For the
 integration we solve for
@@ -1124,17 +1125,17 @@ eu = EuDX(a=FA, ind=peak_indices, seeds=10**4,
 csd_streamlines = [line for line in eu]
 \end{python}
 The input parameter \texttt{seeds} can be given as an integer, this will
-generate random seeds in the entire volume, or it can be given as $N\times 3$
-array of seed points. This last explicit specification of seed points has the
+generate random seeds in the entire volume, or it can be given as a $N\times 3$
+array of seed points. The latter explicit specification of seed points has the
 advantage that it allows us to seed from specific ROIs or from the gray matter
 - white matter boundary which has been shown to generate more robust tracking
-results \citep{Cote2013tractometer}. The instance of EuDX returns back an
+results \citep{Cote2013tractometer}. The instance of EuDX returns an
 iterator. In every call of the iterator a new streamline is returned. This
-technique allows to save directly streamlines in the disk without loading all
+technique allows one to save streamlines directly to disk without loading all
 streamlines in memory. In Fig.~\ref{Fig:pretty_streamlines} a few thousand
 human brain streamlines are shown, approximating the brain's white matter connections, 
 generated from EuDX. In contrast, in Fig.~\ref{Fig:fornix} only a specific anatomical bundle is
-approximated not the full brain.
+approximated rather than the full brain.
 
 \begin{figure}
 \includegraphics[scale=0.75]{Figures/pretty_streamlines.eps}
@@ -1180,22 +1181,22 @@ customizable so that a wide variety of tracking methods can be expressed.
 \section{Fiber analysis and post-processing}\label{post_tracking}
 
 In the following sections we describe some of the tools available for processing
-streamlines after they have been created.
+streamlines after these have been created.
 \subsection{Streamline clustering}\label{quickbundles}
 Depending on the initial number of seeds and other tracking parameters
 fiber tracking algorithms can generate a great number of densely packed
-streamlines (often more than one million) which is difficult to interact
-and interpret. As a solution to this problem Dipy implements a recent and
+streamlines (often more than one million) which are difficult to interact with
+and interpret. As a solution to this problem Dipy implements a recent
 efficient clustering algorithm for streamlines. This is called QuickBundles (QB)
 \citep{Garyfallidis_thesis,garyfallidis-etal:12} and it can be used to
 simplify large datasets in a couple of minutes.
 When using QuickBundles we need first to instantiate the object with 3
-parameters. The first parameter is the set of initial streamlines to be
-clustered, the second is the distance threshold that defines the cluster size
+parameters. The first parameter is the initial set of streamlines to be
+clustered, the second is the distance threshold that will determine the number of clusters and their sizes,
 and the third is the level of detail for each streamline. For example, in the
 the code snippet below we used \texttt{pts=18} which means that before QB
 starts the clustering procedure the streamlines will be downsampled so that
-each one has the same number of points (here 18) and equal segments. This
+each one has the same number of points (here 18) and equal length segments. This
 preprocessing step is a prerequisite for QB.
 \begin{python}
 from dipy.segment.quickbundles import QuickBundles
@@ -1256,7 +1257,7 @@ The last function we want to mention in this section in
 \texttt{connectivity\_matrix}. This function groups and counts streamlines
 based on their endpoints and a label volume which we call \texttt{labels}. This
 label volume should be an image where the intensities of the image map to
-anatomical structures. For example.
+anatomical structures. For example:
 
 \begin{python}
 from dipy.tracking.utils import
@@ -1303,8 +1304,7 @@ and torsion calculations along a streamline.
 Fig.~\ref{Fig:fornix},~\ref{Fig:dti_metrics}-\ref{Fig:pretty_streamlines},
 are generated by
 our own visualization tools which can be used for most parts of the diffusion
-analysis pipeline. We have developed a minimal, lightweight and up to the point
-module which is based on the Visualization Toolkit (VTK) \citep{schroeder:01} and we call
+analysis pipeline. We have developed a minimal and lightweight module which is based on the Visualization Toolkit (VTK) \citep{schroeder:01} and we call
 \texttt{fvtk}. The main idea is that a window can have one or more renderers.
 A renderer can have none, one or more actors. Examples of actors are a sphere,
 line, point or a complete set of streamlines. You can basically add actors in a
@@ -1323,7 +1323,8 @@ line_actor = fvtk.streamtube(streamlines,
 fvtk.add(renderer, line_actor)
 fvtk.show(renderer)
 \end{python}
-The function \texttt{streamtube} was also the one we used to create Fig.~\ref{Fig:fornix} and \ref{Fig:pretty_streamlines}. The most commonly used visualization functions are given in Tab.~\ref{fvtk_table}.
+The function \texttt{streamtube} was also the one we used to create Fig.~\ref{Fig:fornix} and \ref{Fig:pretty_streamlines}. 
+The most commonly used visualization functions are given in Tab.~\ref{fvtk_table}.
 
 \begin{table}[th] \processtable{List of visualization functions\label{fvtk_table}}
 {\begin{tabular}{rr} \hline
@@ -1347,12 +1348,13 @@ slicer & actor for showing volumetric slices \\
 
 \section{Discussion/Conclusion}
 
-We have described the Dipy library for analysis of diffusion MRI data. Dipy is
-a part of the Neuroimaging in Python community (\url{nipy.org}), a growing
-community of scientists and developers who are participating in the development
-of open source software for neuroimaging written in the Python language. The
-different software projects comprising Nipy, are all developed under the
-umbrella of one github organization (\url{github.com/nipy}) and the central
+We have outlined the structure and functionality of the Dipy library
+which provides a toolbox for the analysis of diffusion MRI data. Dipy is
+open source software, written in the Python language, and is part of the Neuroimaging in Python 
+(Nipy \url{nipy.org}), a growing
+community of scientists and developers. 
+In common with the other Nipy projects, Dipy is being developed under the
+umbrella of a single github organization (\url{github.com/nipy}) and the central
 Dipy github repository is managed under this organization
 (\url{github.com/nipy/dipy}).  The community provides support for the use and
 development of these software tools through a mailing list
