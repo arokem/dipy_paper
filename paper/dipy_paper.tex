@@ -245,9 +245,6 @@ adding static type declarations. The last absolute dependency for Dipy is
 Nibabel\footnote{\url{http://nipy.org/nibabel}} which is used for loading and
 saving medical imaging file formats.
 
-% I think this may be rather to detailed and repetitive given what is in
-% the 'General Design Aspects' section
-
 Optional dependencies, that are not required for analysis, are used for
 visualization of diffusion data and of the results of
 analysis. Matplotlib\footnote{\url{http://matplotlib.org}} is used for 2D and
@@ -1102,8 +1099,8 @@ and we perform the integration numerically using Euler's method
 \begin{equation}
 \mathbf{p}_{n+1}=\mathbf{p}_{n}+\mathbf{v}(\mathbf{p}_{n})\Delta s\label{eq:euler}
 \end{equation}
-\noindent where $\Delta s$ is the propagation step size which should be at
-least smaller than the voxel size and $\mathbf{v}$ is the propagation
+\noindent where $\Delta s$ is the propagation step size which should be no
+greater than the voxel size, and $\mathbf{v}$ is the propagation
 direction. Furthermore, EuDX uses trilinear interpolation for the calculation
 of the next direction integrating directional information from the surrounding
 voxels.
@@ -1284,7 +1281,7 @@ long as one can compute a linear transformation (\texttt{affine}) between the vo
 In Dipy, we have implemented a plurality of metrics for streamlines. For example,
 perhaps the simplest thing that someone may want to do is to calculate the
 average length and standard deviation of the streamlines generated after the
-fiber tracking procedure. This can happen very easily using the \texttt{length}
+fiber tracking procedure. This can be achieved very easily using the \texttt{length}
 function which takes as input a single streamline. We can then iterate through
 all the streamlines in the following way:
 \begin{python}
@@ -1295,9 +1292,9 @@ lengths = np.array(lenghts)
 average_length = lengths.mean()
 standard_deviation_lengths = lengths.std()
 \end{python}
-Many other metrics can be found in the metrics sub-module e.g. \texttt{spline} for
+Many other metrics can be found in the metrics sub-module e.g.~\texttt{spline} for
 spline interpolation, \texttt{centre\_of\_mass}, \texttt{mean\_curvature},
-\texttt{mean\_orientation} and the \texttt{frenet serret} framework for curvature
+\texttt{mean\_orientation} and the \texttt{frenet\_serret} framework for curvature
 and torsion calculations along a streamline.
 
 \subsection{Visualization}
@@ -1346,16 +1343,17 @@ slicer & actor for showing volumetric slices \\
 \end{tabular}}{}
 \end{table}
 
-\section{Conclusion}
+\section{Discussion and Conclusion}
 
 In this paper, we have outlined the structure and functionality of the Dipy library,
 which provides a number of simple methods to use for the analysis of diffusion MRI data using the Python
 language. We demonstrated examples of pre-processing, reconstruction, tracking and post-processing,
-showing that Dipy, although a new project, can fill many of the steps needed to do a complete 
-dMRI analysis.
+showing that Dipy, although a relatively new project, can fill many of the steps needed to do a complete 
+dMRI analysis. We have illustrated the scope of the methods that have been implemented to date, and have 
+demonstated these capabilities of Dipy with sample scripts and visualizations. 
 
 Dipy is free and open source software and it is part of a larger community found in \url{nipy.org}. 
-This is a growing team of scientists and developers focusing on sharing code concerning different modalities
+This is a growing team of scientists and developers focusing on sharing code for different modalities
 of brain imaging. In common with the other Nipy projects, Dipy is being developed under the
 umbrella of a single github organization\footnote{\url{http://github.com/nipy}} and the central
 Dipy github repository is managed under this organization\footnote{\url{http://github.com/nipy/dipy}}).
@@ -1370,8 +1368,8 @@ neuroimaging, Dipy is not based on the work of one lab, or one institution. Thou
 many of the contributions are made by a few core contributors, there are many
 contributors to the code-base and the number of contributors has been growing
 dramatically after the 0.6 which took place on April 2013 ~\ref{Fig:gh_stats}, 
-with contributors based in at least 7 different academic
-institutions in 5 countries (Canada, UK, USA, Italy and South Africa).
+with contributors based in at least seven different academic
+institutions in five countries (Canada, UK, USA, Italy and South Africa).
 
 \begin{figure}
 \centering{}
@@ -1381,12 +1379,11 @@ institutions in 5 countries (Canada, UK, USA, Italy and South Africa).
   new contributors have joined the project after the 0.6 release\label{Fig:gh_stats}}
 \end{figure}
 
-Ultimately, this paper shares with you our excitement of developing Dipy and welcomes 
+In conclusion, we hope this paper inspires you to share our excitement in developing Dipy and encourages 
 you to participate in the project. We strongly hope that more scientists will join 
-Dipy by using the software, giving us feedback so that we can make it better, 
-or even better by sharing their code and joining the developers team. We think that 
-in order to solve the hard problem of brain mapping a wide and open participation is 
-absolutely necessary. 
+Dipy by using the software and giving us feedback so that we can make it better. Stronger still 
+is our hope that many will chose to share their code and join the developers team. We are sure that 
+a wide and open participation is absolutely necessary in order to solve the hard problem of brain mapping. 
 
 
 \section*{Acknowledgments}
