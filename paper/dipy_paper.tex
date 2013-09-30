@@ -166,8 +166,8 @@ Probabilistic Tractography, Clustering.
 \section{Introduction}
 
 \emph{Diffusion MRI} (dMRI) \citep{merboldt-hanicke-etal:85,
-  lebihan-breton:85, taylor-bushell:85}
-is an MRI technique \citep{callaghan:91} that provides information
+  lebihan-breton:85, taylor-bushell:85, callaghan:91}
+is an MRI technique that provides information
 about the structure of neuronal pathways found in the white matter and
 other body tissue with fiber-like structure (see Fig.~\ref{Fig:fornix}). dMRI acquires one or more
 $T_{2}$ reference images, and a collection of diffusion-weighted images, in which $T_{2}$ signal is attenuated according
@@ -190,7 +190,7 @@ are communicating information between different parts of the brain.
 Because of its unique capability to characterize the microstructure of neural
 tissue, and the inferences that can be made using this information about
 structural connectivity, dMRI has had increasing popularity, with more than five
-thousand papers published in 2012 (according to PubMed). This popularity is
+thousand papers published in 2012 (Performing the query " XXX YYY" in PubMed). This popularity is
 also evident from the large number of software tools available for the analysis
 of diffusion-weighted images. Many of these tools are written in C/C++: 3D
 Slicer \citep{pieper:06}, AFNI \citep{cox-afni:12}, MITK
@@ -224,7 +224,7 @@ were hidden from the users. Dipy tackles this problem by being free, open
 source (BSD license), simple and well documented. In addition, the recent
 explosion of Python users, the many Python tools for scientific computing
 \citep{perez_python:11}, \citep{mckinney_python:12}, \citep{perez_ipython:07}
-and the recent stack of neuroimaging\footnote{\url{http://nipy.org}} modules
+and the recent stack of neuroimaging modules\footnote{\url{http://nipy.org}} 
 make Dipy a useful addition for those for whom Python is the
 language-of-choice.
 
@@ -232,7 +232,7 @@ Dipy takes advantage of the growing ecosystem of tools written for scientific
 computing in Python. It is built on top of production-ready high-performance
 Python libraries. Primarily, Dipy depends on
 Numpy\footnote{\url{http://numpy.org}}. The core structure of this library is
-an implementation of an Array \citep{van_numpy:11} class. Numpy arrays are used
+an implementation of an Array class \citep{van_numpy:11} . Numpy arrays are used
 for representation of numerical data in Python and enable efficient
 implementation of numerical computations, such as vectorized computations,
 avoiding copying data in memory, and minimizing operations. Numpy is also used
@@ -264,7 +264,7 @@ tractograph algorithms and visualization of these streamlines.
 
 \section{Philosophy and Mission}
 
-Mission: The purpose of Dipy is to make it easier to do better diffusion MR
+The purpose of Dipy is to make it easier to do better diffusion MR
 imaging research. We aim to build software that is clearly written, clearly
 explained, well tested, a good fit for the underlying ideas and a natural home
 for collaboration.
@@ -276,10 +276,10 @@ required to follow certain policies. For example, if a scientist makes a new
 discovery --- even one of substantial importance --- and wants to share the code,
 it will not be integrated in the main project without extended testing as well
 as code reviews from at least two members of the team.  Such principles
-aim to help the Dipy code-base preserve its quality while growing.
+aim to help the Dipy code-base grow, while preserving its quality.
 
 Through this work ethic, Dipy has attracted an international and
-multi-departmental team of highly skilled contributors from different levels
+multi-departmental team of contributors from different levels
 of education (Master students, PhD students, Post-Docs and Professors)
 spanning the fields of Computer Science, Medicine, Applied Mathematics,
 Biomedical Engineering and Psychology.
@@ -293,8 +293,8 @@ present the interpretation of the results of the analysis. We rely on a recent
 paper \citep{Cote2013tractometer}, that has proposed specific terminology for
 describing different constructs of the dMRI field. In this section we will
 describe constructs of the measurement, as well as terms used to interpret
-the results of the analysis. We will use this terminology to explain the
-analysis code and interpretation of data in subsequent sections.
+the results of the analysis. In subsequent sections, we will use this
+terminology to explain the analysis code and interpretation of data.
 
 The measurement in dMRI relies on the application of a pulsed magnetic
 gradient and the degree of sensitization to diffusion depends on a number of
@@ -302,29 +302,29 @@ parameters, including the duration of the gradient, time that elapses between
 pulses of the gradient and the gradient amplitude. These parameters are
 together summarized in what is referred to as the \emph{"b-value"}.  As described
 above, the measurement is conducted in several different directions and these
-are encoded in so-called "b-vectors". These are unit vectors that describe the
+are encoded in so-called \emph{"b-vectors"}. These are unit vectors that describe the
 direction relative to the scanner coordinate frame in which the gradients are
 applied. Different algorithms are used to determine the placement of these b-vectors
- (e.g. \citep{jones-etal:99}).
+ (e.g. \citep{jones-etal:99, Caruyer2013}).
 
-While we are ultimately interested in the identification of the trajectories of
-bundles of axons, which are the long fiber-like part of a nerve cell along
-which electrical impulses are conducted from cell to cell (and whose
-size is on the $\mu$m scale), the measurement is conducted on a much larger
-scale. Typically, the measurement is conducted in a grid of \emph{"voxels"} of
-approximately 2x2x2 mm. We are therefore limited to describe the trajectories
-of \emph{"fascicles"} of nerves. One of the major achievements of this
-field is that it is now possible to reliably and accurately identify
-major fascicles in
-individual experimental participants or patients. These major fascicles are
-also known as \emph{"tracts"}. This is a term taken from neuroanatomy
-and describes a group of neuronal axons within the central nervous
-system (mm scale).
+ While we are ultimately interested in the identification of the trajectories
+ of bundles of axons, which are the long fiber-like part of a nerve cell along
+ which electrical impulses are conducted from cell to cell (and whose size is
+ on the $\mu$m scale), the measurement is conducted on a much larger
+ scale. Typically, the measurement is conducted in a grid of \emph{"voxels"} of
+ approximately 2x2x2 mm. We are therefore limited to describe the trajectories
+ of \emph{"fascicles"} of nerves, which are relatively large (mm-cm scale)
+ bundles of axons travelling through the white matter together. One of the
+ major achievements of this field is that it is now possible to reliably and
+ accurately identify major fascicles in individual experimental participants or
+ patients \citep{mori-atlas}. These major fascicles are also known as
+ \emph{"tracts"}. This is a term taken from neuroanatomy and describes a group
+ of neuronal axons within the central nervous system (mm scale).
 
 For the purpose of interpretation of these data, a \emph{"fiber"} can be any long and
 thin structure. Hence, fiber tracking is a general term that can be used in any
-field that reconstructs fibrous structures, such as hair fibers, celery fibers,
-muscle fibers, prostate fibers, brain fibers, etc. "Fiber bundles" denote
+field that reconstructs fibrous structures, such as white matter axon fibers,
+muscle fibers, prostate fibers and even celery fibers \citep{Numano2006}. "Fiber bundles" denote
 groups of fibers usually with an anatomical or functional meaning. These can be
 major tracts in the brain, such as the arcuate fasciculus, which connects parts
 of the posterior temporal lobe with the frontal lobe, the fornix (see Fig.~\ref{Fig:fornix}) , which
@@ -343,7 +343,7 @@ done by finding the directions of diffusion in each voxel (see
 \ref{reconstruction}) and stepping through the brain volume along the
 directions of large diffusion estimated in each location. This process
 generates so-called \emph{streamlines}, which are imaginary lines that approximate the
-underlying fiber. Streamlines are also sometimes referred to as "tracks". These
+underlying fibers. Streamlines are also sometimes referred to as "tracks". These
 are not to be confused with tracts: While a tract is a physical object, a track
 is a computational construct that only approximates the underlying fascicle or
 bundle of fibers. Confusingly enough "streamline bundles", or simply "bundles"
@@ -365,10 +365,11 @@ Dipy's API is designed with the aim to be intuitive, simple to use, and well
 documented.  This allows researchers to rapidly construct even complex
 computational experiments while retaining code readability.  In addition,
 since the code is entirely free and open, Dipy is ideally suited to facilitate
-reproducible research.
+reproducible research \citep{Donoho2010}.
 
 Like many modern open source projects, Dipy is hosted on GitHub --- an online
-version of the Git revision control system. Changes are made via a Pull
+repository that hosts open-source software, using the Git source-code
+management system to perform revision control. Changes are made via a Pull
 Request (PR) mechanism, whereby submissions can be proposed, discussed and
 iterated upon before being included finally. The discussions also allow for
 line-by-line comments to be made by any interested developer.
@@ -379,7 +380,7 @@ the necessary dependencies, builds a clean copy of Dipy, and runs Dipy's
 test suite against the new changes.  Only if no failures are reported will the
 new code be considered for inclusion.  Dipy also follows a test-driven
 development philosophy, whereby all code should be accompanied by a suite of
-tests to exercize all corner cases.
+tests to exercise all corner case \citep{Maximilien2003}.
 
 As mentioned above, for documentation Dipy utilizes Sphinx, the same system
 employed by the main Python project.  Sphinx takes plain-text ReStructuredText
@@ -422,7 +423,7 @@ The most basic operation that we perform in neuroimaging is to load some data fr
 the disk which have been generated from an MRI scanner. Surprisingly this is often a
 difficult task as different scanners and software read/write the data in
 different ways. Fortunately Nibabel, a library for reading medical imaging formats,
-comes to the rescue by supporting ANALYZE (plain, SPM99, SPM2), GIFTI,
+provides support for ANALYZE (plain, SPM99, SPM2), GIFTI,
 NIfTI1, MINC, MGH, ECAT, PAR/REC, Freesurfer (geometry, morphometry files) and
 with a growing support for DICOM.
 
@@ -452,7 +453,7 @@ variable \texttt{affine} provides a $4\times4$ matrix which contains the
 transformation matrix which maps voxel image coordinates to world mm
 coordinates. This matrix can be useful when registering, saving or visualizing
 images. The \texttt{voxel\_size} is a tuple with 3 values. In this example the
-\texttt{voxel\_size} is (2, 2, 2) i.e. $8~mm^3$.
+\texttt{voxel\_size} is (2, 2, 2), corresponding to a volume of $8~mm^3$.
 
 Supposing that we want to extract and save from the 4D data only the first
 volume (usually this is the volume containing the non diffusion-weighted data,
@@ -489,11 +490,11 @@ from dipy.segment.mask import median_otsu
 mask, S0_mask = median_otsu(data[:, :, :, 0])
 \end{python}
 \texttt{median\_otsu} uses first a median filter to smooth the \texttt{S0} and
-then otsu, an automated histogram method \citep{Otsu1979} to separate the brain
-(foreground) from its background. It returns two arrays, the \texttt{mask}, a
-3D array with 1s for the foreground and 0s for the background and the masked
-\texttt{S0}, \texttt{S0\_mask} a 3D array with the actual \texttt{S0} values in
-the foreground and 0s in the background.
+then Otsu's method, an automated histogram method \citep{Otsu1979} to separate
+the brain (foreground) from its background. It returns two arrays, the
+\texttt{mask}, a 3D array with 1s for the foreground and 0s for the background
+and the masked \texttt{S0}, \texttt{S0\_mask} a 3D array with the actual
+\texttt{S0} values in the foreground and 0s in the background.
 
 \begin{figure}
 \includegraphics[scale=0.55]{Figures/brain_segmentation.eps}
@@ -531,7 +532,7 @@ gtab = gradient_table(bvals, bvecs)
 Here, \texttt{gtab} is an instance of a \texttt{GradientTable} object. This
 object makes sure that the b-values and b-vectors will come out in a form that
 Dipy knows how to use. For example, the \texttt{shape} of
-\texttt{gtab.bvals} and \texttt{gtabl.bvecs} should always return $N$ and
+\texttt{gtab.bvals} and \texttt{gtab.bvecs} should always return $N$ and
 $N\times3$ respectively, where N is equal to the size of the last dimension of
 \texttt{data}. Often, it is useful to know the number and position of b-values
 with value 0 (b0s), an utility method is provided for this purpose with
@@ -547,7 +548,7 @@ specific parameters.
 In diffusion MRI, the motion of water molecules is probed in a spatial- and
 direction-specific manner. That is, in every spatial location in the brain
 (typically sampled in voxels each covering a volume of approximately
-$2\times2\times2$ mm), the diffusion in several different directions is probed
+$2\times2\times2$ $mm^3$), the diffusion in several different directions is probed
 through the application of directional magnetic gradients. This motion takes
 place at a microscopic level, therefore, if we want to describe how the
 molecules diffuse we have to study this phenomenon from a statistical
