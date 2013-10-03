@@ -19,10 +19,18 @@ The scil_b0 dataset contains different data from different companies and models.
 For this example, the data comes from a 3 tesla GE MRI.
 """
 
-from dipy.data import fetch_scil_b0, read_scil_b0
-fetch_scil_b0()
-img = read_scil_b0()
-data = np.squeeze(img.get_data())
+# from dipy.data import fetch_scil_b0, read_scil_b0
+# fetch_scil_b0()
+# img = read_scil_b0()
+# data = np.squeeze(img.get_data())
+
+# from dipy.data import fetch_taiwan_ntu_dsi, read_taiwan_ntu_dsi
+# img, gtab = read_taiwan_ntu_dsi()
+
+from dipy.data import fetch_sherbrooke_3shell, read_sherbrooke_3shell
+fetch_sherbrooke_3shell()
+img, gtab = read_sherbrooke_3shell()
+data = img.get_data()[..., 0]
 
 """
 ``img`` contains a nibabel Nifti1Image object. Data is the actual brain data as
@@ -38,7 +46,7 @@ parameters work well on most volumes. For this example, default parameters (4,
 """
 
 from dipy.segment.mask import median_otsu
-b0_mask, mask = median_otsu(data, 4, 4)
+b0_mask, mask = median_otsu(data, 2, 4)
 
 """
 Saving the segmentation results is very easy using nibabel. We need the b0_mask,
@@ -60,12 +68,12 @@ Quick view of the results middle slice using matplotlib.
 
 import matplotlib.pyplot as plt
 
-sli = data.shape[2] / 2
-plt.figure('Brain segmentation')
-plt.subplot(1, 2, 1).set_axis_off()
-plt.imshow(data[:, :, sli], cmap='gray')
-plt.subplot(1, 2, 2).set_axis_off()
-plt.imshow(b0_mask[:, :, sli], cmap='gray')
+sli = 30 #data.shape[2] / 2
+# plt.figure('Brain segmentation')
+# plt.subplot(1, 2, 1).set_axis_off()
+# plt.imshow(data[:, :, sli], cmap='gray')
+# plt.subplot(1, 2, 2).set_axis_off()
+# plt.imshow(b0_mask[:, :, sli], cmap='gray')
 #plt.savefig('median_otsu.png')
 
 from skimage import exposure
@@ -78,17 +86,20 @@ def rescale_intensity(im, low, high):
 	im2 = exposure.rescale_intensity(im, in_range=(p2, p98))
 	return im2
 
+# im2 = rescale_intensity(data[:, :, sli], 0, 100)
+# im3 = rescale_intensity(b0_mask[:, :, sli], 0, 100)
+
+
 im2 = rescale_intensity(data[:, :, sli], 5, 99)
 im3 = rescale_intensity(b0_mask[:, :, sli], 5, 99)
 
+origin='upper'
 cmap = 'gray'
 plt.figure('Brain segmentation')
 plt.subplot(1, 2, 1).set_axis_off()
-plt.imshow(im2, cmap=cmap)
+plt.imshow(np.swapaxes(im2, 0, 1), cmap=cmap, origin='upper', interpolation='nearest')
 plt.subplot(1, 2, 2).set_axis_off()
-plt.imshow(im3, cmap=cmap)
-#plt.subplot(1, 3, 3).set_axis_off()
-#plt.imshow(data[:, :, sli], cmap=cmap)
+plt.imshow(np.swapaxes(im3, 0, 1), cmap=cmap, origin='upper', interpolation='nearest')
 
 """
 .. figure:: median_otsu.png

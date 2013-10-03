@@ -151,9 +151,9 @@ to assist in the development and use of novel techniques.
 
 In contrast to many other scientific software projects, Dipy is not being
 developed by a single research group. Rather, it is an open project that
-encourages contributions from any scientist/developer through github and open 
-discussions on the project mailing list. Consequently, dipy today has an 
-international team of contributors, spanning seven different academic institutions 
+encourages contributions from any scientist/developer through github and open
+discussions on the project mailing list. Consequently, dipy today has an
+international team of contributors, spanning seven different academic institutions
 in five countries and three continents, which is still growing.
 
 \section{Keywords:} Python, Free Open Source Software, Medical
@@ -249,7 +249,7 @@ Optional dependencies, that are not required for analysis, are used for
 visualization of diffusion data and of the results of
 analysis. Matplotlib\footnote{\url{http://matplotlib.org}} is used for 2D and
 3D plotting. In addition, Python-VTK\footnote{\url{http://vtk.org}} is used for
-more advanced 3D interactive visualization. Furthermore, nose\footnote{\url{http://nose.readthedocs.org/}} 
+more advanced 3D interactive visualization. Furthermore, nose\footnote{\url{http://nose.readthedocs.org/}}
 is used for unit
 testing and Sphinx\footnote{\url{http://sphinx-doc.org/}} for automated
 documentation. Finally, we recommend using
@@ -496,9 +496,9 @@ then otsu, an automated histogram method \citep{Otsu1979} to separate the brain
 the foreground and 0s in the background.
 
 \begin{figure}
-\includegraphics[scale=0.55]{Figures/brain_segmentation.eps}
+\includegraphics[scale=0.65]{Figures/median_otsu.eps}
 \centering{}
-\caption{Showing the middle axial slice of \texttt{S0} before (left) and after brain extraction (right) using \texttt{median\_otsu}. \label{Fig:brain_segmentation}}
+\caption{Showing an axial slice in the center of \texttt{S0} before (left) and after brain extraction (right) using \texttt{median\_otsu}. \label{Fig:brain_segmentation}}
 \end{figure}
 
 \subsection{Gradient Table}\label{gtab}
@@ -903,7 +903,7 @@ csa_odf = csamodel.fit(data).odf(sphere)
 As a side note: the term Constant Solid Angle derives from the fact that this
 method calculates the ODF taking account of radial distance as we see in
 eq.~\ref{eq:ODF_DSI}. The analytical Q-ball method does not integrate the $r^2$
-term and therefore it generates much smoother ODFs which require prior normalization 
+term and therefore it generates much smoother ODFs which require prior normalization
 for visualization.
 
 \subsection{Constrained Spherical Deconvolution}
@@ -1130,7 +1130,7 @@ results \citep{Cote2013tractometer}. The instance of EuDX returns an
 iterator. In every call of the iterator a new streamline is returned. This
 technique allows one to save streamlines directly to disk without loading all
 streamlines in memory. In Fig.~\ref{Fig:pretty_streamlines} a few thousand
-human brain streamlines are shown, approximating the brain's white matter connections, 
+human brain streamlines are shown, approximating the brain's white matter connections,
 generated from EuDX. In contrast, in Fig.~\ref{Fig:fornix} only a specific anatomical bundle is
 approximated rather than the full brain.
 
@@ -1213,7 +1213,7 @@ interactions with one or several ROIs. There are a few functions in
 first of these functions, \texttt{density\_map}, counts the number of
 streamlines that pass though each voxel and returns the result as an image. In
 all the following examples \texttt{streamlines} is a sequence of streamlines and
-\texttt{affine} is a mapping from voxel coordinates to world coordinates. In all 
+\texttt{affine} is a mapping from voxel coordinates to world coordinates. In all
 cases \texttt{affine} can be omitted if the streamlines
 are defined in voxel coordinate space.
 \begin{python}
@@ -1242,7 +1242,7 @@ function produces a mapping from voxel indices to streamlines, much like targeti
 on every individual voxel, and returns a dictionary of those mappings.
 \begin{python}
 from dipy.tracking.utils import streamline_mapping
-mapping = streamline_mapping(streamlines, 
+mapping = streamline_mapping(streamlines,
                              affine=affine)
 \end{python}
 Here \texttt{mapping} is a dictionary where the keys are voxel indices and
@@ -1320,7 +1320,7 @@ line_actor = fvtk.streamtube(streamlines,
 fvtk.add(renderer, line_actor)
 fvtk.show(renderer)
 \end{python}
-The function \texttt{streamtube} was also the one we used to create Fig.~\ref{Fig:fornix} and \ref{Fig:pretty_streamlines}. 
+The function \texttt{streamtube} was also the one we used to create Fig.~\ref{Fig:fornix} and \ref{Fig:pretty_streamlines}.
 The most commonly used visualization functions are given in Tab.~\ref{fvtk_table}.
 
 \begin{table}[th] \processtable{List of visualization functions\label{fvtk_table}}
@@ -1348,16 +1348,16 @@ slicer & actor for showing volumetric slices \\
 In this paper, we have outlined the structure and functionality of the Dipy library,
 which provides a number of simple methods to use for the analysis of diffusion MRI data using the Python
 language. We demonstrated examples of pre-processing, reconstruction, tracking and post-processing,
-showing that Dipy, although a relatively new project, can fill many of the steps needed to do a complete 
-dMRI analysis. We have illustrated the scope of the methods that have been implemented to date, and have 
-demonstated these capabilities of Dipy with sample scripts and visualizations. 
+showing that Dipy, although a relatively new project, can fill many of the steps needed to do a complete
+dMRI analysis. We have illustrated the scope of the methods that have been implemented to date, and have
+demonstated these capabilities of Dipy with sample scripts and visualizations.
 
-Dipy is free and open source software and it is part of a larger community found in \url{nipy.org}. 
+Dipy is free and open source software and it is part of a larger community found in \url{nipy.org}.
 This is a growing team of scientists and developers focusing on sharing code for different modalities
 of brain imaging. In common with the other Nipy projects, Dipy is being developed under the
 umbrella of a single github organization\footnote{\url{http://github.com/nipy}} and the central
 Dipy github repository is managed under this organization\footnote{\url{http://github.com/nipy/dipy}}).
-The community provides support for the use and development of these software tools through 
+The community provides support for the use and development of these software tools through
 the project's mailing list\footnote{\url{http://dipy.org/subscribe.html}}.
 
 Github is widely recognized as a factor in lowering the barriers on
@@ -1367,7 +1367,7 @@ developer community. In contrast to many other software projects in
 neuroimaging, Dipy is not based on the work of one lab, or one institution. Though
 many of the contributions are made by a few core contributors, there are many
 contributors to the code-base and the number of contributors has been growing
-dramatically after the 0.6 which took place on April 2013 ~\ref{Fig:gh_stats}, 
+dramatically after the 0.6 which took place on April 2013 ~\ref{Fig:gh_stats},
 with contributors based in at least seven different academic
 institutions in five countries (Canada, UK, USA, Italy and South Africa).
 
@@ -1379,11 +1379,11 @@ institutions in five countries (Canada, UK, USA, Italy and South Africa).
   new contributors have joined the project after the 0.6 release\label{Fig:gh_stats}}
 \end{figure}
 
-In conclusion, we hope this paper inspires you to share our excitement in developing Dipy and encourages 
-you to participate in the project. We strongly hope that more scientists will join 
-Dipy by using the software and giving us feedback so that we can make it better. Stronger still 
-is our hope that many will chose to share their code and join the developers team. We are sure that 
-a wide and open participation is absolutely necessary in order to solve the hard problem of brain mapping. 
+In conclusion, we hope this paper inspires you to share our excitement in developing Dipy and encourages
+you to participate in the project. We strongly hope that more scientists will join
+Dipy by using the software and giving us feedback so that we can make it better. Stronger still
+is our hope that many will chose to share their code and join the developers team. We are sure that
+a wide and open participation is absolutely necessary in order to solve the hard problem of brain mapping.
 
 
 \section*{Acknowledgments}
