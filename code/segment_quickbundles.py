@@ -24,8 +24,8 @@ from neuroanatomy as the fornix.
 
 #fname = get_data('fornix')
 
-fname = "/home/eleftherios/Data/clustering/mr188_fibers.trk"
-#fname = "/home/eleftherios/Data/clustering/mr188_fibers_trimmed.trk"
+#fname = "/home/eleftherios/Data/clustering/mr188_fibers.trk"
+fname = "/home/eleftherios/Data/clustering/mr188_fibers_trimmed.trk"
 
 """
 Load fornix streamlines.
@@ -38,14 +38,14 @@ streamlines = [i[0] for i in streams]
 from dipy.tracking.distances import approx_polygon_track
 
 streamlines = streamlines[1000:]
-streamlines = [approx_polygon_track(s, 0.3) for s in streamlines]
+streamlines = [approx_polygon_track(s, 0.2) for s in streamlines]
 
 """
 Perform QuickBundles clustering with a 10mm distance threshold after having
 downsampled the streamlines to have only 12 points.
 """
 
-qb = QuickBundles(streamlines, dist_thr=25., pts=18)
+qb = QuickBundles(streamlines, dist_thr=30., pts=18)
 
 """
 qb has attributes like `centroids` (cluster representatives), `total_clusters`
@@ -58,13 +58,18 @@ Lets first show the initial dataset.
 
 from dipy.viz.colormap import line_colors
 
+linewidth =.3
+
+size = (1000, 1000)
+
 ren = fvtk.ren()
 ren.SetBackground(1, 1, 1)
 #fvtk.add(ren, fvtk.streamtube(streamlines, fvtk.colors.white))
-fvtk.add(ren, fvtk.streamtube(streamlines, line_colors(streamlines)))
+fvtk.add(ren, fvtk.streamtube(streamlines, line_colors(streamlines), linewidth=linewidth))
 
-fvtk.record(ren, n_frames=1, out_path='initial.png', size=(600, 600))
-fvtk.show(ren)
+
+fvtk.show(ren, size=size)
+fvtk.record(ren, n_frames=1, out_path='initial.png', size=size, magnification=2)
 
 """
 .. figure:: fornix_initial.png
@@ -81,9 +86,10 @@ colormap = np.random.rand(len(centroids), 3)
 fvtk.clear(ren)
 ren.SetBackground(1, 1, 1)
 fvtk.add(ren, fvtk.streamtube(streamlines, fvtk.colors.white, opacity=0.05))
-fvtk.add(ren, fvtk.streamtube(centroids, colormap, linewidth=0.4))
-fvtk.record(ren, n_frames=1, out_path='centroids.png', size=(600, 600))
-fvtk.show(ren)
+fvtk.add(ren, fvtk.streamtube(centroids, colormap, linewidth=0.6))
+fvtk.show(ren, size=size)
+fvtk.record(ren, n_frames=1, out_path='centroids.png', size=size, magnification=2)
+
 
 """
 .. figure:: fornix_centroids.png
@@ -101,9 +107,10 @@ for i, centroid in enumerate(centroids):
 
 fvtk.clear(ren)
 ren.SetBackground(1, 1, 1)
-fvtk.add(ren, fvtk.streamtube(streamlines, colormap_full))
-fvtk.record(ren, n_frames=1, out_path='clust.png', size=(600, 600))
-fvtk.show(ren)
+fvtk.add(ren, fvtk.streamtube(streamlines, colormap_full, linewidth=linewidth))
+fvtk.show(ren, size=size)
+fvtk.record(ren, n_frames=1, out_path='clust.png', size=size, magnification=2)
+
 
 """
 .. figure:: fornix_clust.png
