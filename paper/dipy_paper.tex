@@ -224,7 +224,7 @@ were hidden from the users. Dipy tackles this problem by being free, open
 source (BSD license), simple and well documented. In addition, the recent
 explosion of Python users, the many Python tools for scientific computing
 \citep{perez_python:11}, \citep{mckinney_python:12}, \citep{perez_ipython:07}
-and the recent stack of neuroimaging modules\footnote{\url{http://nipy.org}} 
+and the recent stack of neuroimaging modules\footnote{\url{http://nipy.org}}
 make Dipy a useful addition for those for whom Python is the
 language-of-choice.
 
@@ -327,7 +327,7 @@ field that reconstructs fibrous structures, such as white matter axon fibers,
 muscle fibers, prostate fibers and even celery fibers \citep{Numano2006}. "Fiber bundles" denote
 groups of fibers usually with an anatomical or functional meaning. These can be
 major tracts in the brain, such as the arcuate fasciculus, which connects parts
-of the posterior temporal lobe with the frontal lobe, the fornix (see Fig.~\ref{Fig:fornix}) , which
+of the posterior temporal lobe with the frontal lobe, the fornix (see Fig.~\ref{Fig:fornix}), which
 connects the medial temporal lobe with sub-cortical structures, such as the
 hypothalamus and amygdala, etc. A fiber bundle for the area of brain anatomy is
 synonymous to a tract, also often called fiber tract. The term tract can be
@@ -693,8 +693,7 @@ from dipy.reconst.dti import fractional_anisotropy
 fa = fractional_anisotropy(ten_fit.evals)
 \end{python}
 It is common to represent the primary diffusion direction using an RGB
-representation and create a DEC map \citep{pierpaoli-jezzard-etal:96}
-(see Fig.~\ref{Fig:dti_metrics}):
+representation and create a DEC (Directionally Encoded Color) map \citep{pierpaoli-jezzard-etal:96, pajevic-pierpaoli:99} which is also known as color FA (see Fig.~\ref{Fig:dti_metrics}):
 \begin{python}
 from dipy.reconst.dti import color_fa
 cfa = color_fa(fa, tenfit.evecs)
@@ -853,7 +852,7 @@ $c_j$. This technique is called analytical QBI (aQBI), in contrast to the
 original QBI solution, which performs the FRT numerically. It is
 important to note that these solutions are based on
 eq.~\ref{eq:ODF_DSI}, without the $r^2$ term. So these ODFs are
-not properly normalized by the solid angle term. Hence Dipy also implements
+not properly normalized. Hence, Dipy also implements
 the Constant Solid Angle analytical solution more recently proposed by
 \citep{aganj-lenglet-etal:10,tristan-vega-westin-etal:09}.
 
@@ -882,8 +881,7 @@ qb_odf = qb_fit.odf(sphere)
 Important points to note are that SH order is set at $6$ and the regularization
 parameter at $0.006$, following the optimization recommendations of
 \citet{descoteaux-angelino-etal:06c}. Furthermore, because the
-analytical ODF method produces more
-rounded ODFs it is useful for visualization purposes to use \emph{min-max}
+analytical ODF method produces smoother ODFs it is useful for visualization purposes to use \emph{min-max}
 normalization.
 \begin{python}
 from dipy.reconst.odf import minmax_normalize
@@ -903,9 +901,7 @@ csa_odf = csamodel.fit(data).odf(sphere)
 \end{python}
 As a side note: the term Constant Solid Angle derives from the fact that this
 method calculates the ODF taking account of radial distance as we see in
-eq.~\ref{eq:ODF_DSI}. The analytical Q-ball method does not integrate the $r^2$
-term and therefore it generates much smoother ODFs which require prior normalization
-for visualization.
+eq.~\ref{eq:ODF_DSI}.
 
 \subsection{Constrained Spherical Deconvolution}
 
@@ -928,17 +924,14 @@ written as a matrix $\mathbf{R}_l$ of size $(2l+ 1)\times(2l+ 1)$. The
 convolution operation then simply consists of one matrix multiplication per
 harmonic order l: $\mathbf{s}_l=\mathbf{R}\cdot\mathbf{f}_l$. The spherical
 deconvolution operation can be performed by simple matrix inversion. However,
-the spherical deconvolution problem is ill-posed and thus susceptible
-to noise \citep{tournier-calamante-etal:04}.
+the spherical deconvolution problem is ill-posed and thus severely affected by
+noise \citep{tournier-calamante-etal:04}.
 
 Constrained super-resolved spherical deconvolution (CSD)
 \citet{tournier-calamante-etal:07} give a robust solution to this problem by
 applying two major constraints on the fitting of the fODF. The first is that it
 applies a non-negativity constraint: fODF values that are smaller than 0 are
-non-physical and are precluded. The other is that CSD applies a sparsity
-constraint on the fODF -- it assumes that only a few of the fODF values will be
-large. Applying these two constraints allows fitting the SH basis
-up to very high orders -- in essence fitting more parameters than data allow.
+non-physical and are precluded. The other is that CSD assumes that only a few of the fODF values will be large. Applying these two constraints allows fitting the SH basis up to very high orders, in essence fitting more parameters than data allow.
 This super-resolved method can be accessed in Dipy using:
 \begin{python}
 from dipy.reconst.csdeconv import
@@ -1075,8 +1068,7 @@ described in detail below.
 \subsection{Deterministic}
 
 \subsubsection{EuDX.}
-Also known as Euler Delta Crossings~\citep{Garyfallidis_thesis} is the first tracking
-method that was implemented in Dipy. We created an algorithm that has many
+Euler Delta Crossings \citep{Garyfallidis_thesis} is the first tracking method that was implemented in Dipy. We created an algorithm that has many
 similarities with the classical deterministic methods~\citep{Mori1999,
   conturo-lori-etal:99, basser-pajevic-etal:00} and with more recent ones as
 those described in \citet{descoteaux-deriche-etal:09} and
@@ -1138,8 +1130,8 @@ approximated rather than the full brain.
 \begin{figure*}[!htb]
 \includegraphics[scale=0.46]{Figures/qb.eps}
 \centering{}
-\caption{An example of EuDX based fiber tracking applied on a real
-  human brain dataset\label{Fig:pretty_streamlines}}
+\caption{Left: An example of EuDX streamline tracking applied on a real
+  human brain dataset and color-coded with a standard orientation colormap. Middle: showing the QuickBundles centroids with random colors. Right: showing the clusters color-coded with their corresponding centroid color. \label{Fig:pretty_streamlines}}
 \end{figure*}
 
 \subsection{Probabilistic}
@@ -1147,32 +1139,30 @@ approximated rather than the full brain.
 Probabilistic fiber tracking describes a class of tractography algorithms that
 estimate multiple possible pathways though each point by taking into
 account the uncertainty in fiber direction at those points. The uncertainty in
-fiber direction can be estimated as a fiber orientation PDF (probability distribution
-function) and this PDF can be used along with a Monte Carlo sampling to
+fiber direction can be estimated as an fODF, this distribution can be used along with a Monte Carlo sampling to
 generate streamlines \citep{morris2008probabilistic}. Streamlines are generated using a
 Markov process which is similar to deterministic fiber tracking. Streamlines begin
 at a seed point and continue along a propagation direction which is randomly
-chosen from a PDF. The propagation direction is continually adjusted by
-sampling from the PDF at each new location along the path. This continues until
+chosen from the fODF. The propagation direction is continually adjusted by
+sampling from the fODF at each new location along the path. This continues until
 some stopping criteria are met. Notice that this framework is equivalent to
 deterministic fiber tracking if the PDF at each point is a delta function of
 one fiber direction.
 
 Dipy has implemented two interfaces for probabilistic Markov fiber tracking. The
-first method allows the user to provide the PDF evaluated on a discrete set of
-possible tracking directions. For example the fODF (fiber orientation distribution)
+first method allows the user to provide the distribution evaluated on a discrete set of possible tracking directions. For example the fODF (fiber orientation distribution)
 obtained by fitting the CSD (constrained spherical deconvolution) model to diffusion
 data can be used as an estimate of the PDF, because it represents a fiber distribution
 associated with the measured diffusion signal \citep{jeurissen2011probabilistic}. The user must
 also provide a set of seeds to track from and set the stoping criteria. Currently a white matter mask and maximum turning angle are used as stopping criteria.
 
 The second interface for probabilistic tracking is meant to accommodate	tracking
-methods where the PDF cannot be easily computed. It is often much easier and less
+methods where the fODF cannot be easily computed. It is often much easier and less
 computationally expensive to sample from a PDF than it is to evaluate the PDF. For
 example, residual bootstrap fiber tracking methods fall into this category \citep{berman2008probabilistic}.
 In this case we combine a sampling method with the diffusion data and a diffusion Model,
 and pass this to the Markov tracking framework. Streamlines can now be generated
-as before without explicitly evaluating the PDF at each
+as before without explicitly evaluating the orientation distribution at each
 point in the diffusion data. This framework is designed to be flexible and easily
 customizable so that a wide variety of tracking methods can be expressed.
 
@@ -1198,18 +1188,19 @@ each one has the same number of points (here 18) and equal length segments. This
 preprocessing step is a prerequisite for QB.
 \begin{python}
 from dipy.segment.quickbundles import QuickBundles
-qb = QuickBundles(streamlines, dist_thr=20.,
+qb = QuickBundles(streamlines, dist_thr=30.,
                   pts=18)
 \end{python}
 After we have created the instance of the object, attributes like
 \texttt{qb.centroids} provide the clusters' centroids and methods like
 \texttt{qb.label2tracks()} can return the streamlines which belong to a
-specific cluster.
+specific cluster. An example of QuickBundles, applied on a human brain dataset described in \citep{Fortin2012}, using the same parameters as shown
+in the code listing above, is shown in Fig.~\ref{Fig:pretty_streamlines}.
 
 \subsection{ROIs - streamlines intersections}
 
 It if often useful in dMRI to filter, group or count streamlines based on their
-interactions with one or several ROIs. There are a few functions in
+interactions with one or several ROIs \citep{Cote2013tractometer}. There are a few functions in
 \texttt{dipy.tracking.utils} to make these kinds of operations easier. The
 first of these functions, \texttt{density\_map}, counts the number of
 streamlines that pass though each voxel and returns the result as an image. In
@@ -1392,6 +1383,8 @@ One major source of support for this community comes in the form of the Neurodeb
 distribution \citep{Halchenko2012}. Neurodebian is a platform for maintenance
 and deployment of software for the analysis of neuroscience data, based on free
 open source software (FOSS) practices.
+
+We are greatful to Amandine Pelletier and Gwenaelle Catheline from Universit\'{e} Bordeaux 2 who provided the fornix data of Fig.~\ref{Fig:fornix}.
 
 Ariel Rokem is funded by a National Research Service Award (NEI F32 EY022294).
 Eleftherios Garyfallidis if funded by NSERC-CREATE program in Medical
