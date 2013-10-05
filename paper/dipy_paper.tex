@@ -101,11 +101,11 @@ emphstyle={\color{self}\slshape},
 \title[DIPY]{Dipy, a library for the analysis of diffusion MRI data}
 
 \author[Garyfallidis, Brett, Amirbekian, Rokem, van der Walt, Descoteaux,
-  Nimmo-Smith]{Eleftherios~Garyfallidis\,$^{1,2,*}$, Matthew~Brett\,$^{3}$,
+  Nimmo-Smith]{Eleftherios~Garyfallidis\,$^{1,2,}$\footnote{to whom correspondence should be addressed. e-mail:
+    garyfallidis@gmail.com}, Matthew~Brett\,$^{3}$,
   Bago~Amirbekian\,$^{4}$, Ariel~Rokem\,$^{5}$, Stefan~van der Walt\,$^{6}$,
   Maxime~Descoteaux\,$^{2}$, Ian~Nimmo-Smith\,$^{7}$ and Dipy~Contributors
-  $^{8}$\footnote{to whom correspondence should be addressed. e-mail:
-    garyfallidis@gmail.com}}
+  $^{8}$}
 
 \address{\,$^{1}$University of Sherbrooke, Sherbrooke, CA\\
   \,$^{2}$University of Cambridge, Cambridge, UK\\
@@ -145,8 +145,8 @@ the diffusion tensor model and deterministic fiber tractography. In addition,
 cutting edge novel reconstruction techniques are implemented, such as constrained
 spherical deconvolution and diffusion spectrum imaging with deconvolution, as
 well as methods for probabilistic tracking and original methods for tractography
-clustering. Many additional utility functions are provided to calculate various statistics
-, informative visualizations, as well as file-handling routines
+clustering. Many additional utility functions are provided to calculate various statistics,
+informative visualizations, as well as file-handling routines
 to assist in the development and use of novel techniques.
 
 In contrast to many other scientific software projects, Dipy is not being
@@ -216,8 +216,6 @@ in Python is relatively straight-forward. Taken together, these properties of th
 are powerful assets for the design of the next generation of medical imaging
 analysis tools.
 
-% I've divided up this very long paragraph into three paragraphs.
-
 In the past, we have found that many researchers used the available
 tools without necessarily understanding the underlying details, often because these
 were hidden from the users. Dipy tackles this problem by being free, open
@@ -269,7 +267,7 @@ imaging research. We aim to build software that is clearly written, well
 explained and thoroughly tested, while being a good fit for the underlying ideas
 and providing a natural meeting point for collaboration.
 
-Dipy is a true international project where contributions from anywhere in the
+Dipy is an international project where contributions from anywhere in the
 world are welcomed.  In order to ensure the highest quality while still
 allowing the code-base to grow, contributors are required to follow
 certain policies. For example, if a scientist makes a new discovery --- even
@@ -299,9 +297,9 @@ The measurement in dMRI relies on the application of a pulsed magnetic
 gradient and the degree of sensitization to diffusion depends on a number of
 parameters, including the duration of the gradient, time that elapses between
 pulses of the gradient and the gradient amplitude. These parameters are
-together summarized in what is referred to as the \emph{"b-value"}.  As described
+together summarized in what is referred to as the \emph{b-value}.  As described
 above, the measurement is conducted in several different directions and these
-are encoded in so-called \emph{"b-vectors"}. These are unit vectors that describe the
+are encoded in so-called \emph{b-vectors}. These are unit vectors that describe the
 direction relative to the scanner coordinate frame in which the gradients are
 applied. Different algorithms are used to determine the placement of these b-vectors
  (e.g. \citep{jones-etal:99, Caruyer2013}).
@@ -310,23 +308,23 @@ applied. Different algorithms are used to determine the placement of these b-vec
  of bundles of axons, which are the long fiber-like part of a nerve cell along
  which electrical impulses are conducted from cell to cell (and whose size is
  on the $\mu$m scale), the measurement is conducted on a much larger
- scale. Typically, the measurement is conducted in a grid of \emph{"voxels"} of
+ scale. Typically, the measurement is conducted in a grid of \emph{voxels} of
  approximately 2x2x2 mm. We are therefore limited to describe the trajectories
- of \emph{"fascicles"} of nerves, which are relatively large (mm-cm scale)
+ of \emph{fascicles} of nerves, which are relatively large (mm-cm scale)
  bundles of axons travelling through the white matter together. One of the
  major achievements of this field is that it is now possible to reliably and
  accurately identify major fascicles in individual experimental participants or
  patients \citep{mori-atlas}. These major fascicles are also known as
- \emph{"tracts"}. This is a term taken from neuroanatomy and describes a group
+ \emph{tracts}. This is a term taken from neuroanatomy and describes a group
  of neuronal axons within the central nervous system (mm scale).
 
-For the purpose of interpretation of these data, a \emph{"fiber"} can be any long and
+For the purpose of interpretation of these data, a \emph{fiber} can be any long and
 thin structure. Hence, fiber tracking is a general term that can be used in any
 field that reconstructs fibrous structures, such as white matter axon fibers,
-muscle fibers, prostate fibers and even celery fibers \citep{Numano2006}. "Fiber bundles" denote
+muscle fibers, prostate fibers and even celery fibers \citep{Numano2006}. \emph{Fiber bundles} denote
 groups of fibers usually with an anatomical or functional meaning. These can be
 major tracts in the brain, such as the arcuate fasciculus, which connects parts
-of the posterior temporal lobe with the frontal lobe, the fornix (see Fig.~\ref{Fig:fornix}), which
+of the posterior temporal lobe with the frontal lobe, the fornix (see Fig.~\ref{Fig:fornix}) , which
 connects the medial temporal lobe with sub-cortical structures, such as the
 hypothalamus and amygdala, etc. A fiber bundle for the area of brain anatomy is
 synonymous to a tract, also often called fiber tract. The term tract can be
@@ -334,7 +332,7 @@ misleading when talking for example about the corticospinal tract, because the
 corticospinal tract is in fact not a single tract but a group of tracts
 (including corticobulbar projections, the pyramidal tract, etc.).
 
-"Tractography" is the computational process through which the fibers are detected
+\emph{Tractography} is the computational process through which the fibers are detected
 and delineated. Tractography relies on the assumption that diffusion of water,
 as reflected in the dMRI measurement, occurs more freely along the axis of an
 axon, than across the membranes of the axon. Tractography is therefore usually
@@ -342,10 +340,10 @@ done by finding the directions of diffusion in each voxel (see
 \ref{reconstruction}) and stepping through the brain volume along the
 directions of large diffusion estimated in each location. This process
 generates so-called \emph{streamlines}, which are imaginary lines that approximate the
-underlying fibers. Streamlines are also sometimes referred to as "tracks". These
+underlying fibers. Streamlines are also sometimes referred to as \emph{tracks}. These
 are not to be confused with tracts: While a tract is a physical object, a track
 is a computational construct that only approximates the underlying fascicle or
-bundle of fibers. Confusingly enough "streamline bundles", or simply "bundles"
+bundle of fibers. Confusingly enough \emph{streamline bundles}, or simply \emph{bundles}
 are often used to refer to a group of streamlines with similar shape and
 spatial characteristics (see \ref{quickbundles}). These do not necessarily
 correspond to individual physical fiber bundles but are instead computational
@@ -469,9 +467,6 @@ returns a new sub-array with \texttt{shape} (10, 10, 10, 20) starting at (10, 15
 colon on its own (:) is used that means that all points in this dimension are used. The
 only delicate point here is that in order to save this new array we will need
 to update the affine by adding the sub-arrays starting vector to the original offset vector. This is possible in the following way:
-% I've changed this example so that the starting point for the subarray
-% does not have all the same coordinate values, and these are different
-% from the array dimensions!
 \begin{python}
 import numpy as np
 sub_data = data[10:20, 15:25, 20:30, 30:50]
@@ -1038,7 +1033,7 @@ researchers have been using various algorithms in attempts to track along the
 presumed fiber populations to make inferences about axonal connections between
 different parts of the gray matter (see Fig.~\ref{Fig:fornix}). The connection matrix that results from an
 exhaustive connectivity analysis of all parts of the cerebral cortex is
-sometimes referred to as a ``connectome`` \citep{sporns2005} and understanding
+sometimes referred to as a \emph{connectome} \citep{sporns2005} and understanding
 the structure and function of the connectome is a central goal of contemporary
 neuroscience. This premise has led to major investment in data-collection
 projects aimed at characterizing the connectome, based on dMRI, as well as
@@ -1065,18 +1060,17 @@ Dipy implements both deterministic and probabilistic tracking algorithms,
 described in detail below.
 
 \subsection{Deterministic}
-
-\subsubsection{EuDX.}
-Euler Delta Crossings \citep{Garyfallidis_thesis} is the first tracking method that was implemented in Dipy. We created an algorithm that has many
+Euler Delta Crossings \citep{Garyfallidis_thesis}, or \emph{EuDX} for short, was the first tracking
+method to be implemented in Dipy. We created an algorithm that has many
 similarities with the classical deterministic methods~\citep{Mori1999,
   conturo-lori-etal:99, basser-pajevic-etal:00} and with more recent ones as
 those described in \citet{descoteaux-deriche-etal:09} and
-\citet{yeh-etal:10}. Our concentration was to create a simple
+\citet{yeh-etal:10}. Our focus was on creating a simple
 deterministic algorithm which can be used with very different families of
 reconstruction models, work well in crossing areas and be efficient so that it
 can be used to quickly inspect the reconstruction results. EuDX is applied
 usually in native space image coordinates and it assumes that all three voxel
-dimensions are equal. If the provided data do not have
+dimensions are equal. If the raw data does not have
 isotropic voxel size then a reslicing preprocessing step is
 required to make the data isotropic.
 
@@ -1149,11 +1143,11 @@ deterministic fiber tracking if the fODF at each point is a delta function of
 one fiber direction.
 
 Dipy has implemented two interfaces for probabilistic Markov fiber tracking. The
-first method allows the user to provide the distribution evaluated on a discrete set of possible tracking directions. For example the fODF (fiber orientation distribution)
+first method allows the user to provide the distribution evaluated on a discrete set of possible tracking directions. For example the fODF (fiber orientation distribution function)
 obtained by fitting the CSD (constrained spherical deconvolution) model to diffusion
 data can be used as an estimate of the PDF, because it represents a fiber distribution
 associated with the measured diffusion signal \citep{jeurissen2011probabilistic}. The user must
-also provide a set of seeds to track from and set the stoping criteria. Currently a white matter mask and maximum turning angle are used as stopping criteria.
+also provide a set of seeds to track from, and set the stopping criteria. Currently a white matter mask and maximum turning angle are used as stopping criteria.
 
 The second interface for probabilistic tracking is meant to accommodate	tracking
 methods where the fODF cannot be easily computed. It is often much easier and less
@@ -1170,18 +1164,18 @@ customizable so that a wide variety of tracking methods can be expressed.
 In the following sections we describe some of the tools available for processing
 streamlines after these have been created.
 \subsection{Streamline clustering}\label{quickbundles}
-Depending on the initial number of seeds and other tracking parameters
+Depending on the initial number of seeds and other tracking parameters,
 fiber tracking algorithms can generate a great number of densely packed
 streamlines (often more than one million) which are difficult to interact with
 and interpret. As a solution to this problem Dipy implements a recent
-efficient clustering algorithm for streamlines. This is called QuickBundles (QB)
-\citep{Garyfallidis_thesis,garyfallidis-etal:12} and it can be used to
+efficient clustering algorithm for streamlines called QuickBundles (QB)
+\citep{Garyfallidis_thesis,garyfallidis-etal:12}. QB can be used to
 simplify large datasets in a couple of minutes.
-When using QuickBundles we need first to instantiate the object with 3
+When using QB we need first to instantiate the object with 3
 parameters. The first parameter is the initial set of streamlines to be
 clustered, the second is the distance threshold that will determine the number of clusters and their sizes,
 and the third is the level of detail for each streamline. For example, in the
-the code snippet below we used \texttt{pts=18} which means that before QB
+the code snippet below we use \texttt{pts=18} which means that before QB
 starts the clustering procedure the streamlines will be downsampled so that
 each one has the same number of points (here 18) and equal length segments. This
 preprocessing step is a prerequisite for QB.
@@ -1226,7 +1220,7 @@ bundle = target(streamlines, roi, affine=affine)
 \end{python}
 Here \texttt{roi} is a binary array, and \texttt{bundle} is generator of
 streamlines.  Only the streamlines that pass though at least
-one voxel in \texttt{roi} with value 1 will be in \texttt{bundle}.
+one of the voxel in \texttt{roi} with value 1 will be in \texttt{bundle}.
 
 A function related to \texttt{target} is \texttt{streamline\_mapping}. This
 function produces a mapping from voxel indices to streamlines, much like targeting
@@ -1256,7 +1250,7 @@ M, M_sl = connectivity_matrix(streamlines, labels,
                               return_mapping=True)
 \end{python}
 
-Here because we've made the matrix symmetric, \texttt{M[i, j] == M[j, i]} is the number of streamlines that connect region \texttt{i} to \texttt{j}
+Here because we've made the matrix symmetric, \texttt{M[i, j] = M[j, i]} is the number of streamlines that connect region \texttt{i} to \texttt{j}
 or \texttt{j} to \texttt{i}. Similarly because we've set
 \texttt{return\_mapping=True}, we can get a list of all those streamlines by
 looking up \texttt{M\_sl[i, j]}.
@@ -1269,8 +1263,8 @@ long as one can compute a linear transformation (\texttt{affine}) between the vo
 
 \subsection{Streamline metrics and statistics}
 
-In Dipy, we have implemented a plurality of metrics for streamlines. For example,
-perhaps the simplest thing that someone may want to do is to calculate the
+In Dipy, we have implemented several metrics for streamlines. For example,
+perhaps someone may want to calculate the
 average length and standard deviation of the streamlines generated after the
 fiber tracking procedure. This can be achieved very easily using the \texttt{length}
 function which takes as input a single streamline. We can then iterate through
@@ -1337,7 +1331,7 @@ slicer & actor for showing volumetric slices \\
 \section{Discussion and Conclusion}
 
 In this paper, we have outlined the structure and functionality of the Dipy library,
-which provides a number of simple methods to use for the analysis of diffusion MRI data using the Python
+which provides a number of simple-to-use methods for the analysis of diffusion MRI data using the Python
 language. We demonstrated examples of pre-processing, reconstruction, tracking and post-processing,
 showing that Dipy, although a relatively new project, can fill many of the steps needed to do a complete
 dMRI analysis. We have illustrated the scope of the methods that have been implemented to date, and have
@@ -1367,13 +1361,13 @@ institutions in five countries (Canada, UK, USA, Italy and South Africa).
 \includegraphics[scale=0.37]{Figures/fig-gh.eps}
 \caption{Participation in the Dipy github repository. The cumulative number of
   unique contributors has been extracted from the git log command and tallied. Many
-  new contributors have joined the project after the 0.6 release\label{Fig:gh_stats}}
+  new contributors have joined the project after the 0.6 release \label{Fig:gh_stats}}
 \end{figure}
 
 In conclusion, we hope this paper inspires you to share our excitement in developing Dipy and encourages
 you to participate in the project. We strongly hope that more scientists will join
 Dipy by using the software and giving us feedback so that we can make it better. Stronger still
-is our hope that many will choose to share their code and join the developers team. We are confident that
+is our hope that many will chose to share their code implementing new methods, and join the developers team. We are sure that
 a wide and open participation is absolutely necessary in order to solve the hard problem of brain mapping.
 
 
