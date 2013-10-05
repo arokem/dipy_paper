@@ -209,10 +209,10 @@ the first collective effort to create an open-source diffusion MRI analysis
 library using the Python language. Python is a general purpose, object-oriented
 programming language which was designed with an emphasis on code readability.
 This emphasis allows scientists who are not trained as software engineers to
-understand the computational steps taken during the analysis and extend the software in a
-straight-forward manner. Being an interpreted language, Python does not require
+understand the computational steps taken during the analysis and to extend the software
+easily. Being an interpreted language, Python does not require
 additional compilation, linking, etc., and so installation of software written
-in Python is relatively easy. Taken together, these properties of the language
+in Python is relatively straight-forward. Taken together, these properties of the language
 are powerful assets for the design of the next generation of medical imaging
 analysis tools.
 
@@ -221,79 +221,78 @@ analysis tools.
 In the past, we have found that many researchers used the available
 tools without necessarily understanding the underlying details, often because these
 were hidden from the users. Dipy tackles this problem by being free, open
-source (BSD license), simple and well documented. In addition, the recent
+source (BSD license), simple and well documented. The recent
 explosion of Python users, the many Python tools for scientific computing
 \citep{perez_python:11}, \citep{mckinney_python:12}, \citep{perez_ipython:07}
-and the recent stack of neuroimaging modules\footnote{\url{http://nipy.org}}
-make Dipy a useful addition for those for whom Python is the
-language-of-choice.
+and the availability of other complementing neuroimaging modules\footnote{\url{http://nipy.org}}
+make Dipy an ideally positioned addition to the existing scientific tool stack.
 
-Dipy takes advantage of the growing ecosystem of tools written for scientific
-computing in Python. It is built on top of production-ready high-performance
+Dipy takes full advantage of the growing ecosystem of tools written for scientific
+computing in Python, and is built on top of production-ready, high-performance
 Python libraries. Primarily, Dipy depends on
 Numpy\footnote{\url{http://numpy.org}}. The core structure of this library is
-an implementation of an Array class \citep{van_numpy:11}. Numpy arrays are used
-for representation of numerical data in Python and enable efficient
-implementation of numerical computations, such as vectorized computations,
-avoiding copying data in memory, and minimizing operations. Numpy is also used
+an implementation of an N-dimensional array class \citep{van_numpy:11}. Numpy arrays are used
+for representing numerical data in Python and enable efficient
+numerical computations through the use of vectorized operations,
+by avoiding data copying, and by minimizing the number of operations
+performed. Numpy is also used
 for matrix, tensor and linear algebra operations.  Dipy further depends on
 Scipy\footnote{\url{http://scipy.org}} for nonlinear optimization and other
 volumetric operations. Cython\footnote{\url{http://cython.org}} is used in rare
-cases when both standard Python and Numpy/Scipy are not efficient enough for
-the task at hand. Cython interprets Python code into plain C performance by
-adding static type declarations. The last absolute dependency for Dipy is
+cases when both standard Python and Numpy/Scipy are not performant enough for
+the task at hand. Cython converts Python code into C extensions by
+interpreting added static type declarations. The last non-optional dependency for Dipy is
 Nibabel\footnote{\url{http://nipy.org/nibabel}} which is used for loading and
 saving medical imaging file formats.
 
-Optional dependencies, that are not required for analysis, are used for
+Other libraries, not used for analysis but required for
 visualization of diffusion data and of the results of
-analysis. Matplotlib\footnote{\url{http://matplotlib.org}} is used for 2D and
-3D plotting. In addition, Python-VTK\footnote{\url{http://vtk.org}} is used for
-more advanced 3D interactive visualization. Furthermore, nose\footnote{\url{http://nose.readthedocs.org/}}
+analyses, include Matplotlib\footnote{\url{http://matplotlib.org}} (for 2D and
+3D plotting) and Python-VTK\footnote{\url{http://vtk.org}} (for
+more advanced 3D interactive visualization). Furthermore, nose\footnote{\url{http://nose.readthedocs.org/}}
 is used for unit
 testing and Sphinx\footnote{\url{http://sphinx-doc.org/}} for automated
 documentation. Finally, we recommend using
-IPython\footnote{\url{http://ipython.org}} the interactive Python shell for
+IPython\footnote{\url{http://ipython.org}} as an interactive Python shell for
 calling and debugging scripts.
 
-In the following sections, we will explain the philosophy and main design
-concepts behind Dipy. We will also give examples which cover different parts of
-the diffusion MR analysis pipeline from the local voxel reconstruction of
+In the following sections, we explain the philosophy and main design
+concepts behind Dipy. We also give examples which cover different parts of
+the diffusion MR analysis pipeline: from the local voxel reconstruction of
 orientation distribution functions (ODFs) to streamline generation by
-tractograph algorithms and visualization of these streamlines.
+tractography algorithms and visualization of these streamlines.
 
 \section{Philosophy and Mission}
 
 The purpose of Dipy is to make it easier to do better diffusion MR
-imaging research. We aim to build software that is clearly written, clearly
-explained, well tested, a good fit for the underlying ideas and a natural home
-for collaboration.
+imaging research. We aim to build software that is clearly written, well
+explained and thoroughly tested, while being a good fit for the underlying ideas
+and providing a natural meeting point for collaboration.
 
-Dipy is a true international project where anyone from anywhere in the world
-is welcome to contribute as long as they agree with the project's mission
-statement. In order to be faithful to this mission, all contributors are
-required to follow certain policies. For example, if a scientist makes a new
-discovery --- even one of substantial importance --- and wants to share the code,
-it will not be integrated in the main project without extended testing as well
-as code reviews from at least two members of the team.  Such principles
-aim to help the Dipy code-base grow, while preserving its quality.
+Dipy is a true international project where contributions from anywhere in the
+world are welcomed.  In order to ensure the highest quality while still
+allowing the code-base to grow, contributors are required to follow
+certain policies. For example, if a scientist makes a new discovery --- even
+one of substantial importance --- and wants to share the code, it will only be
+integrated in the main project after extended testing as well as peer code
+review from at least two members of the team.
 
-Through this work ethic, Dipy has attracted an international and
-multi-departmental team of contributors from different levels
-of education (Master students, PhD students, Post-Docs and Professors)
-spanning the fields of Computer Science, Medicine, Applied Mathematics,
-Biomedical Engineering and Psychology.
+Through this discipline and work ethic, Dipy has attracted an international
+and multi-departmental team of contributors from different levels of education
+(Master students, PhD students, Post-Docs and Professors) spanning the fields
+of Computer Science, Medicine, Applied Mathematics, Biomedical Engineering and
+Psychology.
 
 
 \section{Terminology}
 
-As in many other fields of science, dMRI is a field that uses specific
+As in most scientific fields, dMRI uses domain-specific
 terminology to describe the constructs of the measurement, as well as to
 present the interpretation of the results of the analysis. We rely on a recent
-paper \citep{Cote2013tractometer}, that has proposed specific terminology for
-describing different constructs of the dMRI field. In this section we will
+paper \citep{Cote2013tractometer}, that proposes specific terminology for
+describing different constructs of the dMRI field. In this section we
 describe constructs of the measurement, as well as terms used to interpret
-the results of the analysis. In subsequent sections, we will use this
+the results of the analysis. In subsequent sections, we use this
 terminology to explain the analysis code and interpretation of data.
 
 The measurement in dMRI relies on the application of a pulsed magnetic
@@ -407,7 +406,7 @@ of streamlines.
 on Numpy, Scipy and Cython. This diagram further shows the major Dipy sub-modules.\label{Fig:module_structure}}
 \end{figure}
 
-In this paper we will use code listings to illustrate the use of Dipy. For
+In this paper we use code listings to illustrate the use of Dipy. For
 example, the following code snippet shows how to find your current version of
 Dipy.
 \begin{python}
